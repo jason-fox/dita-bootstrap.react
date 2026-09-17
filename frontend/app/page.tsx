@@ -53,6 +53,11 @@ export default async function HomePage() {
                         {doc.title}
                       </CardTitle>
                     </div>
+                    {doc.description && (
+                      <p className="card-text text-body-secondary small mb-3">
+                        {doc.description}
+                      </p>
+                    )}
                     <div className="mt-auto pt-3">
                       <Link
                         href={`/view/${doc.id}`}

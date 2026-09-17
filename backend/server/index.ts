@@ -13,6 +13,7 @@ const DATA_DIR = process.env.DATA_DIR
 interface DocSetInfo {
   id: string;
   title: string;
+  description?: string;
   group?: string;
   navToc?: string;
   scrollspyToc?: string;
@@ -86,9 +87,29 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
       const parts = id.split("/");
       const group = parts.length > 1 ? parts.slice(0, -1).join("/") : undefined;
       const topicCount = findTopicFiles(dir).length;
+
+      let description: string | undefined = toc.description ?? toc.shortdesc;
+      const indexPath = path.join(dir, "index.json");
+      if (fs.existsSync(indexPath)) {
+        try {
+          const indexDoc = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
+          const shortdesc =
+            indexDoc.meta?.shortdesc ??
+            indexDoc.meta?.shortDesc ??
+            (typeof indexDoc.shortdesc === "string" ? indexDoc.shortdesc : undefined) ??
+            (typeof indexDoc.shortDesc === "string" ? indexDoc.shortDesc : undefined);
+          if (shortdesc) {
+            description = shortdesc;
+          }
+        } catch (e) {
+          console.error(`Error reading ${indexPath}:`, e);
+        }
+      }
+
       results.push({
         id,
         title: toc.title ?? id,
+        description,
         group,
         navToc: toc.navToc,
         scrollspyToc: toc.scrollspyToc,

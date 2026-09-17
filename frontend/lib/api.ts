@@ -6,6 +6,7 @@ export const API_URL =
 export interface DocSetInfo {
   id: string;
   title: string;
+  description?: string;
   group?: string;
   navToc?: string;
   scrollspyToc?: string;
