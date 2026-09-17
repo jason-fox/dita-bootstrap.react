@@ -1,0 +1,25 @@
+# dependencies
+/node_modules
+
+# build output
+/dist
+*.tsbuildinfo
+
+# synced bootstrap-ast transform output - regenerated via rsync, not hand-edited
+# (see ../README.md "Prerequisites"); .gitkeep placeholders keep the directory
+# structure present on a fresh clone, before the first sync
+/data/*
+!/data/.gitkeep
+!/data/src/
+/data/src/*
+!/data/src/.gitkeep
+
+# env files
+.env*
+
+# misc
+.DS_Store
+npm-debug.log*
+
+# local dev tooling artifacts (browse skill logs, not project content)
+.gstack/

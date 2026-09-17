@@ -1,0 +1,14 @@
+/*!
+ *  This file is part of the DITA Bootstrap plug-in for DITA Open Toolkit.
+ *  See the accompanying LICENSE file for applicable licenses.
+ *  Vendored from plugins/dita-bootstrap/css/bootswatch-static.css: defines the --dita-*
+ *  custom properties that common-bootstrap.css's keyword-markup rules (.xmlatt, .parmname, ...)
+ *  key their color off - without this, those colors silently fall back to inherited text color.
+ */
+
+:root {
+  --dita-prussian-blue: var(--bs-primary-text-emphasis);
+  --dita-maroon: var(--bs-danger-text-emphasis);
+  --dita-violet: var(--bs-purple);
+  --bs-code-color: rgb(from var(--bs-danger) r g calc(b + 63));
+}

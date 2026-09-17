@@ -1,0 +1,139 @@
+/*!
+ *  This file is part of the DITA Bootstrap plug-in for DITA Open Toolkit.
+ *  See the accompanying LICENSE file for applicable licenses.
+ *  Vendored from plugins/dita-bootstrap/css/common-bootstrap.css to keep this
+ *  app's rendering visually consistent with the html5-bootstrap transtype.
+ */
+
+.list-group-item.active,
+.nav-link.active,
+[data-bs-theme='dark'] {
+  --dita-violet: #cc99cd;
+}
+
+.list-group-item {
+  border-radius: 0;
+}
+
+.tab-pane pre[class*='language-'] {
+  margin: 0;
+}
+
+.d-dark,
+.d-light {
+  display: none;
+}
+
+[data-bs-theme='light'] .d-light {
+  display: inherit;
+}
+
+[data-bs-theme='light'] .d-auto {
+  display: none;
+}
+
+[data-bs-theme='dark'] .d-dark {
+  display: inherit;
+}
+
+[data-bs-theme='dark'] .d-auto {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dita-violet: #cc99cd;
+  }
+
+  [data-bs-theme='light'] {
+    --dita-violet: var(--bs-purple);
+  }
+}
+
+.syntaxdiagram {
+  color: var(--dita-maroon);
+}
+
+.numcharref,
+.parameterentity,
+.textentity,
+.xmlatt,
+.xmlelement,
+.xmlnsname,
+.xmlpi {
+  font-family: var(--bs-font-monospace);
+  color: var(--dita-violet);
+  overflow-wrap: break-word;
+}
+
+.cmdname,
+.codeph,
+.filepath,
+.option,
+.parmname {
+  font-family: var(--bs-font-monospace);
+  color: var(--bs-code-color);
+  overflow-wrap: break-word;
+}
+
+.cmdname,
+.parmname {
+  font-weight: 700;
+  color: var(--dita-prussian-blue);
+}
+
+.nav-pills .active .cmdname,
+.nav-pills .active .codeph,
+.nav-pills .active .filepath,
+.nav-pills .active .option,
+.nav-pills .active .parmname,
+.nav-pills .active .numcharref,
+.nav-pills .active .parameterentity,
+.nav-pills .active .textentity,
+.nav-pills .active .xmlatt,
+.nav-pills .active .xmlelement,
+.nav-pills .active .xmlnsname,
+.nav-pills .active .xmlpi {
+  color: var(--bs-nav-pills-link-active-color);
+}
+
+.boolean {
+  color: var(--bs-green);
+}
+
+.state {
+  color: var(--bs-red);
+}
+
+.navbar-brand > svg {
+  margin: 4px 6px;
+  vertical-align: text-top;
+}
+
+.bs-container {
+  margin: 3rem auto;
+}
+
+.bs-sidebar-nav {
+  overflow: auto;
+}
+
+[type='search']::placeholder {
+  color: rgba(var(--bs-body-color-rgb), 0.3);
+}
+
+.search-box:hover,
+.search-box:focus-visible {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+
+.note {
+  border-left: 6px solid;
+  border-left-color: var(--bs-alert-color, transparent);
+}
+
+[dir='rtl'] .note {
+  border-right: 6px solid;
+  border-right-color: var(--bs-alert-color, transparent);
+  border-left: 0;
+}
