@@ -1,6 +1,7 @@
-# react-harness
+# DITA Bootstrap AST Harness
 
 A two-part harness for viewing `dita-bootstrap.ast` transtype output in a real React app.
+The data held in a backend store is expressed in an abstract syntax tree (AST) format which is accessed by the react application.
 
 - **`backend/`** — Express static file server, serves the JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin.
 - **`frontend/`** — Next.js + react-bootstrap app that fetches a topic's JSON AST and recursively renders it into real `react-bootstrap` components, with a collapsible TOC sidebar and a swappable header.
@@ -46,9 +47,8 @@ server-side env var) because image resolution happens in the browser, not just o
 server - so the value must be reachable from wherever the user's browser is, not just from the
 frontend process itself.
 
-It defaults to `http://localhost:4000/data`, matching the backend's default `PORT` below, so no
-`frontend/.env.local` is needed for local dev. Only add one if you change the backend's `PORT`,
-or run the two apps on different hosts:
+It defaults to `http://localhost:4000/data`, matching the backend's default `PORT` below.
+To change the backend's `PORT`, or run the two apps on different hosts:
 
 ```
 NEXT_PUBLIC_DATA_URL=http://your-backend-host:PORT/data
