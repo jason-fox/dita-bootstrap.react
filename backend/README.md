@@ -1,7 +1,7 @@
-# dbjson-harness-backend
+# DITA Bootstrap AST File Server
 
 Express static file server that serves `dita-bootstrap.ast` transtype output (per-topic JSON
-files plus `toc.json`) to the `frontend/` app under `/data`.
+files plus `toc.json`) to the `frontend/` app under `/data`. Also includes a built-in search function.
 
 See the [top-level README](../README.md) for how to generate that output from the DITA-OT
 toolkit and sync it into `data/`.
@@ -34,4 +34,4 @@ Listens on `PORT` (default `4000`) and serves `DATA_DIR` (default `./data`) unde
 
 ## License
 
-Apache License 2.0 - see [LICENSE](./LICENSE).
+Apache License 2.0 - see [LICENSE](../LICENSE).

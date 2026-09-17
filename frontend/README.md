@@ -1,4 +1,4 @@
-# dbjson-harness-frontend
+# DITA Bootstrap React
 
 Next.js + react-bootstrap app that fetches a topic's `[type, props?, ...children]` JSON AST
 (produced by the `dita-bootstrap.ast` DITA-OT plugin) and recursively renders it into real
@@ -33,4 +33,4 @@ Note: no directory here is named `src` - App Router files live at the package ro
 
 ## License
 
-Apache License 2.0 - see [LICENSE](./LICENSE).
+Apache License 2.0 - see [LICENSE](../LICENSE).
