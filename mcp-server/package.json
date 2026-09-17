@@ -1,0 +1,35 @@
+{
+  "name": "dita-docs-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for DITA AST Documentation with MCP-UI React rendering",
+  "main": "dist/mcp-server/src/index.js",
+  "bin": {
+    "dita-docs-mcp": "dist/mcp-server/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/mcp-server/src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.0",
+    "commander": "^13.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "minisearch": "^7.1.1",
+    "prismjs": "^1.29.0",
+    "react": "^19.0.0",
+    "react-bootstrap": "^2.10.9",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}

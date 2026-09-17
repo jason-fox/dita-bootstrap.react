@@ -39,7 +39,7 @@ import {
   resolveStyle,
   type AstNode,
   type AstArray,
-} from "@/lib/api";
+} from "../lib/api";
 
 // Prism's DOMContentLoaded listener re-highlights the DOM after React renders, causing a
 // hydration mismatch; Prism.manual can't be set in time, so no-op the listener instead.

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type MiniSearch from "minisearch";
-import { loadSearchIndex, type SearchDoc } from "@/lib/search";
+import { loadSearchIndex, type SearchDoc } from "../lib/search";
 
 interface SearchResult {
   id: string;

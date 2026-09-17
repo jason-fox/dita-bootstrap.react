@@ -8,7 +8,7 @@ import {
   resolveHref,
   resolveStyle,
   type AstArray,
-} from "@/lib/api";
+} from "../lib/api";
 
 function splitEntry(entry: AstArray, docId?: string) {
   const [, maybeProps, ...rest] = entry;

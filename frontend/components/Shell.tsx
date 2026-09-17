@@ -8,7 +8,7 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 
 import Header from "./Header";
 import Toc from "./Toc";
-import type { AstArray } from "@/lib/api";
+import type { AstArray } from "../lib/api";
 
 export default function Shell({
   tocEntries = [],

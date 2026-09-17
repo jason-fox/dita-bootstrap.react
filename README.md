@@ -1,10 +1,11 @@
-# DITA Bootstrap AST Harness
+# DITA Bootstrap AST Harness & MCP Server
 
-A two-part harness for viewing `dita-bootstrap.ast` transtype output in a real React app.
-The harness supports discovering and displaying multiple AST documentation sets (books, guides, or document sets) stored in subdirectories under the backend's data folder.
+A harness and Model Context Protocol (MCP) server for viewing and querying `dita-bootstrap.ast` transtype output.
+The workspace supports discovering and displaying multiple AST documentation sets (books, guides, or document sets) stored in subdirectories under the backend's data folder.
 
 - **`backend/`** — Express static file server and API. Serves JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin, scans for documentation sets recursively (`toc.json`), and builds per-set MiniSearch indices.
-- **`frontend/`** — Next.js + react-bootstrap app that fetches doc set metadata, presents a card grid library landing page, and recursively renders JSON AST topics into real `react-bootstrap` components with collapsible TOC sidebars and dark mode support.
+- **`frontend/`** — Next.js + react-bootstrap web app that presents a card grid library landing page and renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars and dark mode support.
+- **`mcp-server/`** — MCP Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), MiniSearch full-text search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces.
 
 ## Prerequisites
 
@@ -27,24 +28,51 @@ Any subdirectory in `backend/data/` containing a `toc.json` file will automatica
 ## Running
 
 ```console
-# backend (port 4000)
+# 1. backend (port 4000)
 cd backend
 npm install
 npm run dev
 
-# frontend (port 3100, to avoid colliding with local apps on 3000)
+# 2. frontend (port 3100)
 cd frontend
 npm install
 npm run dev -- -p 3100
+
+# 3. mcp-server (stdio or SSE)
+cd mcp-server
+npm install
+npm run build
+npm start -- --transport stdio
 ```
 
-Open http://localhost:3100 — the landing page displays a grid of all discovered documentation sets with "Browse" links. Clicking a set opens its documentation view at `/<docId>`.
+Open http://localhost:3100 for the Next.js web application.
 
-## Search
+## MCP Server Integration
 
-The backend builds a [MiniSearch](https://github.com/lucaong/minisearch) full-text index for each documentation set at startup (`buildAllSearchIndices()` in `backend/server/index.ts`). It scans every topic JSON in each doc set folder and flattens its AST `content` to plain text, plus `meta.title`/`shortdesc`/`keywords`. The index is written as `search-index.json` into each doc set directory (e.g. `data/my-doc-set/search-index.json`) and served via `/data`.
+The MCP server in `mcp-server/` can be added to your AI assistant configuration (Claude Desktop, Cursor, Antigravity, etc.):
 
-When viewing a specific doc set, the search box appears in the header and queries that set's MiniSearch index client-side (`frontend/lib/search.ts`, `frontend/components/Search.tsx`). Restart the backend after syncing new or updated documentation sets to rebuild the search indices.
+```json
+{
+  "mcpServers": {
+    "dita-docs": {
+      "command": "node",
+      "args": [
+        "/path/to/react-harness/mcp-server/dist/mcp-server/src/index.js",
+        "--transport", "stdio",
+        "--data-dir", "/path/to/react-harness/backend/data"
+      ]
+    }
+  }
+}
+```
+
+### Key MCP Tools
+
+- `list_documentation_sets` — Discovers documentation sets with DITA OASIS metadata.
+- `get_toc` — Returns hierarchical Table of Contents.
+- `search_documentation` — Full-text MiniSearch query across topics.
+- `get_topic_content` — Returns clean Markdown text for LLM reasoning and question-answering.
+- `render_topic_ui` — **MCP-UI Tool** returning a self-contained HTML/CSS frame rendering the interactive React UI.
 
 ## Environment Variables
 
@@ -66,4 +94,4 @@ When viewing a specific doc set, the search box appears in the header and querie
 
 ## License
 
-Apache 2.0 — see `frontend/LICENSE` and `backend/LICENSE`.
+Apache 2.0 — see `frontend/LICENSE`, `backend/LICENSE`, and `mcp-server/LICENSE`.
