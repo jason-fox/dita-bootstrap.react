@@ -1,9 +1,30 @@
+import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
 import { notFound } from "next/navigation";
 import AstRenderer from "@/components/AstRenderer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Scrollspy from "@/components/Scrollspy";
 import { fetchPage, fetchToc } from "@/lib/api";
+
+// same data the real html5-bootstrap plugin's fox.jason.open-graph feeds from (topic
+// title/shortdesc) - title interpolates into the root layout's "%s | <site>" template
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ file: string[] }>;
+}): Promise<Metadata> {
+  const { file } = await params;
+  const doc = await fetchPage(file.join("/")).catch(() => null);
+  if (!doc) return {};
+
+  const { title, shortdesc } = doc.meta;
+  return {
+    title,
+    description: shortdesc,
+    openGraph: { title, description: shortdesc, type: "article" },
+    twitter: { card: "summary", title, description: shortdesc },
+  };
+}
 
 export default async function ViewPage({
   params,

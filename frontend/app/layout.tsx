@@ -16,16 +16,19 @@ import { fetchToc, type TocDoc } from "@/lib/api";
 
 const FALLBACK_TITLE = "DITA Bootstrap JSON Viewer";
 
-// dynamic because the title comes from toc.json (the map's own title cascade), not a static string
+// dynamic because the title comes from toc.json (the map's own title cascade), not a static string.
 export async function generateMetadata(): Promise<Metadata> {
   const toc = await fetchToc().catch((): TocDoc => ({ toc: [] }));
-  return { title: toc.title ?? FALLBACK_TITLE };
+  const siteTitle = toc.title ?? FALLBACK_TITLE;
+  return {
+    title: { template: `%s | ${siteTitle}`, default: siteTitle },
+    openGraph: { siteName: siteTitle, type: "website" },
+    twitter: { card: "summary" },
+  };
 }
 
-// mirrors dita-bootstrap's $BOOTSTRAP_TOPBAR_HDR: an externally swappable HTML fragment for
-// the navbar brand, read from disk rather than hardcoded in JSX (see
-// plugins/dita-bootstrap/includes/hdr.navbar.default.xml for the real plugin's version) -
-// empty by default, in which case Header falls back to the toc-derived title instead
+// mirrors dita-bootstrap's $BOOTSTRAP_TOPBAR_HDR: an externally swappable HTML fragment for the
+// navbar brand, read from disk - empty by default, in which case Header falls back to the title.
 async function fetchPublicFragment(file: string): Promise<string> {
   return readFile(path.join(process.cwd(), "public", file), "utf-8").catch(
     () => "",
@@ -44,9 +47,8 @@ export default async function RootLayout({
   ]);
 
   return (
-    // bootstrap.min.css sets scroll-behavior: smooth on :root; this attribute tells Next.js's
-    // router to coordinate with that instead of racing it, so navigation reliably lands at the
-    // top of the new page (see console warning this silences)
+    // bootstrap.min.css sets scroll-behavior: smooth on :root; this tells Next.js's router to
+    // coordinate with that instead of racing it, so navigation reliably lands at the new page.
     <html lang="en" data-scroll-behavior="smooth">
       <body>
         <Shell
