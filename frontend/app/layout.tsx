@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,56 +9,29 @@ import "./collapsible-toc.css";
 import "./side-toc.css";
 import "./scrollspy-toc.css";
 import "./prism-theme.css";
-import Shell from "@/components/Shell";
-import { fetchToc, type TocDoc } from "@/lib/api";
 
-const FALLBACK_TITLE = "DITA Bootstrap JSON Viewer";
+export const metadata: Metadata = {
+  title:
+    process.env.NEXT_PUBLIC_DOCS_TITLE ??
+    process.env.DOCS_TITLE ??
+    "Documentation",
+  description:
+    process.env.NEXT_PUBLIC_DOCS_DESCRIPTION ??
+    process.env.DOCS_DESCRIPTION ??
+    "Documentation",
+};
 
-// dynamic because the title comes from toc.json (the map's own title cascade), not a static string.
-export async function generateMetadata(): Promise<Metadata> {
-  const toc = await fetchToc().catch((): TocDoc => ({ toc: [] }));
-  const siteTitle = toc.title ?? FALLBACK_TITLE;
-  return {
-    title: { template: `%s | ${siteTitle}`, default: siteTitle },
-    openGraph: { siteName: siteTitle, type: "website" },
-    twitter: { card: "summary" },
-  };
-}
-
-// mirrors dita-bootstrap's $BOOTSTRAP_TOPBAR_HDR: an externally swappable HTML fragment for the
-// navbar brand, read from disk - empty by default, in which case Header falls back to the title.
-async function fetchPublicFragment(file: string): Promise<string> {
-  return readFile(path.join(process.cwd(), "public", file), "utf-8").catch(
-    () => "",
-  );
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [toc, headerHtml, navLinksHtml] = await Promise.all([
-    fetchToc().catch((): TocDoc => ({ toc: [] })),
-    fetchPublicFragment("header.html"),
-    fetchPublicFragment("nav-links.html"),
-  ]);
-
   return (
     // bootstrap.min.css sets scroll-behavior: smooth on :root; this tells Next.js's router to
     // coordinate with that instead of racing it, so navigation reliably lands at the new page.
     <html lang="en" data-scroll-behavior="smooth">
-      <body>
-        <Shell
-          tocEntries={toc.toc}
-          navToc={toc.navToc}
-          title={toc.title ?? FALLBACK_TITLE}
-          headerHtml={headerHtml}
-          navLinksHtml={navLinksHtml}
-        >
-          {children}
-        </Shell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
+

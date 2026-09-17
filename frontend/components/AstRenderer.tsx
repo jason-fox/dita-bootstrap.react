@@ -245,12 +245,17 @@ const componentRegistry: Record<string, React.ElementType> = {
 
 // image/media srcs are relative to the topic's own JSON file in the output dir,
 // not to this app's /view/<topic> route, so resolve them against the backend instead
-function resolveSrc(src: unknown): unknown {
-  return typeof src === "string" &&
-    !/^(https?:)?\/\//.test(src) &&
-    !src.startsWith("data:")
-    ? `${DATA_URL}/${src}`
-    : src;
+function resolveSrc(src: unknown, docId?: string): unknown {
+  if (
+    typeof src !== "string" ||
+    /^(https?:)?\/\//.test(src) ||
+    src.startsWith("data:")
+  ) {
+    return src;
+  }
+  const prefix =
+    docId && docId !== "default" ? `${DATA_URL}/${docId}` : DATA_URL;
+  return `${prefix}/${src}`;
 }
 
 // DITA allows an ancestor-level default language that's resolved on the XSLT side, invisible
@@ -302,7 +307,11 @@ function renderCodeBlock(
   );
 }
 
-function renderNode(node: AstNode, key: React.Key): React.ReactNode {
+function renderNode(
+  node: AstNode,
+  key: React.Key,
+  docId?: string,
+): React.ReactNode {
   if (typeof node === "string") {
     return node;
   }
@@ -313,8 +322,8 @@ function renderNode(node: AstNode, key: React.Key): React.ReactNode {
   const children = (hasProps ? rest.slice(1) : rest) as AstNode[];
   const resolvedProps = {
     ...props,
-    ...(props.href ? { href: resolveHref(props.href) } : {}),
-    ...(props.src ? { src: resolveSrc(props.src) } : {}),
+    ...(props.href ? { href: resolveHref(props.href, docId) } : {}),
+    ...(props.src ? { src: resolveSrc(props.src, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
 
@@ -343,15 +352,22 @@ function renderNode(node: AstNode, key: React.Key): React.ReactNode {
     );
   }
   const Component = componentRegistry[type] ?? type;
-  const rendered = children.map((child, index) => renderNode(child, index));
+  const rendered = children.map((child, index) => renderNode(child, index, docId));
 
   return React.createElement(Component, { key, ...resolvedProps }, ...rendered);
 }
 
-export default function AstRenderer({ nodes }: { nodes: AstNode[] }) {
+export default function AstRenderer({
+  nodes,
+  docId,
+}: {
+  nodes: AstNode[];
+  docId?: string;
+}) {
   return (
     <ToggleProvider>
-      {nodes.map((node, index) => renderNode(node, index))}
+      {nodes.map((node, index) => renderNode(node, index, docId))}
     </ToggleProvider>
   );
 }
+

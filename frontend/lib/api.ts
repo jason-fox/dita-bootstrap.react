@@ -1,5 +1,16 @@
 export const DATA_URL =
   process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data";
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+
+export interface DocSetInfo {
+  id: string;
+  title: string;
+  group?: string;
+  navToc?: string;
+  scrollspyToc?: string;
+  topicCount: number;
+}
 
 // [type, props?, ...children] - props is present only when item[1] is a plain object
 export type AstNode = string | AstArray;
@@ -55,24 +66,73 @@ export function resolveStyle(style: unknown): unknown {
   return result;
 }
 
-// cross-topic hrefs point at sibling <topic>.json files; rewrite those to this app's /view/<topic> routes
-export function resolveHref(href: unknown): unknown {
-  return typeof href === "string" &&
-    href.endsWith(".json") &&
-    !href.startsWith("http")
-    ? `/view/${href.replace(/\.json(#.*)?$/, (_, hash) => hash ?? "")}`
-    : href;
+// cross-topic hrefs point at sibling <topic>.json files; rewrite those to this app's /view/<docId>/<topic> routes
+export function resolveHref(href: unknown, docId?: string): unknown {
+  if (
+    typeof href !== "string" ||
+    !href.endsWith(".json") ||
+    href.startsWith("http")
+  ) {
+    return href;
+  }
+  const cleanPath = href.replace(/\.json(#.*)?$/, (_, hash) => hash ?? "");
+  const prefix = docId && docId !== "default" ? `/view/${docId}` : "/view";
+  return `${prefix}/${cleanPath}`;
 }
 
-export async function fetchToc(): Promise<TocDoc> {
-  const res = await fetch(`${DATA_URL}/toc.json`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load toc.json: ${res.status}`);
+export async function fetchDocs(): Promise<DocSetInfo[]> {
+  const res = await fetch(`${API_URL}/docs`, { cache: "no-store" }).catch(
+    () => null,
+  );
+  if (!res || !res.ok) return [];
   return res.json();
 }
 
-export async function fetchPage(file: string): Promise<TopicDoc> {
-  const name = file.endsWith(".json") ? file : `${file}.json`;
-  const res = await fetch(`${DATA_URL}/${name}`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load ${name}: ${res.status}`);
+export async function fetchToc(docId?: string): Promise<TocDoc> {
+  const relativePath =
+    docId && docId !== "default" ? `${docId}/toc.json` : "toc.json";
+  const res = await fetch(`${DATA_URL}/${relativePath}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load ${relativePath}: ${res.status}`);
   return res.json();
 }
+
+export async function fetchPage(
+  docId: string,
+  file: string,
+): Promise<TopicDoc> {
+  const normalizedFile = file.endsWith(".json") ? file : `${file}.json`;
+  const relativePath =
+    docId && docId !== "default"
+      ? `${docId}/${normalizedFile}`
+      : normalizedFile;
+  const res = await fetch(`${DATA_URL}/${relativePath}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Failed to load ${relativePath}: ${res.status}`);
+  return res.json();
+}
+
+// Matches a URL path array against available doc sets to separate docId from topic path
+export function matchDocSet(
+  segments: string[],
+  docSets: DocSetInfo[],
+): { docId: string; topicPath: string } {
+  const fullPath = segments.join("/");
+  // Sort by ID length descending to match longest path prefix first
+  const sortedSets = [...docSets].sort((a, b) => b.id.length - a.id.length);
+
+  for (const docSet of sortedSets) {
+    if (docSet.id === "default") continue;
+    if (fullPath === docSet.id || fullPath.startsWith(`${docSet.id}/`)) {
+      const topicPath = fullPath.slice(docSet.id.length).replace(/^\//, "");
+      return { docId: docSet.id, topicPath };
+    }
+  }
+
+  // Fallback
+  if (segments.length > 0) {
+    return { docId: segments[0], topicPath: segments.slice(1).join("/") };
+  }
+  return { docId: "default", topicPath: "" };
+}
+

@@ -10,7 +10,7 @@ import {
   type AstArray,
 } from "@/lib/api";
 
-function splitEntry(entry: AstArray) {
+function splitEntry(entry: AstArray, docId?: string) {
   const [, maybeProps, ...rest] = entry;
   const hasProps = isPropsObject(maybeProps);
   const { title, href, icon, iconStyle } = (hasProps ? maybeProps : {}) as {
@@ -24,19 +24,20 @@ function splitEntry(entry: AstArray) {
   ) as AstArray[];
   return {
     title,
-    href: href ? (resolveHref(href) as string) : undefined,
+    href: href ? (resolveHref(href, docId) as string) : undefined,
     icon,
     iconStyle: resolveStyle(iconStyle) as CSSProperties | undefined,
     children,
   };
 }
 
-function containsPath(entry: AstArray, pathname: string): boolean {
-  const { href, children } = splitEntry(entry);
+function containsPath(entry: AstArray, pathname: string, docId?: string): boolean {
+  const { href, children } = splitEntry(entry, docId);
   return (
-    href === pathname || children.some((child) => containsPath(child, pathname))
+    href === pathname || children.some((child) => containsPath(child, pathname, docId))
   );
 }
+
 
 // Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's collapsible-toc chevron;
 // collapsible-toc.css rotates it via .bd-links .btn[aria-expanded='true'] svg
@@ -63,14 +64,16 @@ function Chevron() {
 function TocEntryItem({
   entry,
   pathname,
+  docId,
 }: {
   entry: AstArray;
   pathname: string;
+  docId?: string;
 }) {
-  const { title, href, icon, iconStyle, children } = splitEntry(entry);
+  const { title, href, icon, iconStyle, children } = splitEntry(entry, docId);
   const isActive = href === pathname;
   const isCurrentSection =
-    isActive || children.some((child) => containsPath(child, pathname));
+    isActive || children.some((child) => containsPath(child, pathname, docId));
   const [expanded, setExpanded] = useState(isCurrentSection);
 
   const content = (
@@ -133,7 +136,7 @@ function TocEntryItem({
       <div className={`ps-2 collapse${expanded ? " show" : ""}`}>
         <ul className="list-unstyled fw-normal ps-4">
           {children.map((child, index) => (
-            <TocEntryItem key={index} entry={child} pathname={pathname} />
+            <TocEntryItem key={index} entry={child} pathname={pathname} docId={docId} />
           ))}
         </ul>
       </div>
@@ -147,12 +150,14 @@ function ListGroupEntryItem({
   entry,
   pathname,
   parentActive,
+  docId,
 }: {
   entry: AstArray;
   pathname: string;
   parentActive: boolean;
+  docId?: string;
 }) {
-  const { title, href, icon, iconStyle, children } = splitEntry(entry);
+  const { title, href, icon, iconStyle, children } = splitEntry(entry, docId);
   const isActive = href === pathname;
 
   const content = (
@@ -182,6 +187,7 @@ function ListGroupEntryItem({
           entry={child}
           pathname={pathname}
           parentActive={isActive}
+          docId={docId}
         />
       ))}
     </>
@@ -191,9 +197,11 @@ function ListGroupEntryItem({
 function ListGroupToc({
   entries,
   pathname,
+  docId,
 }: {
   entries: AstArray[];
   pathname: string;
+  docId?: string;
 }) {
   return (
     <div className="list-group me-3">
@@ -203,6 +211,7 @@ function ListGroupToc({
           entry={entry}
           pathname={pathname}
           parentActive={false}
+          docId={docId}
         />
       ))}
     </div>
@@ -214,14 +223,16 @@ function ListGroupToc({
 function NavPillEntryItem({
   entry,
   pathname,
+  docId,
 }: {
   entry: AstArray;
   pathname: string;
+  docId?: string;
 }) {
-  const { title, href, icon, iconStyle, children } = splitEntry(entry);
+  const { title, href, icon, iconStyle, children } = splitEntry(entry, docId);
   const isActive = href === pathname;
   const isCurrentSection =
-    isActive || children.some((child) => containsPath(child, pathname));
+    isActive || children.some((child) => containsPath(child, pathname, docId));
 
   const content = (
     <>
@@ -245,7 +256,7 @@ function NavPillEntryItem({
       {children.length > 0 && (
         <nav className="nav nav-pills flex-column ps-3 mw-100 w-100">
           {children.map((child, index) => (
-            <NavPillEntryItem key={index} entry={child} pathname={pathname} />
+            <NavPillEntryItem key={index} entry={child} pathname={pathname} docId={docId} />
           ))}
         </nav>
       )}
@@ -256,14 +267,16 @@ function NavPillEntryItem({
 function NavPillToc({
   entries,
   pathname,
+  docId,
 }: {
   entries: AstArray[];
   pathname: string;
+  docId?: string;
 }) {
   return (
     <nav className="nav nav-pills flex-column navbar-light">
       {entries.map((entry, index) => (
-        <NavPillEntryItem key={index} entry={entry} pathname={pathname} />
+        <NavPillEntryItem key={index} entry={entry} pathname={pathname} docId={docId} />
       ))}
     </nav>
   );
@@ -272,9 +285,11 @@ function NavPillToc({
 export default function Toc({
   entries,
   navToc = "collapsible",
+  docId,
 }: {
   entries: AstArray[];
   navToc?: string;
+  docId?: string;
 }) {
   const pathname = usePathname();
   const isListGroup = navToc.startsWith("list-group");
@@ -291,14 +306,14 @@ export default function Toc({
         className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}
       >
         {isListGroup ? (
-          <ListGroupToc entries={entries} pathname={pathname} />
+          <ListGroupToc entries={entries} pathname={pathname} docId={docId} />
         ) : isNavPill ? (
-          <NavPillToc entries={entries} pathname={pathname} />
+          <NavPillToc entries={entries} pathname={pathname} docId={docId} />
         ) : (
           <div className="flex-column bd-links">
             <ul className="list-unstyled mb-0 py-3 pt-md-1">
               {entries.map((entry, index) => (
-                <TocEntryItem key={index} entry={entry} pathname={pathname} />
+                <TocEntryItem key={index} entry={entry} pathname={pathname} docId={docId} />
               ))}
             </ul>
           </div>
@@ -307,3 +322,4 @@ export default function Toc({
     </nav>
   );
 }
+

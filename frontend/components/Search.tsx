@@ -13,19 +13,19 @@ interface SearchResult {
 
 const MAX_RESULTS = 8;
 
-export default function Search() {
+export default function Search({ docId }: { docId?: string }) {
   const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    loadSearchIndex()
+    loadSearchIndex(docId)
       .then((index) => {
         indexRef.current = index;
       })
       .catch((error) => console.error("Failed to load search index", error));
-  }, []);
+  }, [docId]);
 
   function handleChange(value: string) {
     setQuery(value);
@@ -49,6 +49,10 @@ export default function Search() {
     );
     setOpen(true);
   }
+
+  const getResultHref = (id: string) => {
+    return docId && docId !== "default" ? `/view/${docId}/${id}` : `/view/${id}`;
+  };
 
   return (
     <form
@@ -86,7 +90,7 @@ export default function Search() {
               <li key={result.id}>
                 <Link
                   className="dropdown-item"
-                  href={`/view/${result.id}`}
+                  href={getResultHref(result.id)}
                   onClick={() => setOpen(false)}
                 >
                   <div className="fw-semibold">{result.title}</div>
@@ -104,3 +108,4 @@ export default function Search() {
     </form>
   );
 }
+

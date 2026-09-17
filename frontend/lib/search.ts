@@ -16,12 +16,22 @@ const SEARCH_INDEX_OPTIONS = {
   storeFields: ["title", "shortdesc"],
 };
 
-export async function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
-  const res = await fetch(`${DATA_URL}/search-index.json`, {
+export async function loadSearchIndex(
+  docId?: string,
+): Promise<MiniSearch<SearchDoc>> {
+  if (!docId || docId === "default") {
+    return new MiniSearch<SearchDoc>(SEARCH_INDEX_OPTIONS);
+  }
+  const relativePath = `${docId}/search-index.json`;
+  const res = await fetch(`${DATA_URL}/${relativePath}`, {
     cache: "no-store",
-  });
-  if (!res.ok)
-    throw new Error(`Failed to load search-index.json: ${res.status}`);
+  }).catch(() => null);
+
+  if (!res || !res.ok) {
+    return new MiniSearch<SearchDoc>(SEARCH_INDEX_OPTIONS);
+  }
   const json = await res.text();
   return MiniSearch.loadJSON<SearchDoc>(json, SEARCH_INDEX_OPTIONS);
 }
+
+

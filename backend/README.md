@@ -1,10 +1,20 @@
-# DITA Bootstrap AST File Server
+# DITA Bootstrap AST File Server & API
 
-Express static file server that serves `dita-bootstrap.ast` transtype output (per-topic JSON
-files plus `toc.json`) to the `frontend/` app under `/data`. Also includes a built-in search function.
+Express static file server and API that serves `dita-bootstrap.ast` transtype output (per-topic JSON files plus `toc.json`) to the `frontend/` app.
 
-See the [top-level README](../README.md) for how to generate that output from the DITA-OT
-toolkit and sync it into `data/`.
+See the [top-level README](../README.md) for how to generate AST output from the DITA-OT toolkit and sync it into `data/`.
+
+## Features
+
+- **Documentation Set Discovery**: Recursively scans `DATA_DIR` for folders containing `toc.json` and exposes `GET /api/docs`.
+- **Search Indexing**: Generates a MiniSearch `search-index.json` file inside each doc set folder on server startup.
+- **Static File Serving**: Serves all topic and AST assets under `/data`.
+
+## API Routes
+
+- `GET /api/docs` — returns JSON array of all discovered documentation sets (`{ id, title, group, topicCount, navToc, scrollspyToc }`).
+- `GET /health` — health check returning server status and resolved `DATA_DIR`.
+- `GET /data/...` — static mount for `toc.json`, topic files, and `search-index.json`.
 
 ## Install
 
@@ -18,19 +28,19 @@ npm install
 npm run dev
 ```
 
-Listens on `PORT` (default `4000`) and serves `DATA_DIR` (default `./data`) under `/data`.
+Listens on `PORT` (default `4000`) and serves `DATA_DIR` (default `./data`).
 
-## Environment
+## Environment Variables
 
-- `PORT` - port to listen on (default `4000`)
-- `DATA_DIR` - directory to serve under `/data` (default `./data`)
+- `PORT` - Port to listen on (default `4000`)
+- `DATA_DIR` - Directory containing documentation sets (default `./data`)
 
 ## Scripts
 
-- `npm run dev` - start with file-watching (`tsx watch`)
-- `npm run start` - run once without watching
-- `npm run build` - compile TypeScript to `dist/`
-- `npm run serve` - run the compiled `dist/index.js`
+- `npm run dev` - Start with file-watching (`tsx watch`)
+- `npm run start` - Run once without watching
+- `npm run build` - Compile TypeScript to `dist/`
+- `npm run serve` - Run the compiled `dist/index.js`
 
 ## License
 

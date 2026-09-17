@@ -10,6 +10,15 @@ const DATA_DIR = process.env.DATA_DIR
   ? path.resolve(process.env.DATA_DIR)
   : path.resolve(__dirname, "../data");
 
+interface DocSetInfo {
+  id: string;
+  title: string;
+  group?: string;
+  navToc?: string;
+  scrollspyToc?: string;
+  topicCount: number;
+}
+
 interface SearchDoc {
   id: string;
   title: string;
@@ -40,39 +49,76 @@ function extractText(node: unknown): string {
   return children.map(extractText).join(" ");
 }
 
-// walks dataDir recursively, returning topic JSON paths relative to dataDir (POSIX
-// separators, so ids match the /view/<id> route regardless of host OS)
-function findTopicFiles(dataDir: string, dir: string = dataDir): string[] {
+// walks docDir recursively, returning topic JSON paths relative to docDir (POSIX
+// separators, so ids match topic paths regardless of host OS)
+function findTopicFiles(docDir: string, dir: string = docDir): string[] {
   const results: string[] = [];
+  if (!fs.existsSync(dir)) return results;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      results.push(...findTopicFiles(dataDir, fullPath));
+      results.push(...findTopicFiles(docDir, fullPath));
     } else if (
       entry.name.endsWith(".json") &&
       entry.name !== "toc.json" &&
       entry.name !== "search-index.json"
     ) {
-      results.push(path.relative(dataDir, fullPath).split(path.sep).join("/"));
+      results.push(path.relative(docDir, fullPath).split(path.sep).join("/"));
     }
   }
   return results;
 }
 
-// builds a MiniSearch index from every topic JSON in dataDir (recursively) and writes
-// it as search-index.json, served automatically by the /data static mount below
-function buildSearchIndex(dataDir: string): void {
-  if (!fs.existsSync(dataDir)) return;
-  const files = findTopicFiles(dataDir);
+// walks dataDir recursively, discovering any folder containing a toc.json file
+function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
+  const results: DocSetInfo[] = [];
+  if (!fs.existsSync(dir)) return results;
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const hasToc = entries.some((e) => e.isFile() && e.name === "toc.json");
+
+  if (hasToc) {
+    const relPath = path.relative(dataDir, dir).split(path.sep).join("/");
+    const id = relPath === "" ? "default" : relPath;
+    const tocPath = path.join(dir, "toc.json");
+    try {
+      const toc = JSON.parse(fs.readFileSync(tocPath, "utf-8"));
+      const parts = id.split("/");
+      const group = parts.length > 1 ? parts.slice(0, -1).join("/") : undefined;
+      const topicCount = findTopicFiles(dir).length;
+      results.push({
+        id,
+        title: toc.title ?? id,
+        group,
+        navToc: toc.navToc,
+        scrollspyToc: toc.scrollspyToc,
+        topicCount,
+      });
+    } catch (e) {
+      console.error(`Error reading ${tocPath}:`, e);
+    }
+  }
+
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      results.push(...findDocSets(dataDir, path.join(dir, entry.name)));
+    }
+  }
+
+  return results;
+}
+
+// builds a MiniSearch index from every topic JSON in docDir (recursively) and writes
+// it as search-index.json inside docDir
+function buildSearchIndex(docDir: string): void {
+  if (!fs.existsSync(docDir)) return;
+  const files = findTopicFiles(docDir);
   if (files.length === 0) {
-    console.log(
-      `no topic JSON found in ${dataDir} yet - skipping search index build`,
-    );
     return;
   }
 
   const documents: SearchDoc[] = files.map((file) => {
-    const doc = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf-8"));
+    const doc = JSON.parse(fs.readFileSync(path.join(docDir, file), "utf-8"));
     return {
       id: file.replace(/\.json$/, ""),
       title: doc.meta?.title ?? "",
@@ -87,10 +133,23 @@ function buildSearchIndex(dataDir: string): void {
   const miniSearch = new MiniSearch<SearchDoc>(SEARCH_INDEX_OPTIONS);
   miniSearch.addAll(documents);
   fs.writeFileSync(
-    path.join(dataDir, "search-index.json"),
+    path.join(docDir, "search-index.json"),
     JSON.stringify(miniSearch),
   );
-  console.log(`search index built: ${documents.length} documents`);
+  console.log(`[${path.basename(docDir)}] search index built: ${documents.length} documents`);
+}
+
+function buildAllSearchIndices(dataDir: string): void {
+  const docSets = findDocSets(dataDir);
+  if (docSets.length === 0) {
+    // fallback if toc.json is at root or no doc sets found
+    buildSearchIndex(dataDir);
+  } else {
+    for (const docSet of docSets) {
+      const docDir = docSet.id === "default" ? dataDir : path.join(dataDir, ...docSet.id.split("/"));
+      buildSearchIndex(docDir);
+    }
+  }
 }
 
 const app = express();
@@ -98,6 +157,17 @@ app.use(cors());
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, dataDir: DATA_DIR });
+});
+
+app.get("/api/docs", (_req, res) => {
+  const docSets = findDocSets(DATA_DIR);
+  res.json(docSets);
+});
+
+// backward compatibility alias
+app.get("/api/books", (_req, res) => {
+  const docSets = findDocSets(DATA_DIR);
+  res.json(docSets);
 });
 
 app.use(
@@ -108,9 +178,10 @@ app.use(
   }),
 );
 
-buildSearchIndex(DATA_DIR);
+buildAllSearchIndices(DATA_DIR);
 
 app.listen(PORT, () => {
   console.log(`dbjson-harness backend listening on http://localhost:${PORT}`);
   console.log(`serving ${DATA_DIR} under /data`);
 });
+

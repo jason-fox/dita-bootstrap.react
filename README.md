@@ -1,10 +1,10 @@
 # DITA Bootstrap AST Harness
 
 A two-part harness for viewing `dita-bootstrap.ast` transtype output in a real React app.
-The data held in a backend store is expressed in an abstract syntax tree (AST) format which is accessed by the react application.
+The harness supports discovering and displaying multiple AST documentation sets (books, guides, or document sets) stored in subdirectories under the backend's data folder.
 
-- **`backend/`** — Express static file server, serves the JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin.
-- **`frontend/`** — Next.js + react-bootstrap app that fetches a topic's JSON AST and recursively renders it into real `react-bootstrap` components, with a collapsible TOC sidebar and a swappable header.
+- **`backend/`** — Express static file server and API. Serves JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin, scans for documentation sets recursively (`toc.json`), and builds per-set MiniSearch indices.
+- **`frontend/`** — Next.js + react-bootstrap app that fetches doc set metadata, presents a card grid library landing page, and recursively renders JSON AST topics into real `react-bootstrap` components with collapsible TOC sidebars and dark mode support.
 
 ## Prerequisites
 
@@ -16,11 +16,13 @@ dita --input=path/to/your.ditamap \
      --output=path/to/output
 ```
 
-Then sync it into the backend's data directory:
+Then sync the generated output folder into a subdirectory under `backend/data/`:
 
 ```console
-rsync -a --delete path/to/output/ backend/data/
+rsync -a --delete path/to/output/ backend/data/my-doc-set/
 ```
+
+Any subdirectory in `backend/data/` containing a `toc.json` file will automatically be discovered as a documentation set.
 
 ## Running
 
@@ -30,44 +32,37 @@ cd backend
 npm install
 npm run dev
 
-# frontend (port 3100, to avoid a colliding local app on 3000)
+# frontend (port 3100, to avoid colliding with local apps on 3000)
 cd frontend
 npm install
 npm run dev -- -p 3100
 ```
 
-Open http://localhost:3100 — it redirects to the first TOC entry.
+Open http://localhost:3100 — the landing page displays a grid of all discovered documentation sets with "Browse" links. Clicking a set opens its documentation view at `/view/<docId>`.
 
 ## Search
 
-The backend builds a [MiniSearch](https://github.com/lucaong/minisearch) full-text index at
-startup (`buildSearchIndex()` in `backend/server/index.ts`), scanning every topic JSON in
-`DATA_DIR` and flattening its AST `content` to plain text, plus `meta.title`/`shortdesc`/
-`keywords`. The index is written as `search-index.json` into `DATA_DIR` itself, so it's served
-automatically by the existing `/data` static mount - no extra route needed.
+The backend builds a [MiniSearch](https://github.com/lucaong/minisearch) full-text index for each documentation set at startup (`buildAllSearchIndices()` in `backend/server/index.ts`). It scans every topic JSON in each doc set folder and flattens its AST `content` to plain text, plus `meta.title`/`shortdesc`/`keywords`. The index is written as `search-index.json` into each doc set directory (e.g. `data/my-doc-set/search-index.json`) and served via `/data`.
 
-The frontend (`frontend/lib/search.ts`, `frontend/components/Search.tsx`) fetches that index
-once and queries it entirely client-side with fuzzy/prefix matching. Since the index is only
-built once at backend startup, restart the backend after re-syncing `data/` to pick up new
-content.
+When viewing a specific doc set, the search box appears in the header and queries that set's MiniSearch index client-side (`frontend/lib/search.ts`, `frontend/components/Search.tsx`). Restart the backend after syncing new or updated documentation sets to rebuild the search indices.
 
-## Environment
+## Environment Variables
 
-`NEXT_PUBLIC_DATA_URL` is the base URL the frontend uses to reach the backend's `/data` mount -
-it fetches `toc.json` and each `<topic>.json` from `${NEXT_PUBLIC_DATA_URL}/<file>`, and also
-resolves image `src` attributes against it. It's prefixed `NEXT_PUBLIC_` (rather than a plain
-server-side env var) because image resolution happens in the browser, not just on the Next.js
-server - so the value must be reachable from wherever the user's browser is, not just from the
-frontend process itself.
+### Frontend (`frontend/`)
 
-It defaults to `http://localhost:4000/data`, matching the backend's default `PORT` below.
-To change the backend's `PORT`, or run the two apps on different hosts:
+| Variable | Default | Description |
+|---|---|---|
+| `NEXT_PUBLIC_DOCS_TITLE` / `DOCS_TITLE` | `"Documentation"` | Custom site title displayed in navbar branding and layout header. |
+| `NEXT_PUBLIC_DOCS_DESCRIPTION` / `DOCS_DESCRIPTION` | `"Documentation"` | Site description used in HTML metadata tags. |
+| `NEXT_PUBLIC_DATA_URL` | `http://localhost:4000/data` | Base URL used to fetch `toc.json`, topic files, and search indices. |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api` | Base URL for backend API endpoints like `GET /api/docs`. |
 
-```
-NEXT_PUBLIC_DATA_URL=http://your-backend-host:PORT/data
-```
+### Backend (`backend/`)
 
-`backend` reads `PORT` (default 4000) and `DATA_DIR` (default `./data`).
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `4000` | Port for the Express server to listen on. |
+| `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
 
 ## License
 

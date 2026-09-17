@@ -1,20 +1,56 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import type { Metadata } from "next";
-import { Col, Row } from "react-bootstrap";
-import { notFound } from "next/navigation";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+
+import { notFound, redirect } from "next/navigation";
 import AstRenderer from "@/components/AstRenderer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Scrollspy from "@/components/Scrollspy";
-import { fetchPage, fetchToc } from "@/lib/api";
+import Shell from "@/components/Shell";
+import {
+  fetchDocs,
+  fetchPage,
+  fetchToc,
+  isPropsObject,
+  matchDocSet,
+  resolveHref,
+  type AstArray,
+} from "@/lib/api";
 
-// same data the real html5-bootstrap plugin's fox.jason.open-graph feeds from (topic
-// title/shortdesc) - title interpolates into the root layout's "%s | <site>" template
+async function fetchPublicFragment(file: string): Promise<string> {
+  return readFile(path.join(process.cwd(), "public", file), "utf-8").catch(
+    () => "",
+  );
+}
+
+function firstHref(entries: AstArray[]): string | undefined {
+  for (const [, maybeProps, ...rest] of entries) {
+    const hasProps = isPropsObject(maybeProps);
+    const href = hasProps ? (maybeProps as { href?: string }).href : undefined;
+    if (href) return href;
+    const children = (
+      hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
+    ) as AstArray[];
+    const nested = firstHref(children);
+    if (nested) return nested;
+  }
+  return undefined;
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ file: string[] }>;
 }): Promise<Metadata> {
   const { file } = await params;
-  const doc = await fetchPage(file.join("/")).catch(() => null);
+  const docs = await fetchDocs();
+  const { docId, topicPath } = matchDocSet(file, docs);
+
+  if (!topicPath) return {};
+
+  const doc = await fetchPage(docId, topicPath).catch(() => null);
   if (!doc) return {};
 
   const { title, shortdesc } = doc.meta;
@@ -26,16 +62,31 @@ export async function generateMetadata({
   };
 }
 
+
 export default async function ViewPage({
   params,
 }: {
   params: Promise<{ file: string[] }>;
 }) {
   const { file } = await params;
-  const [doc, toc] = await Promise.all([
-    fetchPage(file.join("/")).catch(() => null),
-    fetchToc().catch(() => null),
+  const [docs, headerHtml, navLinksHtml] = await Promise.all([
+    fetchDocs(),
+    fetchPublicFragment("header.html"),
+    fetchPublicFragment("nav-links.html"),
   ]);
+  const { docId, topicPath } = matchDocSet(file, docs);
+
+  const toc = await fetchToc(docId).catch(() => null);
+
+  // If visiting the root of a doc set (e.g. /view/dita-bootstrap-sample), redirect to its first topic
+  if (!topicPath && toc) {
+    const initialHref = firstHref(toc.toc);
+    if (initialHref) {
+      redirect(resolveHref(initialHref, docId) as string);
+    }
+  }
+
+  const doc = topicPath ? await fetchPage(docId, topicPath).catch(() => null) : null;
 
   if (!doc) {
     notFound();
@@ -50,17 +101,13 @@ export default async function ViewPage({
           {doc.meta.shortdesc}
         </p>
       )}
-      <AstRenderer nodes={doc.content} />
+      <AstRenderer nodes={doc.content} docId={docId} />
     </article>
   );
 
-  // three-panel layout (TOC sidebar + content + scrollspy) only when this topic actually has an
-  // "on this page" nav - matches the real plugin only emitting .bs-scrollspy when relevant.
-  if (!doc.scrollspy) {
-    return article;
-  }
-
-  return (
+  const content = !doc.scrollspy ? (
+    article
+  ) : (
     <Row>
       <Col lg={8}>{article}</Col>
       <Col lg={4} as="aside" className="d-none d-lg-block">
@@ -68,4 +115,20 @@ export default async function ViewPage({
       </Col>
     </Row>
   );
+
+  return (
+    <Shell
+      title={toc?.title ?? docId}
+      docId={docId}
+      tocEntries={toc?.toc ?? []}
+      navToc={toc?.navToc}
+      headerHtml={headerHtml}
+      navLinksHtml={navLinksHtml}
+    >
+
+      {content}
+    </Shell>
+  );
 }
+
+
