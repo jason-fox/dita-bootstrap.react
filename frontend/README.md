@@ -7,7 +7,7 @@ See the [top-level README](../README.md) for how this application connects with 
 ## Key Features
 
 - **Documentation Library Landing (`/`)**: Card grid displaying all discovered documentation sets, with title, topic count, and direct Browse links.
-- **Dynamic Doc Set Viewer (`/view/<docId>/<topicPath>`)**: Dynamic routing for multi-set topics with side TOC navigation, breadcrumbs, scrollspy, and syntax-highlighted code blocks.
+- **Dynamic Doc Set Viewer (`/<docId>/<topicPath>`)**: Dynamic routing for multi-set topics with side TOC navigation, breadcrumbs, scrollspy, and syntax-highlighted code blocks.
 - **Contextual Search**: Client-side full-text search powered by MiniSearch, scoped to the currently active documentation set.
 - **Customizable Title & Headers**: Site title configurable via environment variable (`NEXT_PUBLIC_DOCS_TITLE` / `DOCS_TITLE`), with support for customizable header HTML fragments via `public/header.html` and `public/nav-links.html`.
 
@@ -37,7 +37,7 @@ Requires the backend running (default `http://localhost:4000`).
 App Router files live at the package root (`app/`, `components/`, `lib/`, `public/`):
 
 - `app/page.tsx` — Documentation library homepage grid
-- `app/view/[...file]/page.tsx` — Doc set catch-all route viewer
+- `app/[...file]/page.tsx` — Doc set catch-all route viewer
 - `components/` — AstRenderer, Header, Shell, Toc, Search, DarkModeToggle
 - `lib/` — API helpers (`api.ts`), search index loader (`search.ts`)
 - `public/` — Static assets and optional HTML fragments (`header.html`, `nav-links.html`)

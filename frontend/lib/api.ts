@@ -77,8 +77,8 @@ export function resolveHref(href: unknown, docId?: string): unknown {
     return href;
   }
   const cleanPath = href.replace(/\.json(#.*)?$/, (_, hash) => hash ?? "");
-  const prefix = docId && docId !== "default" ? `/view/${docId}` : "/view";
-  return `${prefix}/${cleanPath}`;
+  const prefix = docId && docId !== "default" ? `/${docId}` : "";
+  return cleanPath ? `${prefix}/${cleanPath}` : `${prefix}`;
 }
 
 export async function fetchDocs(): Promise<DocSetInfo[]> {

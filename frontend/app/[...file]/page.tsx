@@ -62,7 +62,6 @@ export async function generateMetadata({
   };
 }
 
-
 export default async function ViewPage({
   params,
 }: {
@@ -78,7 +77,7 @@ export default async function ViewPage({
 
   const toc = await fetchToc(docId).catch(() => null);
 
-  // If visiting the root of a doc set (e.g. /view/dita-bootstrap-sample), redirect to its first topic
+  // If visiting the root of a doc set (e.g. /dita-bootstrap-sample), redirect to its first topic
   if (!topicPath && toc) {
     const initialHref = firstHref(toc.toc);
     if (initialHref) {
@@ -125,10 +124,7 @@ export default async function ViewPage({
       headerHtml={headerHtml}
       navLinksHtml={navLinksHtml}
     >
-
       {content}
     </Shell>
   );
 }
-
-

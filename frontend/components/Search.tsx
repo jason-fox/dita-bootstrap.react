@@ -51,7 +51,7 @@ export default function Search({ docId }: { docId?: string }) {
   }
 
   const getResultHref = (id: string) => {
-    return docId && docId !== "default" ? `/view/${docId}/${id}` : `/view/${id}`;
+    return docId && docId !== "default" ? `/${docId}/${id}` : `/${id}`;
   };
 
   return (

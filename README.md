@@ -38,7 +38,7 @@ npm install
 npm run dev -- -p 3100
 ```
 
-Open http://localhost:3100 — the landing page displays a grid of all discovered documentation sets with "Browse" links. Clicking a set opens its documentation view at `/view/<docId>`.
+Open http://localhost:3100 — the landing page displays a grid of all discovered documentation sets with "Browse" links. Clicking a set opens its documentation view at `/<docId>`.
 
 ## Search
 

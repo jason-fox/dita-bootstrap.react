@@ -60,7 +60,7 @@ export default async function HomePage() {
                     )}
                     <div className="mt-auto pt-3">
                       <Link
-                        href={`/view/${doc.id}`}
+                        href={`/${doc.id}`}
                         className="btn btn-primary"
                       >
                         Browse
