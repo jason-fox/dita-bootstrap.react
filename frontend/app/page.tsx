@@ -6,7 +6,9 @@ function firstHref(entries: AstArray[]): string | undefined {
     const hasProps = isPropsObject(maybeProps);
     const href = hasProps ? (maybeProps as { href?: string }).href : undefined;
     if (href) return href;
-    const children = (hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)) as AstArray[];
+    const children = (
+      hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
+    ) as AstArray[];
     const nested = firstHref(children);
     if (nested) return nested;
   }
@@ -21,5 +23,10 @@ export default async function HomePage() {
     redirect(resolveHref(href) as string);
   }
 
-  return <p>No pages found. Point the backend&apos;s DATA_DIR at a dita2bootstrap-ast output directory.</p>;
+  return (
+    <p>
+      No pages found. Point the backend&apos;s DATA_DIR at a dita2ast-bootstrap
+      output directory.
+    </p>
+  );
 }

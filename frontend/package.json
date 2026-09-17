@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --ignore-path ../.gitignore --write .",
+    "format:check": "prettier --ignore-path ../.gitignore --check .",
+    "prettier": "prettier --ignore-path ../.gitignore --write ."
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "minisearch": "^7.2.0",
     "next": "^16.3.5",
     "prismjs": "^1.30.0",
     "react": "^19.3.0",
@@ -22,6 +26,7 @@
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "prettier": "^3.9.7",
     "typescript": "^5.9.3"
   }
 }

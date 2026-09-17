@@ -72,7 +72,7 @@
   padding-left: 0.5rem !important;
 }
 
-[dir='rtl'] .bd-links .ps-2 {
+[dir="rtl"] .bd-links .ps-2 {
   padding-right: 0.5rem !important;
   padding-left: 0 !important;
 }
@@ -81,7 +81,7 @@
   padding-left: 0.75rem !important;
 }
 
-[dir='rtl'] .bd-links .ps-3 {
+[dir="rtl"] .bd-links .ps-3 {
   padding-right: 0.75rem !important;
   padding-left: 0 !important;
 }
@@ -90,16 +90,16 @@
   padding-left: 1rem !important;
 }
 
-[dir='rtl'] .bd-links .ps-4 {
+[dir="rtl"] .bd-links .ps-4 {
   padding-right: 1rem !important;
   padding-left: 0 !important;
 }
 
-[dir='rtl'] .bd-links svg {
+[dir="rtl"] .bd-links svg {
   transform: rotate(180deg);
 }
 
-.bd-links .btn[aria-expanded='true'] svg {
+.bd-links .btn[aria-expanded="true"] svg {
   transform: rotate(90deg);
 }
 

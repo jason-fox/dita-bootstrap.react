@@ -19,7 +19,7 @@ CLAUDE.local.md
 # backend: build output
 /backend/dist
 
-# backend: synced bootstrap-ast transform output - regenerated via rsync, not
+# backend: synced ast-bootstrap transform output - regenerated via rsync, not
 # hand-edited (see README.md "Prerequisites"); .gitkeep placeholders keep the
 # directory structure present on a fresh clone, before the first sync
 /backend/data/*

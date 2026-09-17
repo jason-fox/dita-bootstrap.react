@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useId, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import {
   Accordion,
   Alert,
@@ -25,15 +32,20 @@ import "prismjs/components/prism-clike";
 import "prismjs/components/prism-c";
 import "prismjs/components/prism-cpp";
 import "prismjs/components/prism-bash";
-import { isPropsObject, resolveHref, resolveStyle, type AstNode, type AstArray } from "@/lib/api";
+import {
+  DATA_URL,
+  isPropsObject,
+  resolveHref,
+  resolveStyle,
+  type AstNode,
+  type AstArray,
+} from "@/lib/api";
 
 // Prism's DOMContentLoaded listener re-highlights the DOM after React renders, causing a
 // hydration mismatch; Prism.manual can't be set in time, so no-op the listener instead.
 if (typeof window !== "undefined") {
   Prism.highlightElement = () => {};
 }
-
-const DATA_URL = process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data";
 
 // Offcanvas/Collapse need real React state (unlike Tab/Accordion/Carousel's internal state)
 // since their toggle button and target are AST siblings, not nested - coordinate via id here.
@@ -47,7 +59,10 @@ const ToggleContext = createContext<ToggleContextValue | null>(null);
 
 function useToggleContext(): ToggleContextValue {
   const ctx = useContext(ToggleContext);
-  if (!ctx) throw new Error("Offcanvas/Collapse/ToggleButton AST nodes must render within AstRenderer");
+  if (!ctx)
+    throw new Error(
+      "Offcanvas/Collapse/ToggleButton AST nodes must render within AstRenderer",
+    );
   return ctx;
 }
 
@@ -62,14 +77,29 @@ function ToggleProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
   const close = useCallback((id: string) => {
-    setOpenIds((prev) => (prev.has(id) ? new Set([...prev].filter((existing) => existing !== id)) : prev));
+    setOpenIds((prev) =>
+      prev.has(id)
+        ? new Set([...prev].filter((existing) => existing !== id))
+        : prev,
+    );
   }, []);
   const isOpen = useCallback((id: string) => openIds.has(id), [openIds]);
-  const value = useMemo(() => ({ isOpen, toggle, close }), [isOpen, toggle, close]);
-  return <ToggleContext.Provider value={value}>{children}</ToggleContext.Provider>;
+  const value = useMemo(
+    () => ({ isOpen, toggle, close }),
+    [isOpen, toggle, close],
+  );
+  return (
+    <ToggleContext.Provider value={value}>{children}</ToggleContext.Provider>
+  );
 }
 
-function OffcanvasFromAst({ id, ...props }: { id: string; [key: string]: unknown }) {
+function OffcanvasFromAst({
+  id,
+  ...props
+}: {
+  id: string;
+  [key: string]: unknown;
+}) {
   const { isOpen, close } = useToggleContext();
   return <BsOffcanvas {...props} show={isOpen(id)} onHide={() => close(id)} />;
 }
@@ -131,7 +161,10 @@ function TooltipTriggerFromAst({
 }) {
   const id = useId();
   return (
-    <OverlayTrigger placement={(placement as never) ?? "top"} overlay={<BsTooltip id={id}>{text}</BsTooltip>}>
+    <OverlayTrigger
+      placement={(placement as never) ?? "top"}
+      overlay={<BsTooltip id={id}>{text}</BsTooltip>}
+    >
       <a {...props}>{children}</a>
     </OverlayTrigger>
   );
@@ -158,7 +191,12 @@ function PopoverTriggerFromAst({
     </BsPopover>
   );
   return (
-    <OverlayTrigger trigger="click" rootClose placement={(placement as never) ?? "right"} overlay={overlay}>
+    <OverlayTrigger
+      trigger="click"
+      rootClose
+      placement={(placement as never) ?? "right"}
+      overlay={overlay}
+    >
       <a {...props}>{children}</a>
     </OverlayTrigger>
   );
@@ -208,7 +246,9 @@ const componentRegistry: Record<string, React.ElementType> = {
 // image/media srcs are relative to the topic's own JSON file in the output dir,
 // not to this app's /view/<topic> route, so resolve them against the backend instead
 function resolveSrc(src: unknown): unknown {
-  return typeof src === "string" && !/^(https?:)?\/\//.test(src) && !src.startsWith("data:")
+  return typeof src === "string" &&
+    !/^(https?:)?\/\//.test(src) &&
+    !src.startsWith("data:")
     ? `${DATA_URL}/${src}`
     : src;
 }
@@ -225,7 +265,9 @@ function extractLanguage(className: unknown): string {
 
 // a ["code", props?, ...children] tuple's children, with props stripped off
 function codeNodeChildren(codeNode: AstArray): AstNode[] {
-  return (isPropsObject(codeNode[1]) ? codeNode.slice(2) : codeNode.slice(1)) as AstNode[];
+  return (
+    isPropsObject(codeNode[1]) ? codeNode.slice(2) : codeNode.slice(1)
+  ) as AstNode[];
 }
 
 // Prism.highlight() needs one plain-text string; codeblocks with nested semantic markup
@@ -234,18 +276,29 @@ function isPlainTextCode(children: AstNode[]): children is string[] {
   return children.every((child) => typeof child === "string");
 }
 
-function renderCodeBlock(preProps: Record<string, unknown>, codeNode: AstArray, key: React.Key): React.ReactNode {
+function renderCodeBlock(
+  preProps: Record<string, unknown>,
+  codeNode: AstArray,
+  key: React.Key,
+): React.ReactNode {
   const text = codeNodeChildren(codeNode).join("");
   const language = extractLanguage(preProps.className);
   const grammar = Prism.languages[language];
   if (!grammar) {
-    return React.createElement("pre", { key, ...preProps }, React.createElement("code", null, text));
+    return React.createElement(
+      "pre",
+      { key, ...preProps },
+      React.createElement("code", null, text),
+    );
   }
   const html = Prism.highlight(text, grammar, language);
   return React.createElement(
     "pre",
     { key, ...preProps },
-    React.createElement("code", { className: `language-${language}`, dangerouslySetInnerHTML: { __html: html } }),
+    React.createElement("code", {
+      className: `language-${language}`,
+      dangerouslySetInnerHTML: { __html: html },
+    }),
   );
 }
 
@@ -267,7 +320,12 @@ function renderNode(node: AstNode, key: React.Key): React.ReactNode {
 
   // a <pre> wrapping a plain-text <code> tuple is a codeblock - highlight it directly since
   // Prism needs raw text, not already-rendered nodes (isPlainTextCode gates the fallback case).
-  if (type === "pre" && children.length === 1 && Array.isArray(children[0]) && children[0][0] === "code") {
+  if (
+    type === "pre" &&
+    children.length === 1 &&
+    Array.isArray(children[0]) &&
+    children[0][0] === "code"
+  ) {
     const codeNode = children[0] as AstArray;
     if (isPlainTextCode(codeNodeChildren(codeNode))) {
       return renderCodeBlock(resolvedProps, codeNode, key);
@@ -275,8 +333,14 @@ function renderNode(node: AstNode, key: React.Key): React.ReactNode {
   }
 
   // an unregistered PascalCase type would otherwise silently render as an invalid DOM tag
-  if (process.env.NODE_ENV !== "production" && !componentRegistry[type] && /^[A-Z]/.test(type)) {
-    console.warn(`AstRenderer: no componentRegistry entry for AST type "${type}"`);
+  if (
+    process.env.NODE_ENV !== "production" &&
+    !componentRegistry[type] &&
+    /^[A-Z]/.test(type)
+  ) {
+    console.warn(
+      `AstRenderer: no componentRegistry entry for AST type "${type}"`,
+    );
   }
   const Component = componentRegistry[type] ?? type;
   const rendered = children.map((child, index) => renderNode(child, index));
@@ -285,5 +349,9 @@ function renderNode(node: AstNode, key: React.Key): React.ReactNode {
 }
 
 export default function AstRenderer({ nodes }: { nodes: AstNode[] }) {
-  return <ToggleProvider>{nodes.map((node, index) => renderNode(node, index))}</ToggleProvider>;
+  return (
+    <ToggleProvider>
+      {nodes.map((node, index) => renderNode(node, index))}
+    </ToggleProvider>
+  );
 }

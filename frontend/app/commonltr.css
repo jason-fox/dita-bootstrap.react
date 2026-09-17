@@ -93,7 +93,8 @@
   font-size: 200%;
 }
 
-.expanse-page, .expanse-spread {
+.expanse-page,
+.expanse-spread {
   width: 100%;
 }
 
@@ -115,7 +116,15 @@
 .hazardstatement--warning {
   background-color: #ff8200;
 }
-.hazardstatement--attention, .hazardstatement--fastpath, .hazardstatement--important, .hazardstatement--note, .hazardstatement--notice, .hazardstatement--other, .hazardstatement--remember, .hazardstatement--restriction, .hazardstatement--tip {
+.hazardstatement--attention,
+.hazardstatement--fastpath,
+.hazardstatement--important,
+.hazardstatement--note,
+.hazardstatement--notice,
+.hazardstatement--other,
+.hazardstatement--remember,
+.hazardstatement--restriction,
+.hazardstatement--tip {
   background-color: #0072ce;
   color: #fff;
   font-style: italic;
@@ -432,11 +441,11 @@ ul.simple {
 }
 
 /* Compact lists use attributes up to DITA-OT 4.1.2 */
-*[compact=yes] > li {
+*[compact="yes"] > li {
   margin-top: 0;
 }
 
-*[compact=no] > li {
+*[compact="no"] > li {
   margin-top: 0.53em;
 }
 
@@ -484,7 +493,8 @@ dt.prereq {
   margin-bottom: 1em;
   margin-top: 1em;
 }
-.note .notetitle, .note .notelisttitle,
+.note .notetitle,
+.note .notelisttitle,
 .note .note__title {
   font-weight: bold;
 }

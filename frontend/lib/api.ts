@@ -1,19 +1,39 @@
-const DATA_URL = process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data";
+export const DATA_URL =
+  process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data";
 
 // [type, props?, ...children] - props is present only when item[1] is a plain object
 export type AstNode = string | AstArray;
 export type AstArray = [string, ...unknown[]];
 
+export interface BreadcrumbItem {
+  title: string;
+  href?: string;
+}
+
 export interface TopicDoc {
-  meta: Record<string, string>;
+  // meta.breadcrumbs (see plugins/dita-bootstrap.ast Customization/xsl/breadcrumb.xsl) is the
+  // one non-string field; everything else is a plain string
+  meta: Record<string, string> & { breadcrumbs?: BreadcrumbItem[] };
   content: AstNode[];
+  // "on this page" nav (see Customization/xsl/scrollspy.xsl) - TocEntry-shaped tuples like toc.json.
+  // Absent (not just empty) when --scrollspy-toc=none or there's nothing to link to.
+  scrollspy?: AstArray[];
 }
 
 export interface TocDoc {
   toc: AstArray[];
+  // derived from the map's title cascade (see map2ast-bootstrap.xsl) - absent only if the
+  // map has no title anywhere (no map/@title, no mainbooktitle, no topic titles)
+  title?: string;
+  // raw --nav-toc/--scrollspy-toc transtype param values, passed through as-is for the
+  // frontend to interpret; Toc.tsx branches on navToc (collapsible/list-group*/nav-pill*)
+  navToc?: string;
+  scrollspyToc?: string;
 }
 
-export function isPropsObject(value: unknown): value is Record<string, unknown> {
+export function isPropsObject(
+  value: unknown,
+): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
@@ -27,7 +47,9 @@ export function resolveStyle(style: unknown): unknown {
   for (const declaration of style.split(";")) {
     const [property, value] = declaration.split(":");
     if (!property || !value) continue;
-    const camelProperty = property.trim().replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+    const camelProperty = property
+      .trim()
+      .replace(/-([a-z])/g, (_, c) => c.toUpperCase());
     result[camelProperty] = value.trim();
   }
   return result;
@@ -35,7 +57,9 @@ export function resolveStyle(style: unknown): unknown {
 
 // cross-topic hrefs point at sibling <topic>.json files; rewrite those to this app's /view/<topic> routes
 export function resolveHref(href: unknown): unknown {
-  return typeof href === "string" && href.endsWith(".json") && !href.startsWith("http")
+  return typeof href === "string" &&
+    href.endsWith(".json") &&
+    !href.startsWith("http")
     ? `/view/${href.replace(/\.json(#.*)?$/, (_, hash) => hash ?? "")}`
     : href;
 }

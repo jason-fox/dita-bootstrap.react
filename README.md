@@ -8,11 +8,11 @@ The data held in a backend store is expressed in an abstract syntax tree (AST) f
 
 ## Prerequisites
 
-Generate JSON output with a DITA-OT toolkit that has the `org.dita-bootstrap.ast` plug-in installed, using the `bootstrap-ast` transtype:
+Generate JSON output with a DITA-OT toolkit that has the `org.dita-bootstrap.ast` plug-in installed, using the `ast-bootstrap` transtype:
 
 ```console
 dita --input=path/to/your.ditamap \
-     --format=bootstrap-ast \
+     --format=ast-bootstrap \
      --output=path/to/output
 ```
 
@@ -37,6 +37,19 @@ npm run dev -- -p 3100
 ```
 
 Open http://localhost:3100 — it redirects to the first TOC entry.
+
+## Search
+
+The backend builds a [MiniSearch](https://github.com/lucaong/minisearch) full-text index at
+startup (`buildSearchIndex()` in `backend/server/index.ts`), scanning every topic JSON in
+`DATA_DIR` and flattening its AST `content` to plain text, plus `meta.title`/`shortdesc`/
+`keywords`. The index is written as `search-index.json` into `DATA_DIR` itself, so it's served
+automatically by the existing `/data` static mount - no extra route needed.
+
+The frontend (`frontend/lib/search.ts`, `frontend/components/Search.tsx`) fetches that index
+once and queries it entirely client-side with fuzzy/prefix matching. Since the index is only
+built once at backend startup, restart the backend after re-syncing `data/` to pick up new
+content.
 
 ## Environment
 

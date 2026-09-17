@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type CSSProperties } from "react";
-import { isPropsObject, resolveHref, resolveStyle, type AstArray } from "@/lib/api";
+import {
+  isPropsObject,
+  resolveHref,
+  resolveStyle,
+  type AstArray,
+} from "@/lib/api";
 
 function splitEntry(entry: AstArray) {
   const [, maybeProps, ...rest] = entry;
@@ -14,7 +19,9 @@ function splitEntry(entry: AstArray) {
     icon?: string;
     iconStyle?: string;
   };
-  const children = (hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)) as AstArray[];
+  const children = (
+    hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
+  ) as AstArray[];
   return {
     title,
     href: href ? (resolveHref(href) as string) : undefined,
@@ -26,14 +33,21 @@ function splitEntry(entry: AstArray) {
 
 function containsPath(entry: AstArray, pathname: string): boolean {
   const { href, children } = splitEntry(entry);
-  return href === pathname || children.some((child) => containsPath(child, pathname));
+  return (
+    href === pathname || children.some((child) => containsPath(child, pathname))
+  );
 }
 
 // Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's collapsible-toc chevron;
 // collapsible-toc.css rotates it via .bd-links .btn[aria-expanded='true'] svg
 function Chevron() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+    >
       <path
         fill="none"
         stroke="currentColor"
@@ -46,10 +60,17 @@ function Chevron() {
   );
 }
 
-function TocEntryItem({ entry, pathname }: { entry: AstArray; pathname: string }) {
+function TocEntryItem({
+  entry,
+  pathname,
+}: {
+  entry: AstArray;
+  pathname: string;
+}) {
   const { title, href, icon, iconStyle, children } = splitEntry(entry);
   const isActive = href === pathname;
-  const isCurrentSection = isActive || children.some((child) => containsPath(child, pathname));
+  const isCurrentSection =
+    isActive || children.some((child) => containsPath(child, pathname));
   const [expanded, setExpanded] = useState(isCurrentSection);
 
   const content = (
@@ -61,7 +82,10 @@ function TocEntryItem({ entry, pathname }: { entry: AstArray; pathname: string }
 
   if (children.length === 0) {
     const leafLabel = href ? (
-      <Link href={href} className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}>
+      <Link
+        href={href}
+        className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}
+      >
         {content}
       </Link>
     ) : (
@@ -75,7 +99,10 @@ function TocEntryItem({ entry, pathname }: { entry: AstArray; pathname: string }
   }
 
   const label = href ? (
-    <Link href={href} className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}>
+    <Link
+      href={href}
+      className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}
+    >
       {content}
     </Link>
   ) : (
@@ -114,8 +141,144 @@ function TocEntryItem({ entry, pathname }: { entry: AstArray; pathname: string }
   );
 }
 
-export default function Toc({ entries }: { entries: AstArray[] }) {
+// Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's list-group-toc mode: a single
+// flat Bootstrap list-group, category headers and links as siblings, no nested wrapper per level.
+function ListGroupEntryItem({
+  entry,
+  pathname,
+  parentActive,
+}: {
+  entry: AstArray;
+  pathname: string;
+  parentActive: boolean;
+}) {
+  const { title, href, icon, iconStyle, children } = splitEntry(entry);
+  const isActive = href === pathname;
+
+  const content = (
+    <>
+      {icon && <i className={icon} style={iconStyle} />}
+      {title}
+    </>
+  );
+
+  return (
+    <>
+      {href ? (
+        <Link
+          href={href}
+          className={`list-group-item list-group-item-action${isActive ? " active" : ""}${
+            parentActive ? " bg-body-tertiary" : ""
+          }`}
+        >
+          {content}
+        </Link>
+      ) : (
+        <span className="list-group-item bg-body-tertiary">{content}</span>
+      )}
+      {children.map((child, index) => (
+        <ListGroupEntryItem
+          key={index}
+          entry={child}
+          pathname={pathname}
+          parentActive={isActive}
+        />
+      ))}
+    </>
+  );
+}
+
+function ListGroupToc({
+  entries,
+  pathname,
+}: {
+  entries: AstArray[];
+  pathname: string;
+}) {
+  return (
+    <div className="list-group me-3">
+      {entries.map((entry, index) => (
+        <ListGroupEntryItem
+          key={index}
+          entry={entry}
+          pathname={pathname}
+          parentActive={false}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's nav-pill-toc mode: nested Bootstrap
+// nav-pills, one <nav> per level, with ancestors of the active page also marked "active".
+function NavPillEntryItem({
+  entry,
+  pathname,
+}: {
+  entry: AstArray;
+  pathname: string;
+}) {
+  const { title, href, icon, iconStyle, children } = splitEntry(entry);
+  const isActive = href === pathname;
+  const isCurrentSection =
+    isActive || children.some((child) => containsPath(child, pathname));
+
+  const content = (
+    <>
+      {icon && <i className={icon} style={iconStyle} />}
+      {title}
+    </>
+  );
+
+  return (
+    <>
+      {href ? (
+        <Link
+          href={href}
+          className={`my-1 nav-link${isCurrentSection ? " active" : ""}`}
+        >
+          {content}
+        </Link>
+      ) : (
+        <span className="my-1 ps-3 navbar-brand pt-2 pb-1">{content}</span>
+      )}
+      {children.length > 0 && (
+        <nav className="nav nav-pills flex-column ps-3 mw-100 w-100">
+          {children.map((child, index) => (
+            <NavPillEntryItem key={index} entry={child} pathname={pathname} />
+          ))}
+        </nav>
+      )}
+    </>
+  );
+}
+
+function NavPillToc({
+  entries,
+  pathname,
+}: {
+  entries: AstArray[];
+  pathname: string;
+}) {
+  return (
+    <nav className="nav nav-pills flex-column navbar-light">
+      {entries.map((entry, index) => (
+        <NavPillEntryItem key={index} entry={entry} pathname={pathname} />
+      ))}
+    </nav>
+  );
+}
+
+export default function Toc({
+  entries,
+  navToc = "collapsible",
+}: {
+  entries: AstArray[];
+  navToc?: string;
+}) {
   const pathname = usePathname();
+  const isListGroup = navToc.startsWith("list-group");
+  const isNavPill = navToc.startsWith("nav-pill");
 
   return (
     <nav
@@ -124,14 +287,22 @@ export default function Toc({ entries }: { entries: AstArray[] }) {
       role="navigation"
       className="d-flex flex-column h-100 overflow-y-auto"
     >
-      <div className="overflow-y-auto">
-        <div className="flex-column bd-links">
-          <ul className="list-unstyled mb-0 py-3 pt-md-1">
-            {entries.map((entry, index) => (
-              <TocEntryItem key={index} entry={entry} pathname={pathname} />
-            ))}
-          </ul>
-        </div>
+      <div
+        className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}
+      >
+        {isListGroup ? (
+          <ListGroupToc entries={entries} pathname={pathname} />
+        ) : isNavPill ? (
+          <NavPillToc entries={entries} pathname={pathname} />
+        ) : (
+          <div className="flex-column bd-links">
+            <ul className="list-unstyled mb-0 py-3 pt-md-1">
+              {entries.map((entry, index) => (
+                <TocEntryItem key={index} entry={entry} pathname={pathname} />
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </nav>
   );
