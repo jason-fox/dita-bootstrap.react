@@ -202,7 +202,7 @@ app.use(
 buildAllSearchIndices(DATA_DIR);
 
 app.listen(PORT, () => {
-  console.log(`dbjson-harness backend listening on http://localhost:${PORT}`);
+  console.log(`dita-docs backend listening on http://localhost:${PORT}`);
   console.log(`serving ${DATA_DIR} under /data`);
 });
 

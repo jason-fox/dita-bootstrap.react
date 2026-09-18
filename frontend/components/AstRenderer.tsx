@@ -68,22 +68,28 @@ function useToggleContext(): ToggleContextValue {
 
 function ToggleProvider({ children }: { children: React.ReactNode }) {
   const [openIds, setOpenIds] = useState<ReadonlySet<string>>(new Set());
+  const normalizeId = (id: string) => id.replace(/^(offcanvas|collapse)__/, "");
   const toggle = useCallback((id: string) => {
+    const cleanId = normalizeId(id);
     setOpenIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(cleanId)) next.delete(cleanId);
+      else next.add(cleanId);
       return next;
     });
   }, []);
   const close = useCallback((id: string) => {
+    const cleanId = normalizeId(id);
     setOpenIds((prev) =>
-      prev.has(id)
-        ? new Set([...prev].filter((existing) => existing !== id))
+      prev.has(cleanId)
+        ? new Set([...prev].filter((existing) => existing !== cleanId))
         : prev,
     );
   }, []);
-  const isOpen = useCallback((id: string) => openIds.has(id), [openIds]);
+  const isOpen = useCallback(
+    (id: string) => openIds.has(normalizeId(id)),
+    [openIds],
+  );
   const value = useMemo(
     () => ({ isOpen, toggle, close }),
     [isOpen, toggle, close],
@@ -311,6 +317,7 @@ function renderNode(
   node: AstNode,
   key: React.Key,
   docId?: string,
+  onNavigate?: (docId: string, topicPath: string) => void,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -320,12 +327,40 @@ function renderNode(
   const hasProps = rest.length > 0 && isPropsObject(rest[0]);
   const props = hasProps ? (rest[0] as Record<string, unknown>) : {};
   const children = (hasProps ? rest.slice(1) : rest) as AstNode[];
-  const resolvedProps = {
+  const resolvedProps: Record<string, unknown> = {
     ...props,
     ...(props.href ? { href: resolveHref(props.href, docId) } : {}),
     ...(props.src ? { src: resolveSrc(props.src, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
+
+  // Intercept anchor <a> or <xref> link clicks inside AstRenderer
+  if ((type === "a" || type === "xref") && typeof props.href === "string") {
+    const rawHref = props.href;
+    const isHash = rawHref.startsWith("#");
+    const isExternal = rawHref.startsWith("http://") || rawHref.startsWith("https://");
+
+    if (!isHash && !isExternal && onNavigate) {
+      const cleanTopic = rawHref
+        .replace(/^\//, "")
+        .replace(new RegExp(`^${docId}/`), "")
+        .replace(/\.json(#.*)?$/, "");
+
+      const handleClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        onNavigate(docId || "dita-bootstrap-sample", cleanTopic);
+      };
+
+      const renderedChildren = children.map((child, index) =>
+        renderNode(child, index, docId, onNavigate),
+      );
+      return React.createElement(
+        "a",
+        { key, ...resolvedProps, onClick: handleClick },
+        ...renderedChildren,
+      );
+    }
+  }
 
   // a <pre> wrapping a plain-text <code> tuple is a codeblock - highlight it directly since
   // Prism needs raw text, not already-rendered nodes (isPlainTextCode gates the fallback case).
@@ -341,6 +376,26 @@ function renderNode(
     }
   }
 
+  if (
+    (type === "div" || type === "bodydiv") &&
+    typeof resolvedProps.className === "string" &&
+    resolvedProps.className.includes("collapse") &&
+    resolvedProps.id
+  ) {
+    const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
+    const renderedChildren = children.map((child, index) => renderNode(child, index, docId, onNavigate));
+    return (
+      <CollapseFromAst
+        key={key}
+        id={resolvedProps.id as string}
+        horizontal={isHorizontal}
+        {...resolvedProps}
+      >
+        {renderedChildren}
+      </CollapseFromAst>
+    );
+  }
+
   // an unregistered PascalCase type would otherwise silently render as an invalid DOM tag
   if (
     process.env.NODE_ENV !== "production" &&
@@ -352,7 +407,7 @@ function renderNode(
     );
   }
   const Component = componentRegistry[type] ?? type;
-  const rendered = children.map((child, index) => renderNode(child, index, docId));
+  const rendered = children.map((child, index) => renderNode(child, index, docId, onNavigate));
 
   return React.createElement(Component, { key, ...resolvedProps }, ...rendered);
 }
@@ -360,13 +415,15 @@ function renderNode(
 export default function AstRenderer({
   nodes,
   docId,
+  onNavigate,
 }: {
   nodes: AstNode[];
   docId?: string;
+  onNavigate?: (docId: string, topicPath: string) => void;
 }) {
   return (
     <ToggleProvider>
-      {nodes.map((node, index) => renderNode(node, index, docId))}
+      {nodes.map((node, index) => renderNode(node, index, docId, onNavigate))}
     </ToggleProvider>
   );
 }

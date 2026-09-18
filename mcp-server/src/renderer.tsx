@@ -1,72 +1,74 @@
-import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import AstRenderer from "../../frontend/components/AstRenderer";
-import Breadcrumbs from "../../frontend/components/Breadcrumbs";
-import Scrollspy from "../../frontend/components/Scrollspy";
-import type { TopicDoc } from "./provider";
+import { PRISM_THEME_CSS } from "./vendor/prism-theme";
+import { BOOTSTRAP_ICONS_WOFF2_BASE64 } from "./vendor/bootstrap-icons-font";
+import { BOOTSTRAP_BUNDLE_JS_BASE64 } from "./vendor/bootstrap-bundle-js";
+import { CLIENT_BUNDLE_JS_BASE64 } from "./vendor/client-bundle";
 
-export function renderTopicToHtml(
-  docId: string,
-  topicPath: string,
-  doc: TopicDoc,
-  tocTitle?: string,
-  theme: "light" | "dark" = "light"
-): string {
-  const breadcrumbs = doc.meta.breadcrumbs;
-  const title = (doc.meta.title as string) || topicPath;
-  const shortdesc = (doc.meta.shortdesc as string) || "";
+const BOOTSTRAP_BUNDLE_JS = Buffer.from(BOOTSTRAP_BUNDLE_JS_BASE64, "base64").toString("utf-8");
+const CLIENT_BUNDLE_JS = Buffer.from(CLIENT_BUNDLE_JS_BASE64, "base64").toString("utf-8");
 
-  const articleMarkup = (
-    <article className="p-4">
-      {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
-      {title && <h1 className="mb-3">{title}</h1>}
-      {shortdesc && <p className="shortdesc text-body-secondary lead mb-4">{shortdesc}</p>}
-      <AstRenderer nodes={doc.content as any} docId={docId} />
-    </article>
-  );
-
-  const mainLayout = !doc.scrollspy ? (
-    articleMarkup
-  ) : (
-    <div className="row">
-      <div className="col-lg-8">{articleMarkup}</div>
-      <div className="col-lg-4 d-none d-lg-block p-4 border-start">
-        <Scrollspy entries={doc.scrollspy as any} />
-      </div>
-    </div>
-  );
-
-  const bodyHtml = renderToStaticMarkup(mainLayout);
-
+// Static MCP App shell (registered once via registerAppResource, see index.ts). Topic content
+// is rendered client-side in client-entry.tsx once the app connects and receives tool-result
+// data - this shell carries no per-topic data itself.
+export function renderAppShellHtml(): string {
   return `<!DOCTYPE html>
-<html lang="en" data-bs-theme="${theme}">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${escapeHtml(title)} - ${escapeHtml(tocTitle ?? docId)}</title>
+  <title>DITA Docs Topic Viewer</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
+    /* Self-hosted override: sandboxed MCP-UI hosts can block the cross-origin font fetch
+       that the bootstrap-icons.min.css @font-face above depends on, leaving glyphs as tofu. */
+    @font-face {
+      font-family: "bootstrap-icons";
+      src: url(data:font/woff2;base64,${BOOTSTRAP_ICONS_WOFF2_BASE64}) format("woff2");
+    }
+    ${PRISM_THEME_CSS}
     body { font-family: system-ui, -apple-system, sans-serif; background: transparent; }
     .shortdesc { font-weight: 400; color: var(--bs-secondary-color); }
-    pre code { display: block; padding: 1rem; border-radius: 0.375rem; background: var(--bs-tertiary-bg); }
+    pre, pre.alert, pre.alert-secondary, pre.bg-light {
+      background-color: #1e1e2e !important;
+      color: #cdd6f4 !important;
+      border: 1px solid #313244 !important;
+      border-radius: 0.375rem !important;
+      padding: 1rem !important;
+      margin: 0.75rem 0 !important;
+    }
+    pre code {
+      display: block;
+      padding: 0 !important;
+      border: none !important;
+      border-radius: 0;
+      background: transparent !important;
+      color: inherit !important;
+      white-space: pre;
+    }
     .note { margin-top: 1rem; margin-bottom: 1rem; }
     .tabbed-dialog { border-bottom: 1px solid var(--bs-border-color); margin-bottom: 1rem; }
   </style>
 </head>
-<body className="p-2">
-  <div className="container-fluid">
-    ${bodyHtml}
+<body class="p-2">
+  <div id="mcp-ui-root" class="container-fluid">
+    <div class="p-4 text-body-secondary">Loading…</div>
   </div>
+  <script>
+    // Host sandboxes give no devtools access, so a script error otherwise fails silently
+    // into a dead, unstyled page with no signal why.
+    window.addEventListener("error", function (e) {
+      var root = document.getElementById("mcp-ui-root");
+      if (root && !root.dataset.mcpUiErrorShown) {
+        root.dataset.mcpUiErrorShown = "1";
+        var banner = document.createElement("div");
+        banner.className = "alert alert-danger m-3";
+        banner.textContent = "Interactive rendering failed to load (" + e.message + ").";
+        root.prepend(banner);
+      }
+    });
+  </script>
+  <script>${BOOTSTRAP_BUNDLE_JS}</script>
+  <script>${CLIENT_BUNDLE_JS}</script>
 </body>
 </html>`;
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }

@@ -3,12 +3,22 @@
 CLAUDE.local.md
 
 # dependencies
+node_modules/
+**/node_modules/
 /frontend/node_modules
 /frontend/.pnp
 /frontend/.pnp.js
 /frontend/.yarn/install-state.gz
 /backend/node_modules
 /mcp-server/node_modules
+/mcp-client/node_modules
+
+# build output / dist directories
+dist/
+**/dist/
+/backend/dist
+/mcp-server/dist
+/mcp-client/dist
 
 # frontend: next.js / build output
 /frontend/coverage
@@ -16,12 +26,6 @@ CLAUDE.local.md
 /frontend/out/
 /frontend/build
 /frontend/.vercel
-
-# backend: build output
-/backend/dist
-
-# mcp-server: build output
-/mcp-server/dist
 
 # backend: synced ast-bootstrap transform output - regenerated via rsync, not
 # hand-edited (see README.md "Prerequisites"); .gitkeep placeholders keep the
@@ -37,8 +41,8 @@ CLAUDE.local.md
 /frontend/AGENTS.md
 /frontend/CLAUDE.md
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files (local overrides ignored)
+.env*.local
 
 # typescript
 *.tsbuildinfo

@@ -8,8 +8,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
+import { registerAppTool, registerAppResource, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { DocProvider } from "./provider";
-import { renderTopicToHtml } from "./renderer";
+import { renderAppShellHtml } from "./renderer";
+import type { TopicPageProps } from "./TopicPage";
+import type { TocDoc } from "../../frontend/lib/api";
+
+const TOPIC_VIEWER_RESOURCE_URI = "ui://dita-docs/topic-viewer.html";
 
 const program = new Command();
 
@@ -25,164 +30,196 @@ const options = program.opts();
 
 const provider = new DocProvider(options.dataDir);
 
-const mcpServer = new McpServer({
-  name: "dita-docs-mcp",
-  version: "1.0.0",
-});
+function createMcpServer(): McpServer {
+  const mcpServer = new McpServer({
+    name: "dita-docs-mcp",
+    version: "1.0.0",
+  });
 
-// --- MCP TOOLS ---
+  // --- MCP TOOLS ---
 
-// 1. list_documentation_sets
-mcpServer.tool(
-  "list_documentation_sets",
-  "Discovers and returns metadata (OASIS aligned: title, navtitle, description, category, keywords, author, prodinfo, lang) for all available documentation sets.",
-  {},
-  async () => {
-    const docSets = provider.findDocSets();
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(docSets, null, 2),
-        },
-      ],
-    };
-  },
-);
-
-// 2. get_toc
-mcpServer.tool(
-  "get_toc",
-  "Returns the hierarchical Table of Contents structure for a specific documentation set.",
-  {
-    docId: z.string().describe("ID of the documentation set (e.g. dita-ot-docs, dita-bootstrap-sample)"),
-  },
-  async ({ docId }) => {
-    try {
-      const toc = provider.getToc(docId);
+  // 1. list_documentation_sets
+  mcpServer.tool(
+    "list_documentation_sets",
+    "Discovers and returns metadata (OASIS aligned: title, navtitle, description, category, keywords, author, prodinfo, lang) for all available documentation sets.",
+    {},
+    async () => {
+      const docSets = provider.findDocSets();
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(toc, null, 2),
+            text: JSON.stringify(docSets, null, 2),
           },
         ],
       };
-    } catch (error: any) {
-      return {
-        isError: true,
-        content: [{ type: "text", text: error.message }],
-      };
-    }
-  },
-);
+    },
+  );
 
-// 3. search_documentation
-mcpServer.tool(
-  "search_documentation",
-  "Performs full-text fuzzy search across documentation sets using MiniSearch, returning ranked topic matches with text snippets.",
-  {
-    query: z.string().describe("Search query string"),
-    docId: z.string().optional().describe("Optional documentation set ID to scope search"),
-  },
-  async ({ query, docId }) => {
-    const hits = provider.search(query, docId);
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(hits, null, 2),
-        },
-      ],
-    };
-  },
-);
-
-// 4. get_topic_content
-mcpServer.tool(
-  "get_topic_content",
-  "Returns clean, token-efficient Markdown text extracted from a documentation topic for reasoning and question answering.",
-  {
-    docId: z.string().describe("ID of the documentation set"),
-    topicPath: z.string().describe("Topic relative path (e.g. release-notes/index or color)"),
-  },
-  async ({ docId, topicPath }) => {
-    try {
-      const doc = provider.getTopicDoc(docId, topicPath);
-      const markdown = provider.astToMarkdown(doc.content);
-      const title = (doc.meta.title as string) || topicPath;
-      const shortdesc = (doc.meta.shortdesc as string) || "";
-
-      const fullOutput = `# ${title}\n\n${shortdesc ? `*${shortdesc}*\n\n` : ""}${markdown}`;
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: fullOutput,
-          },
-        ],
-      };
-    } catch (error: any) {
-      return {
-        isError: true,
-        content: [{ type: "text", text: error.message }],
-      };
-    }
-  },
-);
-
-// 5. render_topic_ui (MCP-UI tool)
-mcpServer.tool(
-  "render_topic_ui",
-  "Renders a complete interactive topic view (breadcrumbs, title, AST elements, code blocks, scrollspy) as a self-contained MCP-UI HTML resource.",
-  {
-    docId: z.string().describe("ID of the documentation set"),
-    topicPath: z.string().describe("Topic relative path (e.g. release-notes/index or color)"),
-    theme: z.enum(["light", "dark"]).optional().default("light").describe("Color theme for rendering"),
-  },
-  async ({ docId, topicPath, theme }) => {
-    try {
-      const doc = provider.getTopicDoc(docId, topicPath);
-      const toc = provider.getToc(docId) as { title?: string } | undefined;
-      const html = renderTopicToHtml(docId, topicPath, doc, toc?.title, theme);
-
-      return {
-        content: [
-          {
-            type: "resource",
-            resource: {
-              uri: `ui://${docId}/topics/${topicPath}`,
-              mimeType: "text/html",
-              text: html,
+  // 2. get_toc
+  mcpServer.tool(
+    "get_toc",
+    "Returns the hierarchical Table of Contents structure for a specific documentation set.",
+    {
+      docId: z.string().describe("ID of the documentation set (e.g. dita-ot-docs, dita-bootstrap-sample)"),
+    },
+    async ({ docId }) => {
+      try {
+        const toc = provider.getToc(docId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(toc, null, 2),
             },
+          ],
+        };
+      } catch (error: any) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: error.message }],
+        };
+      }
+    },
+  );
+
+  // 3. search_documentation
+  mcpServer.tool(
+    "search_documentation",
+    "Performs full-text fuzzy search across documentation sets using MiniSearch, returning ranked topic matches with text snippets.",
+    {
+      query: z.string().describe("Search query string"),
+      docId: z.string().optional().describe("Optional documentation set ID to scope search"),
+    },
+    async ({ query, docId }) => {
+      const hits = provider.search(query, docId);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(hits, null, 2),
           },
         ],
       };
-    } catch (error: any) {
+    },
+  );
+
+  // 4. get_topic_content
+  mcpServer.tool(
+    "get_topic_content",
+    "Returns clean, token-efficient Markdown text extracted from a documentation topic for reasoning and question answering.",
+    {
+      docId: z.string().describe("ID of the documentation set"),
+      topicPath: z.string().describe("Topic relative path (e.g. release-notes/index or color)"),
+    },
+    async ({ docId, topicPath }) => {
+      try {
+        const doc = provider.getTopicDoc(docId, topicPath);
+        const markdown = provider.astToMarkdown(doc.content);
+        const title = (doc.meta.title as string) || topicPath;
+        const shortdesc = (doc.meta.shortdesc as string) || "";
+
+        const fullOutput = `# ${title}\n\n${shortdesc ? `*${shortdesc}*\n\n` : ""}${markdown}`;
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: fullOutput,
+            },
+          ],
+        };
+      } catch (error: any) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: error.message }],
+        };
+      }
+    },
+  );
+
+  // 5. render_topic_ui (MCP App tool - see docs.md/apps.mdx SEP-1865)
+  registerAppTool(
+    mcpServer,
+    "render_topic_ui",
+    {
+      title: "Render Topic UI",
+      description:
+        "Renders a complete interactive topic view (breadcrumbs, title, AST elements, code blocks, scrollspy, table of contents) as an MCP App.",
+      inputSchema: z.object({
+        docId: z.string().describe("ID of the documentation set"),
+        topicPath: z.string().describe("Topic relative path (e.g. release-notes/index or color)"),
+        theme: z.enum(["light", "dark"]).optional().default("light").describe("Color theme for rendering"),
+      }),
+      _meta: { ui: { resourceUri: TOPIC_VIEWER_RESOURCE_URI } },
+    },
+    async ({ docId, topicPath, theme }: { docId: string; topicPath: string; theme: "light" | "dark" }) => {
+      try {
+        const doc = provider.getTopicDoc(docId, topicPath);
+        const toc = provider.getToc(docId) as TocDoc | undefined;
+        const payload: TopicPageProps = { docId, topicPath, doc, toc, theme };
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(payload) }],
+        };
+      } catch (error: any) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: error.message }],
+        };
+      }
+    },
+  );
+
+  // The MCP App's own iframe shell - a static, topic-agnostic HTML page.
+  registerAppResource(
+    mcpServer,
+    "topic-viewer",
+    TOPIC_VIEWER_RESOURCE_URI,
+    {},
+    async () => ({
+      contents: [{ uri: TOPIC_VIEWER_RESOURCE_URI, mimeType: RESOURCE_MIME_TYPE, text: renderAppShellHtml() }],
+    }),
+  );
+
+  // --- MCP RESOURCES ---
+
+  mcpServer.resource(
+    "library",
+    "docs://library",
+    async (uri) => ({
+      contents: [
+        {
+          uri: uri.href,
+          mimeType: "application/json",
+          text: JSON.stringify(provider.findDocSets(), null, 2),
+        },
+      ],
+    }),
+  );
+
+  mcpServer.resource(
+    "summary",
+    "docs://summary",
+    async (uri) => {
+      const docSets = provider.findDocSets();
+      const summaryText = docSets
+        .map((ds) => `* ${ds.title} (${ds.id})${ds.description ? `: ${ds.description}` : ""}`)
+        .join("\n");
       return {
-        isError: true,
-        content: [{ type: "text", text: error.message }],
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "text/plain",
+            text: `Available Documentation Sets:\n${summaryText}`,
+          },
+        ],
       };
     }
-  },
-);
+  );
 
-// --- MCP RESOURCES ---
-
-mcpServer.resource(
-  "library",
-  "docs://library",
-  async (uri) => ({
-    contents: [
-      {
-        uri: uri.href,
-        mimeType: "application/json",
-        text: JSON.stringify(provider.findDocSets(), null, 2),
-      },
-    ],
-  }),
-);
+  return mcpServer;
+}
 
 // --- SERVER TRANSPORT INITIALIZATION ---
 
@@ -194,6 +231,11 @@ async function main() {
     const app = express();
     app.use(cors({ exposedHeaders: ["Mcp-Session-Id"] }));
     app.use(express.json());
+
+    // HTML App shell endpoint for embedding in web clients / iframes
+    app.get("/viewer", (_req, res) => {
+      res.type("html").send(renderAppShellHtml());
+    });
 
     const SESSION_IDLE_TIMEOUT_MS = 30 * 60 * 1000;
 
@@ -219,6 +261,7 @@ async function main() {
           transport = transports[sessionId].transport;
           transports[sessionId].lastActivity = Date.now();
         } else if (!sessionId && isInitializeRequest(req.body)) {
+          const server = createMcpServer();
           transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: () => randomUUID(),
             onsessioninitialized: (id) => {
@@ -230,9 +273,10 @@ async function main() {
             if (transport.sessionId) {
               delete transports[transport.sessionId];
             }
+            server.close();
           };
 
-          await mcpServer.connect(transport);
+          await server.connect(transport);
         } else {
           res.status(400).json({
             jsonrpc: "2.0",
@@ -293,7 +337,8 @@ async function main() {
   } else {
     // Default: stdio transport
     const transport = new StdioServerTransport();
-    await mcpServer.connect(transport);
+    const server = createMcpServer();
+    await server.connect(transport);
   }
 }
 

@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  # 1. Express Backend Data API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dita-docs-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DATA_DIR=/app/data
+    volumes:
+      - ./backend/data:/app/data
+    restart: unless-stopped
+
+  # 2. DITA MCP Server (HTTP Streamable Transport)
+  mcp-server:
+    build:
+      context: .
+      dockerfile: mcp-server/Dockerfile
+    container_name: dita-docs-mcp-server
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - DATA_DIR=/app/data
+    volumes:
+      - ./backend/data:/app/data
+    restart: unless-stopped
+
+  # 3. Next.js Documentation Frontend Portal
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dita-docs-frontend
+    ports:
+      - "3100:3100"
+    environment:
+      - PORT=3100
+      - INTERNAL_DATA_URL=http://backend:4000/data
+      - INTERNAL_API_URL=http://backend:4000/api
+      - NEXT_PUBLIC_DATA_URL=http://localhost:4000/data
+      - NEXT_PUBLIC_API_URL=http://localhost:4000/api
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # 4. LLM-Agnostic Chatbot MCP Client
+  mcp-client:
+    build:
+      context: ./mcp-client
+      dockerfile: Dockerfile
+    container_name: dita-docs-mcp-client
+    ports:
+      - "3200:3200"
+    env_file:
+      - .env
+    environment:
+      - PORT=3200
+      - MCP_SERVER_URL=http://mcp-server:4001/mcp
+    depends_on:
+      - mcp-server
+    restart: unless-stopped
