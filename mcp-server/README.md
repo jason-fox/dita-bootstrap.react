@@ -8,7 +8,7 @@ Model Context Protocol (MCP) server providing DITA documentation search, content
 - **Token-Efficient Context**: Converts raw AST JSON trees into clean **Markdown** for LLM question-answering and reasoning (`get_topic_content`).
 - **Rich MCP-UI React Views**: Uses `react-dom/server` + `AstRenderer` to render self-contained HTML/CSS UI resources (`render_topic_ui`) with Bootstrap 5 components directly inside supporting AI interfaces.
 - **Full-Text Search**: Scopes MiniSearch queries across all or individual documentation sets.
-- **Dual Transport Support**: Supports `--transport stdio` (default for Claude Desktop / Cursor) and `--transport sse` (for web applications).
+- **Dual Transport Support**: Supports `--transport stdio` (default for Claude Desktop / Cursor) and `--transport http` (Streamable HTTP, for web applications).
 
 ## Installation
 
@@ -26,11 +26,15 @@ npm run build
 npx dita-docs-mcp --transport stdio --data-dir ../backend/data
 ```
 
-### 2. Server-Sent Events Transport (`sse`)
+### 2. Streamable HTTP Transport (`http`)
 
 ```console
-npx dita-docs-mcp --transport sse --port 4001 --data-dir ../backend/data
+npx dita-docs-mcp --transport http --port 4001 --data-dir ../backend/data
 ```
+
+Serves the current MCP Streamable HTTP spec on a single `/mcp` endpoint (`POST` for
+requests, `GET` for the server-to-client SSE stream, `DELETE` to end a session),
+identifying sessions via the `Mcp-Session-Id` response/request header.
 
 ## Available MCP Tools
 

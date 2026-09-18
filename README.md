@@ -38,7 +38,7 @@ cd frontend
 npm install
 npm run dev -- -p 3100
 
-# 3. mcp-server (stdio or SSE)
+# 3. mcp-server (stdio or Streamable HTTP)
 cd mcp-server
 npm install
 npm run build
