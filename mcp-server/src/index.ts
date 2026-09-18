@@ -195,52 +195,97 @@ async function main() {
     app.use(cors({ exposedHeaders: ["Mcp-Session-Id"] }));
     app.use(express.json());
 
-    const transports: Record<string, StreamableHTTPServerTransport> = {};
+    const SESSION_IDLE_TIMEOUT_MS = 30 * 60 * 1000;
+
+    interface SessionEntry {
+      transport: StreamableHTTPServerTransport;
+      lastActivity: number;
+    }
+
+    const transports: Record<string, SessionEntry> = {};
+
+    // Header can arrive as string[] (duplicated header); treat anything else as absent.
+    function getSessionId(req: express.Request): string | undefined {
+      const header = req.headers["mcp-session-id"];
+      return typeof header === "string" ? header : undefined;
+    }
 
     app.post("/mcp", async (req, res) => {
-      const sessionId = req.headers["mcp-session-id"] as string | undefined;
-      let transport: StreamableHTTPServerTransport;
+      try {
+        const sessionId = getSessionId(req);
+        let transport: StreamableHTTPServerTransport;
 
-      if (sessionId && transports[sessionId]) {
-        transport = transports[sessionId];
-      } else if (!sessionId && isInitializeRequest(req.body)) {
-        transport = new StreamableHTTPServerTransport({
-          sessionIdGenerator: () => randomUUID(),
-          onsessioninitialized: (id) => {
-            transports[id] = transport;
-          },
-        });
+        if (sessionId && transports[sessionId]) {
+          transport = transports[sessionId].transport;
+          transports[sessionId].lastActivity = Date.now();
+        } else if (!sessionId && isInitializeRequest(req.body)) {
+          transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: () => randomUUID(),
+            onsessioninitialized: (id) => {
+              transports[id] = { transport, lastActivity: Date.now() };
+            },
+          });
 
-        transport.onclose = () => {
-          if (transport.sessionId) {
-            delete transports[transport.sessionId];
-          }
-        };
+          transport.onclose = () => {
+            if (transport.sessionId) {
+              delete transports[transport.sessionId];
+            }
+          };
 
-        await mcpServer.connect(transport);
-      } else {
-        res.status(400).json({
-          jsonrpc: "2.0",
-          error: { code: -32000, message: "Bad Request: No valid session ID provided" },
-          id: null,
-        });
-        return;
+          await mcpServer.connect(transport);
+        } else {
+          res.status(400).json({
+            jsonrpc: "2.0",
+            error: { code: -32000, message: "Bad Request: No valid session ID provided" },
+            id: null,
+          });
+          return;
+        }
+
+        await transport.handleRequest(req, res, req.body);
+      } catch (error) {
+        console.error("Error handling MCP request:", error);
+        if (!res.headersSent) {
+          res.status(500).json({
+            jsonrpc: "2.0",
+            error: { code: -32000, message: "Internal Server Error" },
+            id: null,
+          });
+        }
       }
-
-      await transport.handleRequest(req, res, req.body);
     });
 
     const handleSessionRequest = async (req: express.Request, res: express.Response) => {
-      const sessionId = req.headers["mcp-session-id"] as string | undefined;
-      if (!sessionId || !transports[sessionId]) {
-        res.status(400).send("Invalid or missing session ID");
-        return;
+      try {
+        const sessionId = getSessionId(req);
+        const entry = sessionId ? transports[sessionId] : undefined;
+        if (!entry) {
+          res.status(400).send("Invalid or missing session ID");
+          return;
+        }
+        entry.lastActivity = Date.now();
+        await entry.transport.handleRequest(req, res);
+      } catch (error) {
+        console.error("Error handling MCP session request:", error);
+        if (!res.headersSent) {
+          res.status(500).send("Internal Server Error");
+        }
       }
-      await transports[sessionId].handleRequest(req, res);
     };
 
     app.get("/mcp", handleSessionRequest);
     app.delete("/mcp", handleSessionRequest);
+
+    // Reap sessions whose client vanished without closing cleanly (no onclose fired).
+    setInterval(() => {
+      const now = Date.now();
+      for (const [id, entry] of Object.entries(transports)) {
+        if (now - entry.lastActivity > SESSION_IDLE_TIMEOUT_MS) {
+          entry.transport.close();
+          delete transports[id];
+        }
+      }
+    }, SESSION_IDLE_TIMEOUT_MS).unref();
 
     app.listen(port, () => {
       console.log(`dita-docs-mcp server running on Streamable HTTP at http://localhost:${port}/mcp`);
