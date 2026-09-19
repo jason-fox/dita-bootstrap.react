@@ -331,6 +331,8 @@ function renderNode(
     ...props,
     ...(props.href ? { href: resolveHref(props.href, docId) } : {}),
     ...(props.src ? { src: resolveSrc(props.src, docId) } : {}),
+    ...(props.srcSet ? { srcSet: resolveSrc(props.srcSet, docId) } : {}),
+    ...(props.srcset ? { srcSet: resolveSrc(props.srcset, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
 
