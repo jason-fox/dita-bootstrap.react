@@ -36,7 +36,7 @@ export default function Header({
       expand="lg"
       fixed="top"
     >
-      <Container fluid>
+      <Container fluid="xxl" className="px-4">
         {onToggleSidebar && (
           <button
             type="button"
