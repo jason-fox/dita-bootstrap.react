@@ -1,11 +1,11 @@
 const isServer = typeof window === "undefined";
 
 export const DATA_URL = isServer
-  ? (process.env.INTERNAL_DATA_URL ?? process.env.NEXT_PUBLIC_DATA_URL ?? "http://backend:4000/data")
+  ? (process.env.INTERNAL_DATA_URL ?? process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data")
   : (process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data");
 
 export const API_URL = isServer
-  ? (process.env.INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://backend:4000/api")
+  ? (process.env.INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api")
   : (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api");
 
 export interface DocSetInfo {
@@ -112,7 +112,11 @@ export async function fetchPage(
   docId: string,
   file: string,
 ): Promise<TopicDoc> {
-  const normalizedFile = file.endsWith(".json") ? file : `${file}.json`;
+  let cleanFile = file;
+  if (docId && docId !== "default" && cleanFile.startsWith(`${docId}/`)) {
+    cleanFile = cleanFile.slice(docId.length + 1);
+  }
+  const normalizedFile = cleanFile.endsWith(".json") ? cleanFile : `${cleanFile}.json`;
   const relativePath =
     docId && docId !== "default"
       ? `${docId}/${normalizedFile}`

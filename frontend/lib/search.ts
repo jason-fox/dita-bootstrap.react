@@ -19,10 +19,8 @@ const SEARCH_INDEX_OPTIONS = {
 export async function loadSearchIndex(
   docId?: string,
 ): Promise<MiniSearch<SearchDoc>> {
-  if (!docId || docId === "default") {
-    return new MiniSearch<SearchDoc>(SEARCH_INDEX_OPTIONS);
-  }
-  const relativePath = `${docId}/search-index.json`;
+  const relativePath =
+    docId && docId !== "default" ? `${docId}/search-index.json` : "search-index.json";
   const res = await fetch(`${DATA_URL}/${relativePath}`, {
     cache: "no-store",
   }).catch(() => null);

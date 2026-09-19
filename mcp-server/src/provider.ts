@@ -29,6 +29,8 @@ export interface TopicDoc {
 
 export interface SearchHit {
   id: string;
+  docId?: string;
+  topicPath?: string;
   title: string;
   shortdesc: string;
   score: number;
@@ -135,6 +137,11 @@ export class DocProvider {
   }
 
   public getToc(docId: string): unknown {
+    if (docId && docId !== "default") {
+      const docSets = this.findDocSets();
+      const matched = docSets.find((ds) => docId === ds.id || docId.startsWith(`${ds.id}/`));
+      if (matched) docId = matched.id;
+    }
     const docSetDir = docId === "default" ? this.dataDir : path.join(this.dataDir, ...docId.split("/"));
     const tocPath = path.join(docSetDir, "toc.json");
     if (!fs.existsSync(tocPath)) {
@@ -144,6 +151,19 @@ export class DocProvider {
   }
 
   public getTopicDoc(docId: string, topicPath: string): TopicDoc {
+    if (docId && docId !== "default" && topicPath.startsWith(`${docId}/`)) {
+      topicPath = topicPath.slice(docId.length + 1);
+    } else if (!docId || docId === "default") {
+      const docSets = this.findDocSets();
+      for (const ds of docSets) {
+        if (ds.id !== "default" && topicPath.startsWith(`${ds.id}/`)) {
+          docId = ds.id;
+          topicPath = topicPath.slice(ds.id.length + 1);
+          break;
+        }
+      }
+    }
+
     const docSetDir = docId === "default" ? this.dataDir : path.join(this.dataDir, ...docId.split("/"));
     const cleanTopicFile = topicPath.endsWith(".json") ? topicPath : `${topicPath}.json`;
     const fullPath = path.join(docSetDir, cleanTopicFile);
@@ -158,7 +178,7 @@ export class DocProvider {
   public search(query: string, docId?: string): SearchHit[] {
     const docSets = this.findDocSets();
     const targetSets = docId
-      ? docSets.filter((s) => s.id === docId)
+      ? docSets.filter((s) => s.id === docId || s.id.startsWith(`${docId}/`))
       : docSets;
 
     const allResults: SearchHit[] = [];
@@ -178,8 +198,12 @@ export class DocProvider {
         });
 
         for (const hit of hits.slice(0, 10)) {
+          const rawTopicPath = hit.id.replace(new RegExp(`^${docSet.id}/`), "");
+          const hitId = docSet.id === "default" ? rawTopicPath : `${docSet.id}/${rawTopicPath}`;
           allResults.push({
-            id: `${docSet.id}/${hit.id}`,
+            id: hitId,
+            docId: docSet.id,
+            topicPath: rawTopicPath,
             title: (hit.title as string) || hit.id,
             shortdesc: (hit.shortdesc as string) || "",
             score: hit.score,

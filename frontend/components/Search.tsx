@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type MiniSearch from "minisearch";
 import { loadSearchIndex, type SearchDoc } from "../lib/search";
+import { resolveHref } from "../lib/api";
 
 interface SearchResult {
   id: string;
@@ -51,7 +52,7 @@ export default function Search({ docId }: { docId?: string }) {
   }
 
   const getResultHref = (id: string) => {
-    return docId && docId !== "default" ? `/${docId}/${id}` : `/${id}`;
+    return resolveHref(id, docId) as string;
   };
 
   return (
