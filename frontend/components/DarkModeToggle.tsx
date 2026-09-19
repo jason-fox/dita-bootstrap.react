@@ -51,7 +51,7 @@ export default function DarkModeToggle() {
       aria-label={`Switch to ${MODES[(MODES.indexOf(mode) + 1) % MODES.length]} mode (currently ${mode})`}
       onClick={cycle}
     >
-      <i className={`bi ${ICONS[mode]}`} />
+      <i className={`bi ${ICONS[mode]} fs-5`} />
     </button>
   );
 }
