@@ -2,11 +2,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
     <style>
     path {
-      fill: #1d365d;
+      fill: #0d6efd;
     }
     @media (prefers-color-scheme: dark) {
       path {
-        fill: #6a91cf;
+        fill: #3d8bfd;
       }
     }
     </style>

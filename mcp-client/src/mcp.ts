@@ -28,8 +28,8 @@ export class McpClientService {
     ]);
   }
 
-  async connect(): Promise<boolean> {
-    if (this.isConnected) return true;
+  async connect(force = false): Promise<boolean> {
+    if (this.isConnected && !force) return true;
 
     try {
       console.log(`Connecting to MCP Server at ${this.serverUrl}...`);
@@ -55,7 +55,7 @@ export class McpClientService {
     }
   }
 
-  async listTools() {
+  async listTools(retry = true): Promise<any[]> {
     if (!this.isConnected) {
       await this.connect();
     }
@@ -66,11 +66,19 @@ export class McpClientService {
       return response.tools || [];
     } catch (error: any) {
       console.error("Error listing MCP tools:", error.message);
+      this.isConnected = false;
+      if (retry) {
+        console.log("Retrying listTools after reconnecting...");
+        await this.connect(true);
+        if (this.isConnected) {
+          return this.listTools(false);
+        }
+      }
       return [];
     }
   }
 
-  async callTool(name: string, args: Record<string, any>) {
+  async callTool(name: string, args: Record<string, any>, retry = true): Promise<any> {
     if (!this.isConnected) {
       await this.connect();
     }
@@ -89,11 +97,19 @@ export class McpClientService {
       return response;
     } catch (error: any) {
       console.error(`Error calling MCP tool '${name}':`, error.message);
+      this.isConnected = false;
+      if (retry) {
+        console.log(`Retrying callTool '${name}' after reconnecting...`);
+        await this.connect(true);
+        if (this.isConnected) {
+          return this.callTool(name, args, false);
+        }
+      }
       throw error;
     }
   }
 
-  async readResource(uri: string) {
+  async readResource(uri: string, retry = true): Promise<any> {
     if (!this.isConnected) {
       await this.connect();
     }
@@ -104,6 +120,14 @@ export class McpClientService {
       return response;
     } catch (error: any) {
       console.error(`Error reading MCP resource '${uri}':`, error.message);
+      this.isConnected = false;
+      if (retry) {
+        console.log(`Retrying readResource '${uri}' after reconnecting...`);
+        await this.connect(true);
+        if (this.isConnected) {
+          return this.readResource(uri, false);
+        }
+      }
       return null;
     }
   }

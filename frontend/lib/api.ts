@@ -76,12 +76,18 @@ export function resolveStyle(style: unknown): unknown {
 export function resolveHref(href: unknown, docId?: string): unknown {
   if (
     typeof href !== "string" ||
-    !href.endsWith(".json") ||
-    href.startsWith("http")
+    href.startsWith("http") ||
+    href.startsWith("//") ||
+    href.startsWith("mailto:")
   ) {
     return href;
   }
-  const cleanPath = href.replace(/\.json(#.*)?$/, (_, hash) => hash ?? "");
+  let cleanPath = href
+    .replace(/\.(json|html)(#.*)?$/, (_, __, hash) => hash ?? "")
+    .replace(/^(\.\.\/|\.\/|\/)+/, "");
+  if (docId && docId !== "default") {
+    cleanPath = cleanPath.replace(new RegExp(`^${docId}/`), "");
+  }
   const prefix = docId && docId !== "default" ? `/${docId}` : "";
   return cleanPath ? `${prefix}/${cleanPath}` : `${prefix}`;
 }

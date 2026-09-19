@@ -119,7 +119,14 @@ function createMcpServer(): McpServer {
         const title = (doc.meta.title as string) || topicPath;
         const shortdesc = (doc.meta.shortdesc as string) || "";
 
-        const fullOutput = `# ${title}\n\n${shortdesc ? `*${shortdesc}*\n\n` : ""}${markdown}`;
+        const breadcrumbs = Array.isArray(doc.meta.breadcrumbs)
+          ? (doc.meta.breadcrumbs as Array<{ title: string; href?: string }>)
+          : undefined;
+        const breadcrumbHeader = breadcrumbs && breadcrumbs.length > 0
+          ? `*Location: ${breadcrumbs.map((b) => b.title).join(" > ")}*\n\n`
+          : "";
+
+        const fullOutput = `${breadcrumbHeader}# ${title}\n\n${shortdesc ? `*${shortdesc}*\n\n` : ""}${markdown}`;
 
         return {
           content: [

@@ -37,8 +37,15 @@ export default function Header({
           // headerHtml comes from public/header.html, a build-time-editable file, not user input
           <span dangerouslySetInnerHTML={{ __html: headerHtml }} />
         ) : (
-          <a className="navbar-brand" href="/">
-            {title}
+          <a className="navbar-brand d-flex align-items-center fw-semibold" href="/">
+            <img
+              src="/favicon.svg"
+              alt=""
+              className="me-2"
+              style={{ width: "1.75rem", height: "1.75rem", objectFit: "contain" }}
+              onError={(e) => (e.currentTarget.style.display = "none")}
+            />
+            <span>{title}</span>
           </a>
         )}
 

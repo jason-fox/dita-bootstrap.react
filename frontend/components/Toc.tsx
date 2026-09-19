@@ -33,11 +33,11 @@ function splitEntry(entry: AstArray, docId?: string) {
 
 function containsPath(entry: AstArray, pathname: string, docId?: string): boolean {
   const { href, children } = splitEntry(entry, docId);
-  return (
-    href === pathname || children.some((child) => containsPath(child, pathname, docId))
-  );
+  const cleanHref = href ? href.split("#")[0] : undefined;
+  const cleanPathname = pathname ? pathname.split("#")[0] : undefined;
+  const isMatch = Boolean(cleanHref && cleanHref === cleanPathname);
+  return isMatch || children.some((child) => containsPath(child, pathname, docId));
 }
-
 
 // Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's collapsible-toc chevron;
 // collapsible-toc.css rotates it via .bd-links .btn[aria-expanded='true'] svg
@@ -71,10 +71,13 @@ function TocEntryItem({
   docId?: string;
 }) {
   const { title, href, icon, iconStyle, children } = splitEntry(entry, docId);
-  const isActive = href === pathname;
+  const cleanHref = href ? href.split("#")[0] : undefined;
+  const cleanPathname = pathname ? pathname.split("#")[0] : undefined;
+  const isActive = Boolean(cleanHref && cleanHref === cleanPathname);
   const isCurrentSection =
     isActive || children.some((child) => containsPath(child, pathname, docId));
-  const [expanded, setExpanded] = useState(isCurrentSection);
+  const [userExpanded, setUserExpanded] = useState<boolean | null>(null);
+  const expanded = userExpanded ?? isCurrentSection;
 
   const content = (
     <>
@@ -112,7 +115,7 @@ function TocEntryItem({
     <span
       className={`d-inline-flex align-items-center flex-shrink-1 ps-2${isCurrentSection ? " active" : ""}`}
       style={{ cursor: "pointer" }}
-      onClick={() => setExpanded((value) => !value)}
+      onClick={() => setUserExpanded(!expanded)}
     >
       {content}
     </span>
@@ -127,7 +130,7 @@ function TocEntryItem({
           aria-expanded={expanded}
           aria-current={isCurrentSection ? "true" : undefined}
           aria-label={expanded ? `Collapse ${title}` : `Expand ${title}`}
-          onClick={() => setExpanded((value) => !value)}
+          onClick={() => setUserExpanded(!expanded)}
         >
           <Chevron />
         </button>

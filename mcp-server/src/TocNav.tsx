@@ -17,9 +17,10 @@ export interface TocNavProps {
 // toc.json hrefs are sibling <topic>.json paths (see CLAUDE.local.md's AST shape docs);
 // strip the extension to get the topicPath render_topic_ui/get_topic_content expect.
 function tocHrefToTopicPath(href: unknown): string | undefined {
-  if (typeof href !== "string" || href.startsWith("http")) return undefined;
-  if (!href.endsWith(".json") && !href.includes(".json#")) return undefined;
-  return href.replace(/\.json(#.*)?$/, "");
+  if (typeof href !== "string" || href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:")) return undefined;
+  return href
+    .replace(/^(\.\.\/|\.\/|\/)+/, "")
+    .replace(/\.(json|html)(#.*)?$/, "");
 }
 
 function splitEntry(entry: AstArray) {
@@ -45,10 +46,10 @@ function splitEntry(entry: AstArray) {
 
 function containsActive(entry: AstArray, activeTopicPath: string): boolean {
   const { topicPath, children } = splitEntry(entry);
-  return (
-    topicPath === activeTopicPath ||
-    children.some((child) => containsActive(child, activeTopicPath))
-  );
+  const cleanTopic = topicPath ? topicPath.split("#")[0] : undefined;
+  const cleanActive = activeTopicPath ? activeTopicPath.split("#")[0] : undefined;
+  const isMatch = Boolean(cleanTopic && cleanTopic === cleanActive);
+  return isMatch || children.some((child) => containsActive(child, activeTopicPath));
 }
 
 // Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's collapsible-toc chevron;
@@ -89,13 +90,16 @@ function EntryLink({
     return <span className={active ? `${className} active` : className}>{children}</span>;
   }
   return (
-    <button
-      type="button"
-      className={`btn btn-link text-start p-0 border-0 ${className}${active ? " active" : ""}`}
-      onClick={() => onNavigate?.(docId, topicPath, theme)}
+    <a
+      href="#"
+      className={`${className}${active ? " active" : ""}`}
+      onClick={(e) => {
+        e.preventDefault();
+        onNavigate?.(docId, topicPath, theme);
+      }}
     >
       {children}
-    </button>
+    </a>
   );
 }
 
@@ -113,9 +117,12 @@ function TocEntryItem({
   onNavigate?: (docId: string, topicPath: string, theme?: string) => void;
 }) {
   const { title, topicPath, icon, iconStyle, children } = splitEntry(entry);
-  const isActive = topicPath === activeTopicPath;
+  const cleanTopic = topicPath ? topicPath.split("#")[0] : undefined;
+  const cleanActive = activeTopicPath ? activeTopicPath.split("#")[0] : undefined;
+  const isActive = Boolean(cleanTopic && cleanTopic === cleanActive);
   const isCurrentSection = isActive || children.some((c) => containsActive(c, activeTopicPath));
-  const [expanded, setExpanded] = useState(isCurrentSection);
+  const [userExpanded, setUserExpanded] = useState<boolean | null>(null);
+  const expanded = userExpanded ?? isCurrentSection;
 
   const content = (
     <>
@@ -158,7 +165,7 @@ function TocEntryItem({
     <span
       className={`d-inline-flex align-items-center flex-shrink-1 ps-2${isCurrentSection ? " active" : ""}`}
       style={{ cursor: "pointer" }}
-      onClick={() => setExpanded((v) => !v)}
+      onClick={() => setUserExpanded(!expanded)}
     >
       {content}
     </span>
@@ -172,7 +179,7 @@ function TocEntryItem({
           className={`btn d-inline-flex align-items-center p-0 border-0${isCurrentSection ? " active" : ""}`}
           aria-expanded={expanded}
           aria-label={expanded ? `Collapse ${title}` : `Expand ${title}`}
-          onClick={() => setExpanded((v) => !v)}
+          onClick={() => setUserExpanded(!expanded)}
         >
           <Chevron />
         </button>

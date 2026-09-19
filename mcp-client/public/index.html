@@ -4,166 +4,188 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DITA Docs AI Assistant</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <!-- Bootstrap 5 & Icons matching DITA-Bootstrap Docs Portal -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+  <script>
+    (function() {
+      const MODES = ["light", "dark", "auto"];
+      const stored = localStorage.getItem("theme");
+      const mode = stored && MODES.includes(stored) ? stored : "auto";
+      const resolved = mode === "auto"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : mode;
+      document.documentElement.setAttribute("data-bs-theme", resolved);
+    })();
+  </script>
   <style>
-    body {
-      background-color: var(--bs-tertiary-bg);
-      font-family: system-ui, -apple-system, sans-serif;
-    }
     .chat-bubble-user {
-      background-color: var(--bs-primary);
-      color: white;
-      border-radius: 1rem 1rem 0.2rem 1rem;
       max-width: 80%;
+      border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+      background-color: var(--bs-primary);
+      color: #fff;
     }
     .chat-bubble-assistant {
+      max-width: 85%;
+      border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
       background-color: var(--bs-body-bg);
-      color: var(--bs-body-color);
-      border: 1px solid var(--bs-border-color);
-      border-radius: 1rem 1rem 1rem 0.2rem;
-      width: 100%;
-    }
-    .chat-bubble-assistant.has-interactive {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-    .prose p { margin-bottom: 0.5rem; }
-    .prose p:last-child { margin-bottom: 0; }
-
-    /* Inline code vs Code blocks */
-    .prose :not(pre) > code {
-      background: var(--bs-tertiary-bg);
-      padding: 0.15rem 0.35rem;
-      border-radius: 0.25rem;
-      font-size: 0.875em;
       border: 1px solid var(--bs-border-color);
       color: var(--bs-body-color);
     }
-    .prose pre,
-    .prose pre.alert,
-    .prose pre.alert-secondary,
-    .prose pre.bg-light,
-    .prose pre[class*="language-"] {
-      background-color: #1e1e2e !important;
-      color: #cdd6f4 !important;
-      padding: 1rem !important;
-      border-radius: 0.5rem !important;
-      border: 1px solid #313244 !important;
-      font-size: 0.875rem !important;
-      line-height: 1.5 !important;
-      overflow-x: auto !important;
-      margin: 0.75rem 0 !important;
-    }
-    .prose pre code,
-    .prose pre.alert code,
-    .prose pre.alert-secondary code,
-    .prose pre.bg-light code {
-      background: transparent !important;
-      border: none !important;
-      padding: 0 !important;
-      font-size: inherit !important;
-      color: inherit !important;
-      white-space: pre !important;
-    }
 
-    /* Prism Syntax Highlighting Tokens */
-    .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #6c7086; font-style: italic; }
-    .token.punctuation { color: #9399b2; }
-    .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol, .token.deleted { color: #f38ba8; }
-    .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted { color: #a6e3a1; }
-    .token.operator, .token.entity, .token.url, .language-css .token.string { color: #89dceb; }
+    /* Paragraph & Code block formatting for Markdown rendered inside chat bubbles */
+    .chat-bubble-assistant p:last-child { 
+      margin-bottom: 0; 
+    }
+    .chat-bubble-assistant pre { 
+      background: var(--bs-tertiary-bg); 
+      border: 1px solid var(--bs-border-color); 
+      border-radius: var(--bs-border-radius); 
+      padding: 0.75rem; 
+      overflow-x: auto; 
+    }
+    .chat-bubble-assistant code { 
+      font-size: 0.875em; 
+    }
+    
+    /* Code block syntax highlighting rules matching dita-styles.ts */
+    .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #808080; font-style: italic; }
+    .token.punctuation { color: #a6adc8; }
+    .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #f38ba8; }
+    .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #a6e3a1; }
+    .token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string { color: #89dceb; }
     .token.atrule, .token.attr-value, .token.keyword { color: #cba6f7; font-weight: 600; }
     .token.function, .token.class-name { color: #89b4fa; }
     .token.regex, .token.important, .token.variable { color: #fab387; }
 
-    .iframe-container {
-      width: 100%;
-      border: 1px solid var(--bs-border-color);
-      border-radius: 0.5rem;
-      overflow: hidden;
-      background: var(--bs-body-bg);
+    .iframe-header-clickable {
+      cursor: pointer;
+      transition: background-color 0.15s ease-in-out;
+    }
+    .iframe-header-clickable:hover {
+      background-color: var(--bs-border-color-translucent) !important;
     }
   </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100 bg-body-tertiary">
   <!-- Navbar matching frontend/ DITA Docs Portal -->
-  <nav class="navbar navbar-expand bg-dark navbar-dark border-bottom shadow-sm py-2 shrink-0" data-bs-theme="dark">
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark border-bottom shadow-sm py-2 sticky-top flex-shrink-0" data-bs-theme="dark">
     <div class="container-fluid px-4">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold text-white" href="#">
-        <i class="bi bi-robot fs-4 text-white"></i>
+      <a class="navbar-brand d-flex align-items-center fw-semibold text-white me-3" href="#">
+        <img src="/favicon.svg" alt="DITA Finch Logo" style="width: 1.75rem; height: 1.75rem;" class="me-2">
         <span>DITA Docs AI Assistant</span>
       </a>
 
-      <div class="d-flex align-items-center gap-3">
-        <button onclick="clearChat()" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1.5" title="Clear conversation to reset context & save tokens">
-          <i class="bi bi-trash3"></i>
-          <span>Clear Chat</span>
-        </button>
-        <div class="d-none align-items-center gap-3" id="debug-badges">
-          <span class="badge text-bg-light border font-monospace" id="provider-badge">
-            Provider: Checking...
-          </span>
-          <span class="badge text-bg-success border" id="mcp-status-badge">
-            <i class="bi bi-circle-fill me-1 fs-6"></i> MCP Connected
-          </span>
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <div class="navbar-nav me-auto" id="nav-links-container">
+          <!-- Injectable nav links from nav-links.html will be placed here -->
+        </div>
+
+        <div class="d-flex align-items-center gap-3 ms-auto mt-2 mt-lg-0">
+          <button onclick="clearChat()" class="btn btn-outline-light btn-sm d-flex align-items-center" title="Clear conversation to reset context & save tokens">
+            <i class="bi bi-trash3 pe-2"></i>
+            <span>Clear Chat</span>
+          </button>
+          <button
+            type="button"
+            id="theme-toggle-btn"
+            class="btn btn-link nav-link px-2 d-flex align-items-center text-white"
+            aria-label="Toggle theme"
+            onclick="cycleTheme()"
+          >
+            <i id="theme-toggle-icon" class="bi bi-circle-half fs-5"></i>
+          </button>
+          <div class="d-none align-items-center gap-3" id="debug-badges">
+            <span class="badge bg-body-secondary text-body border font-monospace" id="provider-badge">
+              Provider: Checking...
+            </span>
+            <span class="badge text-bg-success border" id="mcp-status-badge">
+              <i class="bi bi-circle-fill pe-3 fs-6"></i> MCP Connected
+            </span>
+          </div>
         </div>
       </div>
     </div>
   </nav>
 
   <!-- Main Chat Container -->
-  <main class="flex-grow-1 container-fluid max-w-6xl py-4 d-flex flex-column overflow-hidden" style="max-width: 1140px;">
-    <!-- Messages Scroll Region -->
-    <div id="messages-container" class="flex-grow-1 overflow-auto pe-2 mb-3 space-y-3">
-      <!-- Welcome Card -->
-      <div class="card shadow-sm mb-3" id="welcome-card">
-        <div class="card-body">
-          <h5 class="card-title text-primary d-flex align-items-center gap-2" id="welcome-title">
-            <i class="bi bi-stars"></i> Welcome to Documentation AI Assistant
-          </h5>
-          <p class="card-text text-secondary small" id="welcome-desc">
-            Ask technical questions or request interactive previews for loaded documentation sets.
-          </p>
-          <div class="d-flex flex-wrap gap-2 pt-1" id="quick-prompts-container">
-            <button onclick="sendQuickPrompt('What documentation sets are available?')" class="btn btn-outline-secondary btn-sm">
-              📚 List Doc Sets
-            </button>
+  <main class="flex-grow-1 container-fluid py-4 d-flex flex-column overflow-hidden">
+    <div class="row justify-content-center flex-grow-1 overflow-hidden">
+      <div class="col-12 col-xl-10 d-flex flex-column h-100 overflow-hidden">
+        <!-- Messages Scroll Region -->
+        <div id="messages-container" class="flex-grow-1 overflow-auto pe-2 mb-3 d-flex flex-column gap-3">
+          <!-- Welcome Card -->
+          <div class="card shadow-sm mb-3" id="welcome-card">
+            <div class="card-body">
+              <h5 class="card-title text-body mb-2" id="welcome-title">
+                Welcome to Documentation AI Assistant
+              </h5>
+              <p class="card-text text-secondary small" id="welcome-desc">
+                Ask technical questions or request interactive previews for loaded documentation sets.
+              </p>
+              <div class="d-flex flex-wrap gap-2 pt-1" id="quick-prompts-container">
+                <button onclick="sendQuickPrompt('What documentation sets are available?')" class="btn btn-outline-secondary btn-sm">
+                  <span class="pe-3">📚</span>List Doc Sets
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Box -->
+        <div class="card shadow-sm flex-shrink-0">
+          <div class="card-body p-2">
+            <form id="chat-form" onsubmit="handleFormSubmit(event)" class="d-flex gap-2">
+              <input 
+                type="text" 
+                id="user-input" 
+                placeholder="Ask a question or request a component preview..." 
+                class="form-control border-0 shadow-none" 
+                autocomplete="off"
+              />
+              <button 
+                type="submit" 
+                id="send-btn"
+                class="btn btn-primary d-flex align-items-center flex-shrink-0 px-4"
+              >
+                <span>Send</span>
+                <i class="bi bi-send-fill ps-3"></i>
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </div>
+  </main>
 
-    <!-- Input Box -->
-    <div class="card shadow-sm shrink-0">
-      <div class="card-body p-2">
-        <form id="chat-form" onsubmit="handleFormSubmit(event)" class="d-flex gap-2">
-          <input 
-            type="text" 
-            id="user-input" 
-            placeholder="Ask a question or request a component preview..." 
-            class="form-control border-0 shadow-none" 
-            autocomplete="off"
-          />
-          <button 
-            type="submit" 
-            id="send-btn"
-            class="btn btn-primary d-flex align-items-center gap-1.5 shrink-0 px-4"
-          >
-            <span>Send</span>
-            <i class="bi bi-send-fill"></i>
-          </button>
-        </form>
+  <!-- Full Topic Viewer Modal -->
+  <div class="modal fade" id="topicModal" tabindex="-1" aria-labelledby="topicModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 96vw;">
+      <div class="modal-content card" style="height: 92vh;">
+        <div class="modal-header card-header">
+          <span class="h5 mb-0 text-body-secondary d-flex align-items-center gap-2" id="topicModalTitle">
+            Topic Viewer
+          </span>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body card-body p-0">
+          <iframe id="modal-iframe" class="w-100 h-100 border-0 d-block"></iframe>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
 
   <script>
     const history = [];
@@ -171,6 +193,102 @@
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
     let showToolInvocations = false;
+
+    // --- DARK MODE TOGGLE (matching frontend/components/DarkModeToggle.tsx) ---
+    const MODES = ["light", "dark", "auto"];
+    const ICONS = {
+      light: "bi-brightness-high-fill",
+      dark: "bi-moon-stars-fill",
+      auto: "bi-circle-half",
+    };
+    const STORAGE_KEY = "theme";
+
+    let currentMode = "auto";
+
+    function resolveTheme(mode) {
+      if (mode === "auto") {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      return mode;
+    }
+
+    function applyTheme(mode) {
+      currentMode = mode;
+      const resolved = resolveTheme(mode);
+      document.documentElement.setAttribute("data-bs-theme", resolved);
+
+      const iconEl = document.getElementById("theme-toggle-icon");
+      const btnEl = document.getElementById("theme-toggle-btn");
+      if (iconEl) {
+        iconEl.className = `bi ${ICONS[mode]} fs-5`;
+      }
+      if (btnEl) {
+        const nextMode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+        btnEl.setAttribute("aria-label", `Switch to ${nextMode} mode (currently ${mode})`);
+        btnEl.setAttribute("title", `Theme: ${mode} (click for ${nextMode})`);
+      }
+
+      // Propagate active theme to any loaded topic viewer iframes
+      document.querySelectorAll('iframe').forEach(iframe => {
+        if (iframe._lastPayload) {
+          iframe._lastPayload.theme = resolved;
+          iframe.contentWindow?.postMessage({ type: 'SET_PAYLOAD', payload: iframe._lastPayload }, '*');
+        }
+      });
+    }
+
+    function cycleTheme() {
+      const next = MODES[(MODES.indexOf(currentMode) + 1) % MODES.length];
+      localStorage.setItem(STORAGE_KEY, next);
+      applyTheme(next);
+    }
+
+    function initTheme() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const initial = stored && MODES.includes(stored) ? stored : "auto";
+      applyTheme(initial);
+
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        if (currentMode === "auto") {
+          applyTheme("auto");
+        }
+      });
+    }
+
+    initTheme();
+
+    function openTopicModal(titleText, payload) {
+      const modalTitle = document.getElementById('topicModalTitle');
+      const modalIframe = document.getElementById('modal-iframe');
+      
+      if (modalTitle) {
+        modalTitle.innerHTML = titleText;
+      }
+
+      if (modalIframe) {
+        const viewerUrl = `${window.location.protocol}//${window.location.hostname}:4001/viewer`;
+        modalIframe.src = viewerUrl;
+
+        const clonedPayload = JSON.parse(JSON.stringify(payload));
+        clonedPayload.previewMode = false; // Allow desktop sidebar in wide modal view
+        clonedPayload.theme = resolveTheme(currentMode);
+        modalIframe._lastPayload = clonedPayload;
+
+        modalIframe.onload = () => {
+          const sendPayload = () => modalIframe.contentWindow?.postMessage({ type: 'SET_PAYLOAD', payload: clonedPayload }, '*');
+          sendPayload();
+          setTimeout(sendPayload, 100);
+          setTimeout(sendPayload, 300);
+          setTimeout(sendPayload, 800);
+        };
+      }
+
+      const modalEl = document.getElementById('topicModal');
+      if (modalEl && window.bootstrap && bootstrap.Modal) {
+        const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        bsModal.show();
+      }
+    }
 
     // Configure marked with Prism syntax highlighting
     if (window.marked && typeof marked.Renderer === 'function') {
@@ -221,10 +339,10 @@
         
         if (data.mcpConnected) {
           badge.className = "badge text-bg-success border";
-          badge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> MCP Connected (${data.toolsCount} tools)`;
+          badge.innerHTML = `<i class="bi bi-check-circle-fill pe-3"></i> MCP Connected (${data.toolsCount} tools)`;
         } else {
           badge.className = "badge text-bg-danger border";
-          badge.innerHTML = `<i class="bi bi-x-circle-fill me-1"></i> MCP Offline`;
+          badge.innerHTML = `<i class="bi bi-x-circle-fill pe-3"></i> MCP Offline`;
         }
 
         // Dynamically update Welcome Card text & quick prompts
@@ -239,14 +357,14 @@
           if (promptsContainer) {
             promptsContainer.innerHTML = `
               <button onclick="sendQuickPrompt('What documentation sets are available?')" class="btn btn-outline-secondary btn-sm">
-                📚 List Doc Sets
+                <span class="pe-3">📚</span>List Doc Sets
               </button>
             `;
             data.docSets.forEach(ds => {
               const btn = document.createElement('button');
               btn.className = 'btn btn-outline-primary btn-sm';
               btn.onclick = () => sendQuickPrompt(`Show me overview for ${ds.title || ds.id}`);
-              btn.textContent = `📖 ${ds.title || ds.id}`;
+              btn.innerHTML = `<span class="pe-3">📖</span>${ds.title || ds.id}`;
               promptsContainer.appendChild(btn);
             });
           }
@@ -280,31 +398,28 @@
       
       bubble.className = role === 'user' 
         ? 'chat-bubble-user p-3 shadow-sm' 
-        : `chat-bubble-assistant p-3 shadow-sm ${hasInteractive ? 'has-interactive w-100' : ''}`;
+        : `chat-bubble-assistant p-3 shadow-sm ${hasInteractive ? 'mw-100 w-100' : ''}`;
 
       if (role === 'user') {
         bubble.textContent = text;
       } else {
-        const prose = document.createElement('div');
-        prose.className = 'prose';
         try {
           if (window.marked && typeof marked.parse === 'function') {
-            prose.innerHTML = marked.parse(text || "");
+            bubble.innerHTML = marked.parse(text || "");
           } else {
-            prose.textContent = text || "";
+            bubble.textContent = text || "";
           }
         } catch(err) {
           console.error("Markdown parse error:", err);
-          prose.textContent = text || "";
+          bubble.textContent = text || "";
         }
-        bubble.appendChild(prose);
 
         // If render_topic_ui tool call was made, render FULL WIDTH Bootstrap iframe card
         if (toolResults && toolResults.length > 0) {
           toolResults.forEach(tr => {
             if (tr.toolName === 'render_topic_ui') {
               const card = document.createElement('div');
-              card.className = 'iframe-container mt-3 shadow-sm w-100';
+              card.className = 'card shadow-sm mt-3 w-100';
               
               let payload = null;
               try {
@@ -315,23 +430,41 @@
               const viewerUrl = `${window.location.protocol}//${window.location.hostname}:4001/viewer`;
 
               const header = document.createElement('div');
-              header.className = 'bg-light border-bottom px-3 py-2 text-secondary small d-flex justify-content-between align-items-center font-monospace';
+              header.className = 'card-header d-flex justify-content-between align-items-center iframe-header-clickable user-select-none';
+              header.title = 'Click to view full topic in fullscreen modal';
               
               const docTitle = payload?.toc?.title || payload?.docId;
               const pageTitle = payload?.doc?.meta?.title || tr.args?.topicPath || 'Topic Viewer';
               const titleText = docTitle && docTitle !== pageTitle ? `${docTitle} | ${pageTitle}` : pageTitle;
 
-              header.innerHTML = `<span class="fw-semibold text-primary"><i class="bi bi-box-fill me-2"></i>${titleText}</span>`;
+              header.innerHTML = `
+                <span class="h5 mb-0 text-body-secondary d-flex align-items-center gap-2">${titleText}</span>
+                <button type="button" class="btn p-0 border-0 text-body-secondary d-flex align-items-center justify-content-center" style="width: 1.5rem; height: 1.5rem;" aria-label="Expand topic" title="Expand topic">
+                  <i class="bi bi-arrows-angle-expand fs-6"></i>
+                </button>
+              `;
+
+              if (payload) {
+                header.onclick = () => openTopicModal(titleText, payload);
+              }
+
               card.appendChild(header);
 
+              const cardBody = document.createElement('div');
+              cardBody.className = 'card-body p-0';
+
               const iframe = document.createElement('iframe');
-              iframe.className = 'w-100 border-0';
+              iframe.className = 'w-100 border-0 d-block';
               iframe.style.height = '480px';
               iframe.src = viewerUrl;
               
               iframe.onload = () => {
                 if (payload) {
-                  const sendPayload = () => iframe.contentWindow?.postMessage({ type: 'SET_PAYLOAD', payload: payload }, '*');
+                  const inlinePayload = JSON.parse(JSON.stringify(payload));
+                  inlinePayload.previewMode = true; // Suppress desktop sidebar in inline card preview
+                  inlinePayload.theme = resolveTheme(currentMode);
+                  iframe._lastPayload = inlinePayload;
+                  const sendPayload = () => iframe.contentWindow?.postMessage({ type: 'SET_PAYLOAD', payload: inlinePayload }, '*');
                   sendPayload();
                   setTimeout(sendPayload, 100);
                   setTimeout(sendPayload, 300);
@@ -339,12 +472,13 @@
                 }
               };
 
-              card.appendChild(iframe);
+              cardBody.appendChild(iframe);
+              card.appendChild(cardBody);
               bubble.appendChild(card);
             } else if (showToolInvocations) {
               const card = document.createElement('div');
-              card.className = 'mt-2 p-2 bg-light border rounded small font-monospace';
-              card.innerHTML = `<div class="text-primary fw-semibold"><i class="bi bi-tools me-1"></i> MCP Tool Invoked: <code>${tr.toolName}</code></div>
+              card.className = 'mt-2 p-2 bg-body-tertiary border rounded small font-monospace';
+              card.innerHTML = `<div class="text-primary fw-semibold"><i class="bi bi-tools pe-3"></i> MCP Tool Invoked: <code>${tr.toolName}</code></div>
                                 <div class="text-secondary small">${JSON.stringify(tr.args)}</div>`;
               bubble.appendChild(card);
             }
@@ -373,7 +507,7 @@
       loadingWrapper.innerHTML = `
         <div class="chat-bubble-assistant p-3 small text-secondary d-flex align-items-center gap-2">
           <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-          <span>LLM reasoning & querying MCP tools...</span>
+          <span>Thinking...</span>
         </div>`;
       messagesContainer.appendChild(loadingWrapper);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -402,6 +536,22 @@
         if (sendBtn) sendBtn.disabled = false;
       }
     }
+
+    async function loadNavLinks() {
+      try {
+        const res = await fetch('/nav-links.html');
+        if (res.ok) {
+          const html = await res.text();
+          if (html.trim()) {
+            const container = document.getElementById('nav-links-container');
+            if (container) container.innerHTML = html;
+          }
+        }
+      } catch (err) {
+        console.debug('No custom nav-links.html found');
+      }
+    }
+    loadNavLinks();
   </script>
 </body>
 </html>

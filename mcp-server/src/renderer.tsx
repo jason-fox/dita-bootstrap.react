@@ -1,4 +1,5 @@
 import { PRISM_THEME_CSS } from "./vendor/prism-theme";
+import { DITA_STYLES_CSS } from "./vendor/dita-styles";
 import { BOOTSTRAP_ICONS_WOFF2_BASE64 } from "./vendor/bootstrap-icons-font";
 import { BOOTSTRAP_BUNDLE_JS_BASE64 } from "./vendor/bootstrap-bundle-js";
 import { CLIENT_BUNDLE_JS_BASE64 } from "./vendor/client-bundle";
@@ -25,24 +26,26 @@ export function renderAppShellHtml(): string {
       font-family: "bootstrap-icons";
       src: url(data:font/woff2;base64,${BOOTSTRAP_ICONS_WOFF2_BASE64}) format("woff2");
     }
+    ${DITA_STYLES_CSS}
     ${PRISM_THEME_CSS}
     body { font-family: system-ui, -apple-system, sans-serif; background: transparent; }
     .shortdesc { font-weight: 400; color: var(--bs-secondary-color); }
-    pre, pre.alert, pre.alert-secondary, pre.bg-light {
-      background-color: #1e1e2e !important;
-      color: #cdd6f4 !important;
-      border: 1px solid #313244 !important;
-      border-radius: 0.375rem !important;
-      padding: 1rem !important;
-      margin: 0.75rem 0 !important;
+    pre, pre.alert, pre.alert-secondary, pre.bg-light, pre[class*="language-"] {
+      background: var(--prism-background, var(--bs-tertiary-bg));
+      color: var(--prism-maintext, var(--bs-body-color));
+      border: 1px solid var(--bs-border-color);
+      border-radius: 0.375rem;
+      padding: 1rem;
+      margin: 0.75rem 0;
+      overflow-x: auto;
     }
     pre code {
       display: block;
-      padding: 0 !important;
-      border: none !important;
+      padding: 0;
+      border: none;
       border-radius: 0;
-      background: transparent !important;
-      color: inherit !important;
+      background: transparent;
+      color: inherit;
       white-space: pre;
     }
     .note { margin-top: 1rem; margin-bottom: 1rem; }

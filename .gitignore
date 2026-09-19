@@ -41,8 +41,8 @@ dist/
 /frontend/AGENTS.md
 /frontend/CLAUDE.md
 
-# env files (local overrides ignored)
-.env*.local
+# env files
+.env*
 
 # typescript
 *.tsbuildinfo

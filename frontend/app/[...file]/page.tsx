@@ -93,7 +93,7 @@ export default async function ViewPage({
 
   const article = (
     <article>
-      {doc.meta.breadcrumbs && <Breadcrumbs items={doc.meta.breadcrumbs} />}
+      {doc.meta.breadcrumbs && <Breadcrumbs items={doc.meta.breadcrumbs} docId={docId} />}
       {doc.meta.title && <h1>{doc.meta.title}</h1>}
       {doc.meta.shortdesc && (
         <p className="shortdesc text-body-secondary lead">

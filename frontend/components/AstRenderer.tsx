@@ -342,9 +342,9 @@ function renderNode(
 
     if (!isHash && !isExternal && onNavigate) {
       const cleanTopic = rawHref
-        .replace(/^\//, "")
+        .replace(/^(\.\.\/|\.\/|\/)+/, "")
         .replace(new RegExp(`^${docId}/`), "")
-        .replace(/\.json(#.*)?$/, "");
+        .replace(/\.(json|html)(#.*)?$/, "");
 
       const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
