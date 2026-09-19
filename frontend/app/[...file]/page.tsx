@@ -54,11 +54,32 @@ export async function generateMetadata({
   if (!doc) return {};
 
   const { title, shortdesc } = doc.meta;
+  const openGraphBase = (process.env.OPEN_GRAPH_URL ?? "").trim();
+
+  if (!openGraphBase) {
+    return {
+      title,
+      description: shortdesc,
+    };
+  }
+
+  const pagePath = `/${file.join("/")}`;
+  const fullUrl = `${openGraphBase.replace(/\/$/, "")}${pagePath}`;
+
   return {
     title,
     description: shortdesc,
-    openGraph: { title, description: shortdesc, type: "article" },
-    twitter: { card: "summary", title, description: shortdesc },
+    openGraph: {
+      title,
+      description: shortdesc,
+      type: "article",
+      url: fullUrl,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description: shortdesc,
+    },
   };
 }
 

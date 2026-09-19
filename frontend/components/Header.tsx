@@ -18,8 +18,22 @@ export default function Header({
   navLinksHtml?: string;
   onToggleSidebar?: () => void;
 }) {
+  const navTextRaw = (process.env.NAVBAR_TEXT ?? "dark").trim();
+  const navThemeRaw = (process.env.NAVBAR_THEME ?? "dark").trim();
+
+  const textVal = navTextRaw.replace(/^navbar-/, "");
+  const colorScheme = `navbar-${textVal}`;
+  const variant = textVal === "light" ? "light" : "dark";
+  const bgColor = navThemeRaw.startsWith("bg-") ? navThemeRaw : `bg-${navThemeRaw}`;
+
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
+    <Navbar
+      className={`${colorScheme} ${bgColor}`}
+      variant={variant}
+      data-bs-theme={variant}
+      expand="lg"
+      fixed="top"
+    >
       <Container fluid>
         {onToggleSidebar && (
           <button

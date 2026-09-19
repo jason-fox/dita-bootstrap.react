@@ -24,11 +24,7 @@ export default async function HomePage() {
 
   return (
     <Shell
-      title={
-        process.env.NEXT_PUBLIC_DOCS_TITLE ??
-        process.env.DOCS_TITLE ??
-        "Documentation"
-      }
+      title={process.env.DOCS_TITLE ?? "Documentation"}
       headerHtml={headerHtml}
       navLinksHtml={navLinksHtml}
     >

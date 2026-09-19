@@ -80,10 +80,33 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 
 | Variable | Default | Description |
 |---|---|---|
-| `NEXT_PUBLIC_DOCS_TITLE` / `DOCS_TITLE` | `"Documentation"` | Custom site title displayed in navbar branding and layout header. |
-| `NEXT_PUBLIC_DOCS_DESCRIPTION` / `DOCS_DESCRIPTION` | `"Documentation"` | Site description used in HTML metadata tags. |
+| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
+| `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
+| `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
+| `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags (e.g. `http://localhost:3100`). |
+| `CUSTOM_CSS_PATH` | *(null)* | Optional path or URL to an additional custom stylesheet. Defaults to adding nothing (null check). |
+| `DOCS_TITLE` | `"Documentation"` / `"AI Assistant"` | Custom title displayed in navbar branding and header (`frontend` defaults to `"Documentation"`, `mcp-client` defaults to `"AI Assistant"`). |
+| `DOCS_DESCRIPTION` | `"Documentation"` | Site description used in HTML metadata tags. |
 | `NEXT_PUBLIC_DATA_URL` | `http://localhost:4000/data` | Base URL used to fetch `toc.json`, topic files, and search indices. |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api` | Base URL for backend API endpoints like `GET /api/docs`. |
+
+### MCP Server (`mcp-server/`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output. `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
+| `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
+| `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
+| `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into `render_topic_ui` HTML output. Defaults to adding nothing (null check). |
+
+### Chatbot Client (`mcp-client/`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for chatbot interface (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
+| `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
+| `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
+| `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into chatbot interface. Defaults to adding nothing (null check). |
 
 ### Backend (`backend/`)
 
@@ -92,6 +115,41 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `PORT` | `4000` | Port for the Express server to listen on. |
 | `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
 
+## Customizing Branding, Favicons, and Default Links
+
+### 1. Overriding Favicons & Icons
+- **Frontend Portal (`frontend/`)**: Replace `frontend/public/favicon.svg` or `frontend/app/icon.svg` with your custom SVG icon file.
+- **Chatbot Client (`mcp-client/`)**: Replace `mcp-client/public/favicon.svg` with your custom SVG icon file.
+
+### 2. Overriding Navbar Branding Logo & Title (`header.html`)
+To override the default navbar brand logo and title link:
+- Place your custom HTML snippet in `public/header.html` (under `frontend/public/header.html` or `mcp-client/public/header.html`).
+- **Example `public/header.html`**:
+  ```html
+  <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+    <img src="/favicon.svg" alt="Logo" class="me-2" style="width: 1.75rem; height: 1.75rem;">
+    <span>My Custom Documentation</span>
+  </a>
+  ```
+
+### 3. Overriding Default Navigation Links (`nav-links.html`)
+To customize global top navigation links in the header navbar:
+- Place your custom HTML link list in `public/nav-links.html` (under `frontend/public/nav-links.html` or `mcp-client/public/nav-links.html`).
+- **Example `public/nav-links.html`**:
+  ```html
+  <ul class="navbar-nav me-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="https://example.com/docs">Main Portal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="https://example.com/api">API Reference</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="https://github.com/my-org/my-repo">GitHub</a>
+    </li>
+  </ul>
+  ```
+
 ## License
 
-Apache 2.0 — see `frontend/LICENSE`, `backend/LICENSE`, and `mcp-server/LICENSE`.
+Apache 2.0 — see [LICENSE](LICENSE).

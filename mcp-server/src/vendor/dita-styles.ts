@@ -2,12 +2,19 @@
 // with 1-to-1 visual fidelity matching the DITA Bootstrap frontend portal.
 
 export const DITA_STYLES_CSS = `
-/* --- bootswatch-static.css --- */
+/* --- bootswatch-colors.css --- */
 :root {
   --dita-prussian-blue: var(--bs-primary-text-emphasis);
   --dita-maroon: var(--bs-danger-text-emphasis);
   --dita-violet: var(--bs-purple);
   --bs-code-color: rgb(from var(--bs-danger) r g calc(b + 63));
+}
+
+/* --- bootswatch-static.css (dark-mode-only override) --- */
+[data-bs-theme="dark"] {
+  --dita-prussian-blue: #6a91cf;
+  --dita-violet: #cc99cd;
+  --dita-maroon: #ff7676;
 }
 
 /* --- common-bootstrap.css --- */
@@ -228,7 +235,7 @@ li.linklist { margin-top: 0; margin-bottom: 0; }
 .sublinklist { margin-bottom: 1em; margin-left: 1.5em; }
 .relconcepts, .reltasks, .relref, .relinfo { margin-bottom: 1em; margin-top: 1em; }
 .breadcrumb { font-size: smaller; margin-bottom: 1em; }
-ul.simple { list-style-type: none; }
+.ul.simple { list-style-type: none; }
 .dlterm { font-weight: bold; }
 .dltermexpand { font-weight: bold; margin-top: 1em; }
 *[compact="yes"] > li { margin-top: 0; }

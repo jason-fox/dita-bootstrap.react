@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DITA Docs AI Assistant</title>
+  <title>AI Assistant</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <!-- Bootstrap 5 & Icons matching DITA-Bootstrap Docs Portal -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -27,6 +27,21 @@
     })();
   </script>
   <style>
+    /* --- bootswatch-colors.css --- */
+    :root {
+      --dita-prussian-blue: var(--bs-primary-text-emphasis);
+      --dita-maroon: var(--bs-danger-text-emphasis);
+      --dita-violet: var(--bs-purple);
+      --bs-code-color: rgb(from var(--bs-danger) r g calc(b + 63));
+    }
+
+    /* --- bootswatch-static.css (dark-mode-only override) --- */
+    [data-bs-theme="dark"] {
+      --dita-prussian-blue: #6a91cf;
+      --dita-violet: #cc99cd;
+      --dita-maroon: #ff7676;
+    }
+
     .chat-bubble-user {
       max-width: 80%;
       border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
@@ -81,7 +96,7 @@
     <div class="container-fluid px-4">
       <a class="navbar-brand d-flex align-items-center fw-semibold text-white me-3" href="#">
         <img src="/favicon.svg" alt="DITA Finch Logo" style="width: 1.75rem; height: 1.75rem;" class="me-2">
-        <span>DITA Docs AI Assistant</span>
+        <span id="nav-brand-title">AI Assistant</span>
       </a>
 
       <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,7 +145,7 @@
           <div class="card shadow-sm mb-3" id="welcome-card">
             <div class="card-body">
               <h5 class="card-title text-body mb-2" id="welcome-title">
-                Welcome to Documentation AI Assistant
+                Welcome to AI Assistant
               </h5>
               <p class="card-text text-secondary small" id="welcome-desc">
                 Ask technical questions or request interactive previews for loaded documentation sets.

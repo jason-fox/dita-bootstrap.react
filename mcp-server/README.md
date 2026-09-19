@@ -1,4 +1,4 @@
-# DITA Documentation MCP Server (with MCP-UI)
+# MCP Server
 
 Model Context Protocol (MCP) server providing DITA documentation search, content retrieval, and rich **MCP-UI** React component rendering to AI assistants.
 
@@ -44,7 +44,14 @@ identifying sessions via the `Mcp-Session-Id` response/request header.
 | `get_toc` | `docId` | Returns the hierarchical Table of Contents for a doc set. |
 | `search_documentation` | `query`, `docId?` | Performs full-text MiniSearch query across topics. |
 | `get_topic_content` | `docId`, `topicPath` | Returns clean Markdown text extracted from the topic for LLM reasoning. |
-| `render_topic_ui` | `docId`, `topicPath`, `theme?` | **MCP-UI Tool**: Returns a self-contained HTML/CSS frame rendering the interactive React UI. |
+| `render_topic_ui` | `docId`, `topicPath`, `theme?` | **MCP-UI Tool**: Returns a self-contained HTML/CSS frame rendering the interactive React UI. Supports Bootswatch themes. |
+
+## Environment Variables
+
+- `BOOTSTRAP_THEME` — Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). Defaults to `"default"`. Setting `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`.
+- `NAVBAR_THEME` — Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). Defaults to `"dark"`.
+- `NAVBAR_TEXT` — Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). Defaults to `"dark"`.
+- `CUSTOM_CSS_PATH` — File path or URL to an additional custom stylesheet. Defaults to `null`/empty (adds nothing). If a local file path exists, its CSS content is inlined into the MCP-UI shell.
 
 ## Available MCP Resources
 

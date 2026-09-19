@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import express from "express";
 import cors from "cors";
@@ -13,6 +14,47 @@ const port = Number(process.env.PORT || 3200);
 
 app.use(cors());
 app.use(express.json());
+
+const DARK_ONLY_THEMES = new Set([
+  "cyborg",
+  "darkly",
+  "slate",
+  "solar",
+  "superhero",
+  "vapor",
+]);
+
+const rawTheme = (process.env.BOOTSTRAP_THEME || "default").trim();
+const themeName = rawTheme.toLowerCase();
+const isDarkOnly = DARK_ONLY_THEMES.has(themeName);
+const useBootswatch = themeName !== "" && themeName !== "default" && themeName !== "none";
+
+const docsTitle = (process.env.DOCS_TITLE || "AI Assistant").trim();
+
+const navTextRaw = (process.env.NAVBAR_TEXT || "dark").trim();
+const navThemeRaw = (process.env.NAVBAR_THEME || "dark").trim();
+
+const textVal = navTextRaw.replace(/^navbar-/, "");
+const navColorScheme = `navbar-${textVal}`;
+const navBsTheme = textVal === "light" ? "light" : "dark";
+const navBgColor = navThemeRaw.startsWith("bg-") ? navThemeRaw : `bg-${navThemeRaw}`;
+
+const bootstrapCssUrl = useBootswatch
+  ? `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${themeName}/bootstrap.min.css`
+  : "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
+
+const customCssPath = (process.env.CUSTOM_CSS_PATH || "").trim();
+let customCssElement = "";
+if (customCssPath) {
+  if (fs.existsSync(customCssPath)) {
+    try {
+      const content = fs.readFileSync(customCssPath, "utf-8");
+      customCssElement = `<style>/* CUSTOM_CSS_PATH */\n${content}\n</style>`;
+    } catch {}
+  } else {
+    customCssElement = `<link rel="stylesheet" href="${customCssPath}">`;
+  }
+}
 
 const mcpClient = new McpClientService();
 const llmService = new LlmService();
@@ -49,6 +91,13 @@ app.get("/api/health", async (_req, res) => {
     toolsCount: tools.length,
     showToolInvocations,
     docSets,
+    theme: themeName,
+    isDarkOnly,
+    docsTitle,
+    navbarText: textVal,
+    navbarTheme: navThemeRaw,
+    navbarColorScheme: navColorScheme,
+    navbarBgColor: navBgColor,
   });
 });
 
@@ -80,15 +129,58 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// Serve static frontend files from public/
+// Serve static frontend files from public/ with dynamic theme & navbar injection
 const publicDir = path.resolve(__dirname, "../public");
+
+function renderIndexHtml(): string {
+  const indexPath = path.join(publicDir, "index.html");
+  let html = fs.readFileSync(indexPath, "utf-8");
+
+  if (useBootswatch) {
+    html = html.replace(
+      "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+      bootstrapCssUrl
+    );
+  }
+
+  // Replace default navbar color scheme and background
+  const defaultNavClass = 'class="navbar navbar-expand-lg bg-dark navbar-dark border-bottom shadow-sm py-2 sticky-top flex-shrink-0" data-bs-theme="dark"';
+  const customNavClass = `class="navbar navbar-expand-lg ${navBgColor} ${navColorScheme} border-bottom shadow-sm py-2 sticky-top flex-shrink-0" data-bs-theme="${navBsTheme}"`;
+  html = html.replace(defaultNavClass, customNavClass);
+
+  if (isDarkOnly) {
+    html = html.replace('<html lang="en" data-bs-theme="light">', '<html lang="en" data-bs-theme="dark">');
+    html = html.replace('<html lang="en">', '<html lang="en" data-bs-theme="dark">');
+  }
+
+  if (docsTitle) {
+    html = html.replace("<title>AI Assistant</title>", `<title>${docsTitle}</title>`);
+    html = html.replace('<span id="nav-brand-title">AI Assistant</span>', `<span id="nav-brand-title">${docsTitle}</span>`);
+    html = html.replace("Welcome to AI Assistant", `Welcome to ${docsTitle}`);
+  }
+
+  if (customCssElement) {
+    html = html.replace("</head>", `${customCssElement}\n</head>`);
+  }
+
+  return html;
+}
+
+app.get(["/", "/index.html"], (_req, res) => {
+  res.setHeader("Content-Type", "text/html");
+  res.send(renderIndexHtml());
+});
+
 app.use(express.static(publicDir));
 
 app.get("*", (_req, res) => {
-  res.sendFile(path.join(publicDir, "index.html"));
+  res.setHeader("Content-Type", "text/html");
+  res.send(renderIndexHtml());
 });
 
 app.listen(port, () => {
   console.log(`DITA Docs MCP Client running at http://localhost:${port}`);
   console.log(`Active Provider: ${llmService.activeConfig.provider} (${llmService.activeConfig.model})`);
+  console.log(`Bootswatch Theme: ${themeName} (darkOnly: ${isDarkOnly})`);
+  console.log(`Navbar Styling: NAVBAR_THEME=${navThemeRaw} (${navBgColor}), NAVBAR_TEXT=${textVal} (${navColorScheme})`);
 });
