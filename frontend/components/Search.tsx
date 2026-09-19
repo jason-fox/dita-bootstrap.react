@@ -69,6 +69,7 @@ function isLanguageMatch(docLang?: string, filterLang?: string): boolean {
     <form
       className="position-relative mx-lg-2 search-box"
       role="search"
+      data-bs-theme="light"
       onSubmit={(event) => event.preventDefault()}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
