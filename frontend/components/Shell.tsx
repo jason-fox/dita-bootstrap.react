@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -15,6 +15,7 @@ export default function Shell({
   navToc,
   title,
   docId,
+  lang,
   headerHtml,
   navLinksHtml,
   children,
@@ -23,6 +24,7 @@ export default function Shell({
   navToc?: string;
   title: string;
   docId?: string;
+  lang?: string;
   headerHtml: string;
   navLinksHtml: string;
   children: ReactNode;
@@ -30,11 +32,18 @@ export default function Shell({
   const [showSidebar, setShowSidebar] = useState(false);
   const hasSidebar = tocEntries.length > 0;
 
+  useEffect(() => {
+    if (lang) {
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
   return (
     <>
       <Header
         title={title}
         docId={docId}
+        lang={lang}
         headerHtml={headerHtml}
         navLinksHtml={navLinksHtml}
         onToggleSidebar={hasSidebar ? () => setShowSidebar((value) => !value) : undefined}

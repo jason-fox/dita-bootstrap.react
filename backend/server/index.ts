@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
+import cluster from "node:cluster";
 import express from "express";
 import cors from "cors";
 import MiniSearch from "minisearch";
@@ -9,6 +11,13 @@ const PORT = Number(process.env.PORT ?? 4000);
 const DATA_DIR = process.env.DATA_DIR
   ? path.resolve(process.env.DATA_DIR)
   : path.resolve(__dirname, "../data");
+
+const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
+const numWorkers = envWorkers
+  ? Math.max(1, Number.parseInt(envWorkers, 10))
+  : process.env.CLUSTER_MODE === "true"
+    ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
+    : 1;
 
 interface DocSetInfo {
   id: string;
@@ -26,13 +35,14 @@ interface SearchDoc {
   shortdesc: string;
   keywords: string;
   text: string;
+  lang?: string;
 }
 
 // must match the MiniSearch.loadJSON() options in frontend/lib/search.ts -
 // the serialized index only carries term data, not this config
 const SEARCH_INDEX_OPTIONS = {
   fields: ["title", "shortdesc", "keywords", "text"],
-  storeFields: ["title", "shortdesc"],
+  storeFields: ["title", "shortdesc", "lang"],
 };
 
 // flattens an AST [type, props?, ...children] tree to its string leaves
@@ -138,8 +148,19 @@ function buildSearchIndex(docDir: string): void {
     return;
   }
 
+  let tocLang: string | undefined;
+  const tocPath = path.join(docDir, "toc.json");
+  if (fs.existsSync(tocPath)) {
+    try {
+      const toc = JSON.parse(fs.readFileSync(tocPath, "utf-8"));
+      tocLang = toc.lang;
+    } catch {}
+  }
+  const defaultLang = (process.env.DEFAULT_LANGUAGE || "en").trim();
+
   const documents: SearchDoc[] = files.map((file) => {
     const doc = JSON.parse(fs.readFileSync(path.join(docDir, file), "utf-8"));
+    const docLang = (doc.meta?.lang as string) || tocLang || defaultLang;
     return {
       id: file.replace(/\.json$/, ""),
       title: doc.meta?.title ?? "",
@@ -148,6 +169,7 @@ function buildSearchIndex(docDir: string): void {
         ? doc.meta.keywords.join(" ")
         : "",
       text: (doc.content ?? []).map(extractText).join(" "),
+      lang: docLang,
     };
   });
 
@@ -173,36 +195,53 @@ function buildAllSearchIndices(dataDir: string): void {
   }
 }
 
-const app = express();
-app.use(cors());
+if (numWorkers > 1 && cluster.isPrimary) {
+  console.log(`Primary process ${process.pid} running. Building search indices once...`);
+  buildAllSearchIndices(DATA_DIR);
+  console.log(`Forking ${numWorkers} worker processes across CPU cores...`);
+  for (let i = 0; i < numWorkers; i++) {
+    cluster.fork();
+  }
+  cluster.on("exit", (worker, code, signal) => {
+    console.warn(`Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`);
+    cluster.fork();
+  });
+} else {
+  // Worker process or single-process execution
+  if (!cluster.isWorker) {
+    buildAllSearchIndices(DATA_DIR);
+  }
 
-app.get("/health", (_req, res) => {
-  res.json({ ok: true, dataDir: DATA_DIR });
-});
+  const app = express();
+  app.use(cors());
 
-app.get("/api/docs", (_req, res) => {
-  const docSets = findDocSets(DATA_DIR);
-  res.json(docSets);
-});
+  app.get("/health", (_req, res) => {
+    res.json({ ok: true, dataDir: DATA_DIR, pid: process.pid, isWorker: cluster.isWorker });
+  });
 
-// backward compatibility alias
-app.get("/api/books", (_req, res) => {
-  const docSets = findDocSets(DATA_DIR);
-  res.json(docSets);
-});
+  app.get("/api/docs", (_req, res) => {
+    const docSets = findDocSets(DATA_DIR);
+    res.json(docSets);
+  });
 
-app.use(
-  "/data",
-  express.static(DATA_DIR, {
-    extensions: ["json"],
-    setHeaders: (res) => res.setHeader("Cache-Control", "no-cache"),
-  }),
-);
+  // backward compatibility alias
+  app.get("/api/books", (_req, res) => {
+    const docSets = findDocSets(DATA_DIR);
+    res.json(docSets);
+  });
 
-buildAllSearchIndices(DATA_DIR);
+  app.use(
+    "/data",
+    express.static(DATA_DIR, {
+      extensions: ["json"],
+      setHeaders: (res) => res.setHeader("Cache-Control", "no-cache"),
+    }),
+  );
 
-app.listen(PORT, () => {
-  console.log(`dita-docs backend listening on http://localhost:${PORT}`);
-  console.log(`serving ${DATA_DIR} under /data`);
-});
+  app.listen(PORT, () => {
+    console.log(`dita-docs backend worker ${process.pid} listening on http://localhost:${PORT}`);
+    console.log(`serving ${DATA_DIR} under /data`);
+  });
+}
+
 

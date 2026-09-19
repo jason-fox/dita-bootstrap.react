@@ -12,6 +12,8 @@ export interface DocSetOasisMetadata {
   author?: string;
   prodinfo?: string;
   lang?: string;
+  featured?: boolean;
+  priority?: number;
   navToc?: string;
   scrollspyToc?: string;
 }
@@ -33,16 +35,25 @@ export interface SearchHit {
   topicPath?: string;
   title: string;
   shortdesc: string;
+  lang?: string;
   score: number;
 }
 
 const SEARCH_INDEX_OPTIONS = {
   fields: ["title", "shortdesc", "keywords", "text"],
-  storeFields: ["title", "shortdesc"],
+  storeFields: ["title", "shortdesc", "lang"],
 };
+
+interface CachedIndex {
+  miniSearch: MiniSearch<any>;
+  mtime: number;
+}
 
 export class DocProvider {
   private dataDir: string;
+  private indexCache = new Map<string, CachedIndex>();
+  private docSetsCache: { data: DocSetOasisMetadata[]; timestamp: number } | null = null;
+  private readonly DOC_SETS_CACHE_TTL_MS = 5000;
 
   constructor(dataDir: string) {
     this.dataDir = path.resolve(dataDir);
@@ -54,6 +65,38 @@ export class DocProvider {
 
   // walks dataDir recursively, discovering any folder containing a toc.json file
   public findDocSets(dir: string = this.dataDir): DocSetOasisMetadata[] {
+    const isRootDir = dir === this.dataDir;
+    if (isRootDir && this.docSetsCache && (Date.now() - this.docSetsCache.timestamp < this.DOC_SETS_CACHE_TTL_MS)) {
+      return this.docSetsCache.data;
+    }
+
+    const results = this.scanDocSets(dir);
+
+    // Dynamic ranking: Featured / Priority docs first, then alphabetical
+    const featuredEnv = (process.env.FEATURED_DOCS || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    results.sort((a, b) => {
+      const isFeaturedA = a.featured || featuredEnv.includes(a.id);
+      const isFeaturedB = b.featured || featuredEnv.includes(b.id);
+      if (isFeaturedA !== isFeaturedB) return isFeaturedB ? 1 : -1;
+
+      const prioA = a.priority ?? (featuredEnv.includes(a.id) ? 100 : 0);
+      const prioB = b.priority ?? (featuredEnv.includes(b.id) ? 100 : 0);
+      if (prioA !== prioB) return prioB - prioA;
+
+      return a.title.localeCompare(b.title);
+    });
+
+    if (isRootDir) {
+      this.docSetsCache = { data: results, timestamp: Date.now() };
+    }
+    return results;
+  }
+
+  private scanDocSets(dir: string): DocSetOasisMetadata[] {
     const results: DocSetOasisMetadata[] = [];
     if (!fs.existsSync(dir)) return results;
 
@@ -74,6 +117,8 @@ export class DocProvider {
         let author: string | undefined = toc.author;
         let prodinfo: string | undefined = toc.prodinfo;
         let lang: string | undefined = toc.lang;
+        let featured: boolean | undefined = toc.featured;
+        let priority: number | undefined = typeof toc.priority === "number" ? toc.priority : undefined;
 
         const indexPath = path.join(dir, "index.json");
         if (fs.existsSync(indexPath)) {
@@ -85,6 +130,8 @@ export class DocProvider {
             if (meta.author) author = meta.author;
             if (meta.prodinfo) prodinfo = meta.prodinfo;
             if (meta.lang) lang = meta.lang;
+            if (typeof meta.featured === "boolean") featured = meta.featured;
+            if (typeof meta.priority === "number") priority = meta.priority;
           } catch (e) {
             console.error(`Error reading ${indexPath}:`, e);
           }
@@ -100,6 +147,8 @@ export class DocProvider {
           author,
           prodinfo,
           lang,
+          featured,
+          priority,
           navToc: toc.navToc,
           scrollspyToc: toc.scrollspyToc,
         });
@@ -110,7 +159,7 @@ export class DocProvider {
 
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        results.push(...this.findDocSets(path.join(dir, entry.name)));
+        results.push(...this.scanDocSets(path.join(dir, entry.name)));
       }
     }
 
@@ -175,7 +224,25 @@ export class DocProvider {
     return JSON.parse(fs.readFileSync(fullPath, "utf-8"));
   }
 
-  public search(query: string, docId?: string): SearchHit[] {
+  private getCachedMiniSearch(indexPath: string): MiniSearch<SearchHit> | null {
+    try {
+      const stat = fs.statSync(indexPath);
+      const cached = this.indexCache.get(indexPath);
+      if (cached && cached.mtime === stat.mtimeMs) {
+        return cached.miniSearch;
+      }
+
+      const indexData = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
+      const miniSearch = MiniSearch.loadJSON<SearchHit>(JSON.stringify(indexData), SEARCH_INDEX_OPTIONS);
+      this.indexCache.set(indexPath, { miniSearch, mtime: stat.mtimeMs });
+      return miniSearch;
+    } catch (e) {
+      console.error(`Failed to load search index at ${indexPath}:`, e);
+      return null;
+    }
+  }
+
+  public search(query: string, docId?: string, lang?: string): SearchHit[] {
     const docSets = this.findDocSets();
     const targetSets = docId
       ? docSets.filter((s) => s.id === docId || s.id.startsWith(`${docId}/`))
@@ -188,13 +255,22 @@ export class DocProvider {
       const indexPath = path.join(docDir, "search-index.json");
       if (!fs.existsSync(indexPath)) continue;
 
+      const miniSearch = this.getCachedMiniSearch(indexPath);
+      if (!miniSearch) continue;
+
       try {
-        const indexData = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
-        const miniSearch = MiniSearch.loadJSON<SearchHit>(JSON.stringify(indexData), SEARCH_INDEX_OPTIONS);
         const hits = miniSearch.search(query, {
           fuzzy: 0.2,
           prefix: true,
           boost: { title: 3, keywords: 2, shortdesc: 1.5 },
+          filter: lang
+            ? (result) => {
+                if (!result.lang) return true;
+                const docPrimary = (result.lang as string).split(/[-_]/)[0].toLowerCase();
+                const filterPrimary = lang.split(/[-_]/)[0].toLowerCase();
+                return docPrimary === filterPrimary;
+              }
+            : undefined,
         });
 
         for (const hit of hits.slice(0, 10)) {
@@ -206,11 +282,12 @@ export class DocProvider {
             topicPath: rawTopicPath,
             title: (hit.title as string) || hit.id,
             shortdesc: (hit.shortdesc as string) || "",
+            lang: (hit.lang as string) || undefined,
             score: hit.score,
           });
         }
       } catch (e) {
-        console.error(`Failed to load search index at ${indexPath}:`, e);
+        console.error(`Error querying search index at ${indexPath}:`, e);
       }
     }
 

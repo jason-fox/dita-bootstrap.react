@@ -94,9 +94,15 @@ export class LlmService {
         if (jsonText) {
           const docSets = JSON.parse(jsonText);
           if (Array.isArray(docSets) && docSets.length > 0) {
-            docCorpusSummary = "Available Documentation Sets:\n" + docSets
+            const maxShown = 3;
+            const shownSets = docSets.slice(0, maxShown);
+            const itemsText = shownSets
               .map((ds: any) => `* ${ds.title || ds.id}${ds.description ? `: ${ds.description}` : ""}`)
               .join("\n");
+            const extraText = docSets.length > maxShown
+              ? `\n* ...etc (${docSets.length - maxShown} more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
+              : "";
+            docCorpusSummary = `Available Documentation Sets (${docSets.length} total):\n${itemsText}${extraText}`;
           }
         }
       }

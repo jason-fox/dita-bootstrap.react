@@ -72,7 +72,7 @@ export default function RootLayout({
     // bootstrap.min.css sets scroll-behavior: smooth on :root; this tells Next.js's router to
     // coordinate with that instead of racing it, so navigation reliably lands at the new page.
     <html
-      lang="en"
+      lang={process.env.DEFAULT_LANGUAGE || "en"}
       data-scroll-behavior="smooth"
       {...(isDarkOnly ? { "data-bs-theme": "dark" } : {})}
     >

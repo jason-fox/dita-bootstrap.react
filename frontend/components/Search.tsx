@@ -10,11 +10,12 @@ interface SearchResult {
   id: string;
   title: string;
   shortdesc: string;
+  lang?: string;
 }
 
 const MAX_RESULTS = 8;
 
-export default function Search({ docId }: { docId?: string }) {
+export default function Search({ docId, lang }: { docId?: string; lang?: string }) {
   const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -28,6 +29,13 @@ export default function Search({ docId }: { docId?: string }) {
       .catch((error) => console.error("Failed to load search index", error));
   }, [docId]);
 
+function isLanguageMatch(docLang?: string, filterLang?: string): boolean {
+  if (!filterLang || !docLang) return true;
+  const docPrimary = docLang.split(/[-_]/)[0].toLowerCase();
+  const filterPrimary = filterLang.split(/[-_]/)[0].toLowerCase();
+  return docPrimary === filterPrimary;
+}
+
   function handleChange(value: string) {
     setQuery(value);
     const index = indexRef.current;
@@ -40,12 +48,14 @@ export default function Search({ docId }: { docId?: string }) {
       fuzzy: 0.2,
       prefix: true,
       boost: { title: 3, keywords: 2, shortdesc: 1.5 },
+      filter: lang ? (result) => isLanguageMatch(result.lang, lang) : undefined,
     });
     setResults(
       hits.slice(0, MAX_RESULTS).map((hit) => ({
         id: hit.id,
         title: (hit.title as string) || hit.id,
         shortdesc: (hit.shortdesc as string) || "",
+        lang: (hit.lang as string) || undefined,
       })),
     );
     setOpen(true);

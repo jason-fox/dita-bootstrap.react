@@ -8,12 +8,14 @@ import DarkModeToggle from "./DarkModeToggle";
 export default function Header({
   title,
   docId,
+  lang,
   headerHtml,
   navLinksHtml,
   onToggleSidebar,
 }: {
   title: string;
   docId?: string;
+  lang?: string;
   headerHtml?: string;
   navLinksHtml?: string;
   onToggleSidebar?: () => void;
@@ -72,7 +74,7 @@ export default function Header({
             />
           )}
           <div className="navbar-nav ms-auto align-items-lg-center">
-            {docId && <Search docId={docId} />}
+            {docId && <Search docId={docId} lang={lang} />}
             <DarkModeToggle />
           </div>
 

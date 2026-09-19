@@ -42,6 +42,7 @@ export interface TocDoc {
   // derived from the map's title cascade (see map2ast-bootstrap.xsl) - absent only if the
   // map has no title anywhere (no map/@title, no mainbooktitle, no topic titles)
   title?: string;
+  lang?: string;
   // raw --nav-toc/--scrollspy-toc transtype param values, passed through as-is for the
   // frontend to interpret; Toc.tsx branches on navToc (collapsible/list-group*/nav-pill*)
   navToc?: string;

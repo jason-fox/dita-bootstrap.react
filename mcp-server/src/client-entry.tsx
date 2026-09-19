@@ -22,6 +22,10 @@ function applyPayload(payload: TopicPageProps) {
   const title = docTitle && docTitle !== pageTitle ? `${docTitle} | ${pageTitle}` : pageTitle;
   document.title = title;
   document.documentElement.dataset.bsTheme = payload.theme ?? "light";
+  const lang = (payload.doc.meta?.lang as string) || (payload.toc as any)?.lang;
+  if (lang) {
+    document.documentElement.lang = lang;
+  }
 }
 
 function AppShell() {

@@ -360,22 +360,31 @@
           badge.innerHTML = `<i class="bi bi-x-circle-fill pe-3"></i> MCP Offline`;
         }
 
-        // Dynamically update Welcome Card text & quick prompts
+        // Dynamically update Welcome Card text & quick prompts (capped at max 3 items)
         if (Array.isArray(data.docSets) && data.docSets.length > 0) {
-          const titles = data.docSets.map(ds => ds.title || ds.id).join(', ');
+          const maxShown = 3;
+          const totalDocs = data.docSets.length;
+          const shownDocSets = data.docSets.slice(0, maxShown);
+          const titles = shownDocSets.map(ds => ds.title || ds.id).join(', ');
+          
           const descEl = document.getElementById('welcome-desc');
           if (descEl) {
-            descEl.textContent = `Ask technical questions or request interactive previews across loaded documentation sets: ${titles}.`;
+            if (totalDocs > maxShown) {
+              const remaining = totalDocs - maxShown;
+              descEl.textContent = `Ask technical questions or request interactive previews across ${totalDocs} loaded documentation sets (including ${titles}, and ${remaining} more).`;
+            } else {
+              descEl.textContent = `Ask technical questions or request interactive previews across loaded documentation sets: ${titles}.`;
+            }
           }
 
           const promptsContainer = document.getElementById('quick-prompts-container');
           if (promptsContainer) {
             promptsContainer.innerHTML = `
               <button onclick="sendQuickPrompt('What documentation sets are available?')" class="btn btn-outline-secondary btn-sm">
-                <span class="pe-3">📚</span>List Doc Sets
+                <span class="pe-3">📚</span>List All (${totalDocs}) Doc Sets
               </button>
             `;
-            data.docSets.forEach(ds => {
+            shownDocSets.forEach(ds => {
               const btn = document.createElement('button');
               btn.className = 'btn btn-outline-primary btn-sm';
               btn.onclick = () => sendQuickPrompt(`Show me overview for ${ds.title || ds.id}`);

@@ -43,11 +43,14 @@ function getCustomCssElement(): string {
 // Static MCP App shell (registered once via registerAppResource, see index.ts). Topic content
 // is rendered client-side in client-entry.tsx once the app connects and receives tool-result
 // data - this shell carries no per-topic data itself.
-export function renderAppShellHtml(themeOverride?: string): string {
+export function renderAppShellHtml(themeOverride?: string, langOverride?: string): string {
   const rawTheme = (themeOverride || process.env.BOOTSTRAP_THEME || "default").trim();
   const themeName = rawTheme.toLowerCase();
   const isDarkOnly = DARK_ONLY_THEMES.has(themeName);
   const useBootswatch = themeName !== "" && themeName !== "default" && themeName !== "none";
+
+  const defaultLang = (process.env.DEFAULT_LANGUAGE || "en").trim();
+  const lang = (langOverride || defaultLang).trim() || "en";
 
   const navTextRaw = (process.env.NAVBAR_TEXT || process.env.NAVBAR_COLOR_SCHEME || "dark").trim();
   const navThemeRaw = (process.env.NAVBAR_THEME || process.env.NAVBAR_BG_COLOR || "dark").trim();
@@ -63,7 +66,7 @@ export function renderAppShellHtml(themeOverride?: string): string {
   const customCssElement = getCustomCssElement();
 
   return `<!DOCTYPE html>
-<html lang="en"${darkAttr}>
+<html lang="${lang}"${darkAttr}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

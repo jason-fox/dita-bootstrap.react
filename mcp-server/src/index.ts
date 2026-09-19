@@ -1,5 +1,9 @@
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import net from "node:net";
+import cluster from "node:cluster";
+import type { Worker } from "node:cluster";
+import os from "node:os";
 import express from "express";
 import cors from "cors";
 import { Command } from "commander";
@@ -20,10 +24,12 @@ const program = new Command();
 
 program
   .name("dita-docs-mcp")
-  .description("MCP Server for DITA AST Documentation with MCP-UI React rendering")
+  .description("MCP Server for Technical Documentation search, content extraction, and UI rendering")
   .option("-t, --transport <type>", "Transport type: stdio or http", "stdio")
   .option("-p, --port <number>", "Port to run HTTP server on", "4001")
-  .option("-d, --data-dir <path>", "Path to backend data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../backend/data"));
+  .option("-d, --data-dir <path>", "Path to backend data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../backend/data"))
+  .option("-c, --cluster [workers]", "Enable multi-core cluster mode")
+  .option("-w, --workers <number>", "Number of worker processes in cluster mode");
 
 program.parse(process.argv);
 const options = program.opts();
@@ -41,7 +47,7 @@ function createMcpServer(): McpServer {
   // 1. list_documentation_sets
   mcpServer.tool(
     "list_documentation_sets",
-    "Discovers and returns metadata (OASIS aligned: title, navtitle, description, category, keywords, author, prodinfo, lang) for all available documentation sets.",
+    "Lists all available documentation sets along with their titles, descriptions, categories, and topic counts. Use this tool first to discover available document collections before querying specific topics.",
     {},
     async () => {
       const docSets = provider.findDocSets();
@@ -59,9 +65,9 @@ function createMcpServer(): McpServer {
   // 2. get_toc
   mcpServer.tool(
     "get_toc",
-    "Returns the hierarchical Table of Contents structure for a specific documentation set.",
+    "Retrieves the hierarchical Table of Contents (TOC) structure for a documentation set. Use this to inspect document organization, section headers, and available topic paths.",
     {
-      docId: z.string().describe("ID of the documentation set (e.g. dita-ot-docs, dita-bootstrap-sample)"),
+      docId: z.string().describe("ID of the target documentation set (e.g., 'dita-ot-docs', 'dita-bootstrap-sample')"),
     },
     async ({ docId }) => {
       try {
@@ -86,13 +92,14 @@ function createMcpServer(): McpServer {
   // 3. search_documentation
   mcpServer.tool(
     "search_documentation",
-    "Performs full-text fuzzy search across documentation sets using MiniSearch, returning ranked topic matches with text snippets.",
+    "Performs full-text keyword search across documentation sets and returns ranked topic matches with relevant snippets. Use this to find specific topics or concepts when the exact path is unknown.",
     {
-      query: z.string().describe("Search query string"),
-      docId: z.string().optional().describe("Optional documentation set ID to scope search"),
+      query: z.string().describe("Search query string (keywords, error messages, or feature names)"),
+      docId: z.string().optional().describe("Optional documentation set ID to scope the search to a single document collection"),
+      lang: z.string().optional().describe("Optional IETF BCP 47 language code filter (e.g., 'en', 'de', 'fr')"),
     },
-    async ({ query, docId }) => {
-      const hits = provider.search(query, docId);
+    async ({ query, docId, lang }) => {
+      const hits = provider.search(query, docId, lang);
       return {
         content: [
           {
@@ -107,10 +114,10 @@ function createMcpServer(): McpServer {
   // 4. get_topic_content
   mcpServer.tool(
     "get_topic_content",
-    "Returns clean, token-efficient Markdown text extracted from a documentation topic for reasoning and question answering.",
+    "Retrieves the full content of a documentation topic formatted in clean Markdown. Use this tool to fetch detailed technical information required for reasoning, analysis, or answering user questions.",
     {
-      docId: z.string().describe("ID of the documentation set"),
-      topicPath: z.string().describe("Topic relative path (e.g. release-notes/index or color)"),
+      docId: z.string().describe("ID of the target documentation set"),
+      topicPath: z.string().describe("Relative topic path without file extension (e.g., 'release-notes/index' or 'color')"),
     },
     async ({ docId, topicPath }) => {
       try {
@@ -145,18 +152,18 @@ function createMcpServer(): McpServer {
     },
   );
 
-  // 5. render_topic_ui (MCP App tool - see docs.md/apps.mdx SEP-1865)
+  // 5. render_topic_ui
   registerAppTool(
     mcpServer,
     "render_topic_ui",
     {
       title: "Render Topic UI",
       description:
-        "Renders a complete interactive topic view (breadcrumbs, title, AST elements, code blocks, scrollspy, table of contents) as an MCP App.",
+        "Renders an interactive, styled visual view of a documentation topic (including layout components, code blocks, and table of contents) for inline user display.",
       inputSchema: z.object({
-        docId: z.string().describe("ID of the documentation set"),
-        topicPath: z.string().describe("Topic relative path (e.g. release-notes/index or color)"),
-        theme: z.enum(["light", "dark"]).optional().default("light").describe("Color theme for rendering"),
+        docId: z.string().describe("ID of the target documentation set"),
+        topicPath: z.string().describe("Relative topic path to render (e.g., 'release-notes/index' or 'color')"),
+        theme: z.enum(["light", "dark"]).optional().default("light").describe("Color theme for the rendered UI ('light' or 'dark')"),
       }),
       _meta: { ui: { resourceUri: TOPIC_VIEWER_RESOURCE_URI } },
     },
@@ -194,6 +201,10 @@ function createMcpServer(): McpServer {
   mcpServer.resource(
     "library",
     "docs://library",
+    {
+      description: "JSON catalog listing metadata for all available documentation sets",
+      mimeType: "application/json",
+    },
     async (uri) => ({
       contents: [
         {
@@ -208,17 +219,37 @@ function createMcpServer(): McpServer {
   mcpServer.resource(
     "summary",
     "docs://summary",
+    {
+      description: "Human-readable summary of available documentation sets and descriptions",
+      mimeType: "text/plain",
+    },
     async (uri) => {
+      if (process.env.CORPUS_SUMMARY_OVERRIDE) {
+        return {
+          contents: [
+            {
+              uri: uri.href,
+              mimeType: "text/plain",
+              text: process.env.CORPUS_SUMMARY_OVERRIDE.trim(),
+            },
+          ],
+        };
+      }
       const docSets = provider.findDocSets();
-      const summaryText = docSets
+      const maxShown = 3;
+      const shownSets = docSets.slice(0, maxShown);
+      const summaryText = shownSets
         .map((ds) => `* ${ds.title} (${ds.id})${ds.description ? `: ${ds.description}` : ""}`)
         .join("\n");
+      const extraText = docSets.length > maxShown
+        ? `\n* ...etc (${docSets.length - maxShown} more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
+        : "";
       return {
         contents: [
           {
             uri: uri.href,
             mimeType: "text/plain",
-            text: `Available Documentation Sets:\n${summaryText}`,
+            text: `Available Documentation Sets (${docSets.length} total):\n${summaryText}${extraText}`,
           },
         ],
       };
@@ -233,6 +264,82 @@ function createMcpServer(): McpServer {
 async function main() {
   const transportType = options.transport.toLowerCase();
 
+  const isCluster =
+    options.cluster !== undefined ||
+    options.workers !== undefined ||
+    process.env.CLUSTER_MODE === "true" ||
+    process.env.WEB_CONCURRENCY !== undefined;
+
+  let workerCount = 1;
+  if (options.workers) {
+    workerCount = Math.max(1, Number.parseInt(options.workers, 10));
+  } else if (typeof options.cluster === "string") {
+    workerCount = Math.max(1, Number.parseInt(options.cluster, 10));
+  } else if (process.env.WEB_CONCURRENCY) {
+    workerCount = Math.max(1, Number.parseInt(process.env.WEB_CONCURRENCY, 10));
+  } else if (isCluster) {
+    workerCount = Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length);
+  }
+
+  if (isCluster && workerCount > 1 && cluster.isPrimary) {
+    console.log(`dita-docs-mcp primary process ${process.pid} running. Spawning ${workerCount} sticky worker processes...`);
+    const workers: Worker[] = [];
+
+    for (let i = 0; i < workerCount; i++) {
+      workers.push(cluster.fork());
+    }
+
+    cluster.on("exit", (worker, code, signal) => {
+      console.warn(`Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`);
+      const idx = workers.indexOf(worker);
+      const newWorker = cluster.fork();
+      if (idx !== -1) {
+        workers[idx] = newWorker;
+      } else {
+        workers.push(newWorker);
+      }
+    });
+
+    if (transportType === "http") {
+      const port = Number(options.port || 4001);
+
+      function hashString(str: string): number {
+        let hash = 2166136261;
+        for (let i = 0; i < str.length; i++) {
+          hash ^= str.charCodeAt(i);
+          hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+        }
+        return hash >>> 0;
+      }
+
+      const server = net.createServer({ pauseOnConnect: true }, (socket) => {
+        socket.once("data", (buffer) => {
+          const text = buffer.toString("utf-8");
+          const match = text.match(/mcp-session-id:\s*([^\r\n]+)/i);
+          const key = match ? match[1].trim() : (socket.remoteAddress || "default");
+
+          const activeWorkers = workers.filter((w) => w.isConnected() && !w.isDead());
+          if (activeWorkers.length === 0) {
+            socket.destroy();
+            return;
+          }
+
+          const targetWorker = activeWorkers[hashString(key) % activeWorkers.length];
+          targetWorker.send({ type: "sticky-connection" }, socket);
+          socket.unshift(buffer);
+        });
+      });
+
+      server.listen(port, () => {
+        console.log(`dita-docs-mcp primary sticky router listening on http://localhost:${port}`);
+      });
+    } else {
+      console.log("dita-docs-mcp primary running in stdio cluster mode");
+    }
+    return;
+  }
+
+  // Worker process or single-process execution
   if (transportType === "http") {
     const port = Number(options.port || 4001);
     const app = express();
@@ -338,9 +445,22 @@ async function main() {
       }
     }, SESSION_IDLE_TIMEOUT_MS).unref();
 
-    app.listen(port, () => {
-      console.log(`dita-docs-mcp server running on Streamable HTTP at http://localhost:${port}/mcp`);
+    const httpServer = app.listen(isCluster && cluster.isWorker ? 0 : port, () => {
+      console.log(
+        `dita-docs-mcp worker ${process.pid} running on Streamable HTTP${
+          isCluster && cluster.isWorker ? " (sticky worker)" : ` at http://localhost:${port}/mcp`
+        }`
+      );
     });
+
+    if (isCluster && cluster.isWorker) {
+      process.on("message", (msg: any, socket: net.Socket) => {
+        if (msg?.type === "sticky-connection" && socket) {
+          httpServer.emit("connection", socket);
+          socket.resume();
+        }
+      });
+    }
   } else {
     // Default: stdio transport
     const transport = new StdioServerTransport();
@@ -353,3 +473,4 @@ main().catch((error) => {
   console.error("Fatal error running dita-docs-mcp server:", error);
   process.exit(1);
 });
+

@@ -140,6 +140,7 @@ export default async function ViewPage({
     <Shell
       title={toc?.title ?? docId}
       docId={docId}
+      lang={doc.meta.lang || toc?.lang}
       tocEntries={toc?.toc ?? []}
       navToc={toc?.navToc}
       headerHtml={headerHtml}

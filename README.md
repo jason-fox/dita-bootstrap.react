@@ -83,6 +83,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
 | `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
 | `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
+| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language code passed to root `<html lang="...">` element when not specified in topic metadata. |
 | `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags (e.g. `http://localhost:3100`). |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional path or URL to an additional custom stylesheet. Defaults to adding nothing (null check). |
 | `DOCS_TITLE` | `"Documentation"` / `"AI Assistant"` | Custom title displayed in navbar branding and header (`frontend` defaults to `"Documentation"`, `mcp-client` defaults to `"AI Assistant"`). |
@@ -97,7 +98,11 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output. `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
 | `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
 | `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
+| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag used for the root `<html lang="...">` attribute in `render_topic_ui` HTML output. |
+| `FEATURED_DOCS` | *(empty)* | Comma-separated list of document set IDs to prioritize at the top of TOC listings and search discovery. |
+| `CORPUS_SUMMARY_OVERRIDE` | *(null)* | Optional custom text description of the documentation corpus. Overrides automatic document title slicing for the LLM `docs://summary` resource. |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into `render_topic_ui` HTML output. Defaults to adding nothing (null check). |
+| `WEB_CONCURRENCY` / `CLUSTER_MODE` | *(single)* | Set `WEB_CONCURRENCY=<number>` or `CLUSTER_MODE=true` to run multi-worker sticky-session cluster routing across CPU cores. |
 
 ### Chatbot Client (`mcp-client/`)
 
@@ -106,7 +111,10 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for chatbot interface (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
 | `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
 | `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
+| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag set on root `<html lang="...">` HTML element. |
+| `CORPUS_SUMMARY_OVERRIDE` | *(null)* | Optional custom text string injected into the chatbot's system prompt to describe loaded document sets. |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into chatbot interface. Defaults to adding nothing (null check). |
+| `WEB_CONCURRENCY` / `CLUSTER_MODE` | *(single)* | Set `WEB_CONCURRENCY=<number>` or `CLUSTER_MODE=true` to scale chatbot request handlers across multiple CPU cores. |
 
 ### Backend (`backend/`)
 
@@ -114,6 +122,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 |---|---|---|
 | `PORT` | `4000` | Port for the Express server to listen on. |
 | `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
+| `WEB_CONCURRENCY` / `CLUSTER_MODE` | *(single)* | Set `WEB_CONCURRENCY=<number>` or `CLUSTER_MODE=true` to run pre-fork search indexing and multi-worker cluster server execution. |
 
 ## Customizing Branding, Favicons, and Default Links
 
