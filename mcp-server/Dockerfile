@@ -1,10 +1,16 @@
-FROM node:22-alpine
+# Stage 1: Build stage
+FROM node:22-alpine AS builder
+
+ARG BUILD_VERSION=unknown
 
 WORKDIR /app
 
 # Copy package manifests for mcp-server and frontend
 COPY mcp-server/package*.json ./mcp-server/
 COPY frontend/package*.json ./frontend/
+
+WORKDIR /app/frontend
+RUN npm ci || npm install
 
 WORKDIR /app/mcp-server
 RUN npm ci || npm install
@@ -16,11 +22,26 @@ COPY frontend ./frontend
 WORKDIR /app/mcp-server
 RUN npm run build
 
+# Stage 2: Runner stage
+FROM node:22-alpine AS runner
+
+ARG BUILD_VERSION=unknown
+ENV NODE_ENV=production
+ENV PORT=4001
+ENV DATA_DIR=/app/data
+ENV BUILD_VERSION=${BUILD_VERSION}
+
+WORKDIR /app/mcp-server
+
+# Copy package manifest and compiled dist from builder
+COPY --from=builder /app/mcp-server/package*.json ./
+COPY --from=builder /app/mcp-server/dist ./dist
+
+# Install production dependencies only
+RUN npm ci --omit=dev || npm install --only=production
+
 # Volume mount point for DITA AST documentation sets
 VOLUME ["/app/data"]
-
-ENV DATA_DIR=/app/data
-ENV PORT=4001
 
 EXPOSE 4001
 

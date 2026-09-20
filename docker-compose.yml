@@ -6,6 +6,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
     container_name: dita-docs-backend
     ports:
       - "4000:4000"
@@ -21,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: mcp-server/Dockerfile
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
     container_name: dita-docs-mcp-server
     ports:
       - "4001:4001"
@@ -39,6 +43,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
     container_name: dita-docs-frontend
     ports:
       - "3100:3100"
@@ -61,6 +67,8 @@ services:
     build:
       context: ./mcp-client
       dockerfile: Dockerfile
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
     container_name: dita-docs-mcp-client
     ports:
       - "3200:3200"
