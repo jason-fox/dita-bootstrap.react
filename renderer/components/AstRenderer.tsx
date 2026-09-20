@@ -379,6 +379,8 @@ function renderCodeBlock(
   );
 }
 
+import { useActiveTheme } from "../lib/theme";
+
 function renderNode(
   node: AstNode,
   key: React.Key,
@@ -386,6 +388,7 @@ function renderNode(
   lang?: string,
   onNavigate?: (docId: string, topicPath: string) => void,
   onToggleSidebar?: () => void,
+  activeTheme?: string,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -404,6 +407,15 @@ function renderNode(
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
 
+  // Automatically apply activeTheme to NavDropdown and Dropdown popups if not explicitly set
+  if (
+    activeTheme &&
+    (type === "NavDropdown" || type === "Dropdown" || type === "DropdownButton") &&
+    !resolvedProps["data-bs-theme"]
+  ) {
+    resolvedProps["data-bs-theme"] = activeTheme;
+  }
+
   // Intercept search form role or class
   if (
     resolvedProps.role === "search" ||
@@ -415,7 +427,12 @@ function renderNode(
 
   // Intercept theme toggle button role
   if (resolvedProps.role === "theme-toggle") {
-    return <DarkModeToggle key={key} />;
+    return (
+      <DarkModeToggle
+        key={key}
+        data-bs-theme={resolvedProps["data-bs-theme"] as string | undefined}
+      />
+    );
   }
 
   // Intercept sidebar toggle button click
@@ -444,7 +461,7 @@ function renderNode(
       };
 
       const renderedChildren = children.map((child, index) =>
-        renderNode(child, index, docId, lang, onNavigate, onToggleSidebar),
+        renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
       );
       return React.createElement(
         "a",
@@ -476,7 +493,7 @@ function renderNode(
   ) {
     const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
     const renderedChildren = children.map((child, index) =>
-      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar),
+      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
     );
     return (
       <CollapseFromAst
@@ -502,7 +519,7 @@ function renderNode(
   }
   const Component = componentRegistry[type] ?? type;
   const rendered = children.map((child, index) =>
-    renderNode(child, index, docId, lang, onNavigate, onToggleSidebar),
+    renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
   );
 
   return React.createElement(Component, { key, ...resolvedProps }, ...rendered);
@@ -521,10 +538,12 @@ export default function AstRenderer({
   onNavigate?: (docId: string, topicPath: string) => void;
   onToggleSidebar?: () => void;
 }) {
+  const activeTheme = useActiveTheme();
+
   return (
     <ToggleProvider>
       {nodes.map((node, index) =>
-        renderNode(node, index, docId, lang, onNavigate, onToggleSidebar),
+        renderNode(node, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
       )}
     </ToggleProvider>
   );

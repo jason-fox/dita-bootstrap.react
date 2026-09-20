@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { useActiveTheme } from "../lib/theme";
 
 type Mode = "light" | "dark" | "auto";
 
@@ -32,6 +33,7 @@ function applyMode(mode: Mode) {
 }
 
 export default function DarkModeToggle() {
+  const activeTheme = useActiveTheme();
   const [mode, setMode] = useState<Mode>("auto");
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export default function DarkModeToggle() {
       align="end"
       className="nav-item"
       aria-label="Toggle theme"
+      data-bs-theme={activeTheme}
     >
       {MODES.map((m) => (
         <NavDropdown.Item

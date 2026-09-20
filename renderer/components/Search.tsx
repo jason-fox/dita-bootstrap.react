@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type MiniSearch from "minisearch";
 import { loadSearchIndex, type SearchDoc } from "../lib/search";
 import { resolveHref } from "../lib/api";
+import { useActiveTheme } from "../lib/theme";
 
 interface SearchResult {
   id: string;
@@ -16,6 +17,7 @@ interface SearchResult {
 const MAX_RESULTS = 8;
 
 export default function Search({ docId, lang }: { docId?: string; lang?: string }) {
+  const activeTheme = useActiveTheme();
   const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -69,7 +71,7 @@ function isLanguageMatch(docLang?: string, filterLang?: string): boolean {
     <form
       className="position-relative mx-lg-2 search-box"
       role="search"
-      data-bs-theme="light"
+      data-bs-theme={activeTheme}
       onSubmit={(event) => event.preventDefault()}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
