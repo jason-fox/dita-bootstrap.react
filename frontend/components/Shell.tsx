@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
 import Header from "./Header";
+import Menubar from "./Menubar";
 import Toc from "./Toc";
 import AstRenderer from "./AstRenderer";
 import type { AstArray } from "../lib/api";
@@ -14,6 +15,7 @@ import type { AstArray } from "../lib/api";
 export default function Shell({
   tocEntries = [],
   navToc,
+  menubar,
   title,
   docId,
   lang,
@@ -24,6 +26,7 @@ export default function Shell({
 }: {
   tocEntries?: AstArray[];
   navToc?: string;
+  menubar?: boolean;
   title: string;
   docId?: string;
   lang?: string;
@@ -66,6 +69,7 @@ export default function Shell({
         lang={lang}
         onToggleSidebar={hasSidebar ? () => setShowSidebar((value) => !value) : undefined}
       />
+      {menubar && <Menubar entries={tocEntries} docId={docId} />}
       <Container fluid="xxl">
         {hasSidebar ? (
           <Row>
@@ -80,7 +84,7 @@ export default function Shell({
                   <Offcanvas.Title>{title}</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body className="p-0">
-                  <Toc entries={tocEntries} navToc={navToc} docId={docId} />
+                  <Toc entries={tocEntries} navToc={navToc} menubar={menubar} docId={docId} />
                 </Offcanvas.Body>
               </Offcanvas>
             </div>

@@ -26,6 +26,7 @@ interface DocSetInfo {
   group?: string;
   navToc?: string;
   scrollspyToc?: string;
+  menubar?: boolean;
   topicCount: number;
 }
 
@@ -123,6 +124,7 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
         group,
         navToc: toc.navToc,
         scrollspyToc: toc.scrollspyToc,
+        menubar: toc.menubar,
         topicCount,
       });
     } catch (e) {

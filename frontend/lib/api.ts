@@ -15,6 +15,7 @@ export interface DocSetInfo {
   group?: string;
   navToc?: string;
   scrollspyToc?: string;
+  menubar?: boolean;
   topicCount: number;
 }
 
@@ -47,6 +48,7 @@ export interface TocDoc {
   // frontend to interpret; Toc.tsx branches on navToc (collapsible/list-group*/nav-pill*)
   navToc?: string;
   scrollspyToc?: string;
+  menubar?: boolean;
   header?: AstArray;
   footer?: AstArray;
   accessibility?: { main?: string; nav?: string };

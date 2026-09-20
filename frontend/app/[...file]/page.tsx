@@ -131,6 +131,7 @@ export default async function ViewPage({
       lang={doc.meta.lang || toc?.lang}
       tocEntries={toc?.toc ?? []}
       navToc={toc?.navToc}
+      menubar={toc?.menubar}
       headerAst={toc?.header}
       footerAst={toc?.footer}
       accessibility={toc?.accessibility}

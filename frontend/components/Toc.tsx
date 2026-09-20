@@ -288,15 +288,21 @@ function NavPillToc({
 export default function Toc({
   entries,
   navToc = "collapsible",
+  menubar = false,
   docId,
 }: {
   entries: AstArray[];
   navToc?: string;
+  menubar?: boolean;
   docId?: string;
 }) {
   const pathname = usePathname();
   const isListGroup = navToc.startsWith("list-group");
   const isNavPill = navToc.startsWith("nav-pill");
+
+  const displayEntries = menubar
+    ? entries.filter((entry) => containsPath(entry, pathname, docId))
+    : entries;
 
   return (
     <nav
@@ -310,13 +316,13 @@ export default function Toc({
         className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}
       >
         {isListGroup ? (
-          <ListGroupToc entries={entries} pathname={pathname} docId={docId} />
+          <ListGroupToc entries={displayEntries} pathname={pathname} docId={docId} />
         ) : isNavPill ? (
-          <NavPillToc entries={entries} pathname={pathname} docId={docId} />
+          <NavPillToc entries={displayEntries} pathname={pathname} docId={docId} />
         ) : (
           <div className="flex-column bd-links">
             <ul className="list-unstyled mb-0 py-3 pt-md-1">
-              {entries.map((entry, index) => (
+              {displayEntries.map((entry, index) => (
                 <TocEntryItem key={index} entry={entry} pathname={pathname} docId={docId} />
               ))}
             </ul>

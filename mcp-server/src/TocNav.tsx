@@ -8,6 +8,7 @@ import { isPropsObject, resolveStyle, type AstArray } from "../../frontend/lib/a
 export interface TocNavProps {
   entries: AstArray[];
   navToc?: string;
+  menubar?: boolean;
   docId: string;
   activeTopicPath: string;
   theme?: "light" | "dark";
@@ -308,6 +309,7 @@ function NavPillEntryItem({
 export default function TocNav({
   entries,
   navToc = "collapsible",
+  menubar = false,
   docId,
   activeTopicPath,
   theme,
@@ -316,12 +318,16 @@ export default function TocNav({
   const isListGroup = navToc.startsWith("list-group");
   const isNavPill = navToc.startsWith("nav-pill");
 
+  const displayEntries = menubar
+    ? entries.filter((entry) => containsActive(entry, activeTopicPath))
+    : entries;
+
   return (
     <nav aria-label="Table of contents" id="bs-sidebar-nav" role="navigation" className="d-flex flex-column h-100 overflow-y-auto">
       <div className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}>
         {isListGroup ? (
           <div className="list-group me-3">
-            {entries.map((entry, i) => (
+            {displayEntries.map((entry, i) => (
               <ListGroupEntryItem
                 key={i}
                 entry={entry}
@@ -335,7 +341,7 @@ export default function TocNav({
           </div>
         ) : isNavPill ? (
           <nav className="nav nav-pills flex-column navbar-light">
-            {entries.map((entry, i) => (
+            {displayEntries.map((entry, i) => (
               <NavPillEntryItem
                 key={i}
                 entry={entry}
@@ -349,7 +355,7 @@ export default function TocNav({
         ) : (
           <div className="flex-column bd-links">
             <ul className="list-unstyled mb-0 py-3 pt-md-1">
-              {entries.map((entry, i) => (
+              {displayEntries.map((entry, i) => (
                 <TocEntryItem
                   key={i}
                   entry={entry}

@@ -67,6 +67,7 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
             <TocNav
               entries={toc!.toc}
               navToc={toc!.navToc}
+              menubar={toc?.menubar}
               docId={docId}
               activeTopicPath={topicPath}
               theme={theme}
@@ -101,6 +102,7 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
             <TocNav
               entries={toc!.toc}
               navToc={toc!.navToc}
+              menubar={toc?.menubar}
               docId={docId}
               activeTopicPath={topicPath}
               theme={theme}
