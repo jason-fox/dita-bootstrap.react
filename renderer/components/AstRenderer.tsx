@@ -325,9 +325,10 @@ function resolveSrc(src: unknown, docId?: string): unknown {
   ) {
     return src;
   }
+  const cleanSrc = src.replace(/^(\.\.\/|\.\/)+/, "");
   const prefix =
     docId && docId !== "default" ? `${DATA_URL}/${docId}` : DATA_URL;
-  return `${prefix}/${src}`;
+  return `${prefix}/${cleanSrc}`;
 }
 
 // DITA allows an ancestor-level default language that's resolved on the XSLT side, invisible

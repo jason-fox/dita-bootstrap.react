@@ -71,6 +71,11 @@ export function renderAppShellHtml(themeOverride?: string, langOverride?: string
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DITA Docs Topic Viewer</title>
+  <script>
+    if (typeof process === "undefined") {
+      window.process = { env: { NODE_ENV: "production" } };
+    }
+  </script>
   <link rel="stylesheet" href="${bootstrapCssUrl}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   ${customCssElement}

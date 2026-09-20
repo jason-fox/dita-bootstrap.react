@@ -29,6 +29,9 @@ const result = await esbuild.build({
     "react/jsx-runtime": path.join(root, "node_modules/react/jsx-runtime"),
     "react-dom/client": path.join(root, "node_modules/react-dom/client"),
   },
+  banner: {
+    js: 'if (typeof process === "undefined") { window.process = { env: { NODE_ENV: "production" } }; }',
+  },
   define: {
     // AstRenderer.tsx pulls these in transitively via lib/api.ts; `process` doesn't exist
     // in a browser, so leaving them unreplaced throws ReferenceError before hydration runs.
@@ -36,6 +39,8 @@ const result = await esbuild.build({
     "process.env.NODE_ENV": '"production"',
     "process.env.NEXT_PUBLIC_DATA_URL": '"http://localhost:4000/data"',
     "process.env.NEXT_PUBLIC_API_URL": '"http://localhost:4000/api"',
+    "process.env.INTERNAL_DATA_URL": '"http://localhost:4000/data"',
+    "process.env.INTERNAL_API_URL": '"http://localhost:4000/api"',
   },
   write: false,
 });

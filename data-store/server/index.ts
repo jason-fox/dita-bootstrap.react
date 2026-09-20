@@ -160,20 +160,28 @@ function buildSearchIndex(docDir: string): void {
   }
   const defaultLang = (process.env.DEFAULT_LANGUAGE || "en").trim();
 
-  const documents: SearchDoc[] = files.map((file) => {
-    const doc = JSON.parse(fs.readFileSync(path.join(docDir, file), "utf-8"));
-    const docLang = (doc.meta?.lang as string) || tocLang || defaultLang;
-    return {
-      id: file.replace(/\.json$/, ""),
-      title: doc.meta?.title ?? "",
-      shortdesc: doc.meta?.shortdesc ?? "",
-      keywords: Array.isArray(doc.meta?.keywords)
-        ? doc.meta.keywords.join(" ")
-        : "",
-      text: (doc.content ?? []).map(extractText).join(" "),
-      lang: docLang,
-    };
-  });
+  const documents: SearchDoc[] = [];
+  for (const file of files) {
+    const fullPath = path.join(docDir, file);
+    try {
+      const raw = fs.readFileSync(fullPath, "utf-8").trim();
+      if (!raw) continue;
+      const doc = JSON.parse(raw);
+      const docLang = (doc.meta?.lang as string) || tocLang || defaultLang;
+      documents.push({
+        id: file.replace(/\.json$/, ""),
+        title: doc.meta?.title ?? "",
+        shortdesc: doc.meta?.shortdesc ?? "",
+        keywords: Array.isArray(doc.meta?.keywords)
+          ? doc.meta.keywords.join(" ")
+          : "",
+        text: (doc.content ?? []).map(extractText).join(" "),
+        lang: docLang,
+      });
+    } catch (e: any) {
+      console.warn(`[${path.basename(docDir)}] Skipping unparseable topic file ${file}:`, e.message || e);
+    }
+  }
 
   const miniSearch = new MiniSearch<SearchDoc>(SEARCH_INDEX_OPTIONS);
   miniSearch.addAll(documents);
