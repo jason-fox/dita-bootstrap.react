@@ -1,8 +1,8 @@
-# DITA Bootstrap React Frontend
+# Abstract Syntax Tree Renderer
 
 Next.js + react-bootstrap web application that fetches `[type, props?, ...children]` JSON AST files (produced by the `dita-bootstrap.ast` DITA-OT plugin) and recursively renders them into real `react-bootstrap` components.
 
-See the [top-level README](../README.md) for how this application connects with `backend/`.
+See the [top-level README](../README.md) for how this application connects with `data-store/`.
 
 ## Key Features
 
@@ -24,7 +24,7 @@ npm install
 npm run dev -- -p 3100
 ```
 
-Requires the backend running (default `http://localhost:4000`).
+Requires the data-store running (default `http://localhost:4000`).
 
 ## Environment Variables
 
@@ -34,7 +34,7 @@ Requires the backend running (default `http://localhost:4000`).
 - `DOCS_TITLE` — Site title displayed in header and page title (default `"Documentation"`).
 - `DOCS_DESCRIPTION` — Site description for HTML metadata (default `"Documentation"`).
 - `NEXT_PUBLIC_DATA_URL` — Base URL for JSON AST static files (default `http://localhost:4000/data`).
-- `NEXT_PUBLIC_API_URL` — Base URL for backend API routes (default `http://localhost:4000/api`).
+- `NEXT_PUBLIC_API_URL` — Base URL for data-store API routes (default `http://localhost:4000/api`).
 
 ## Header & Footer AST Customization
 

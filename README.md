@@ -1,11 +1,12 @@
 # DITA Bootstrap AST Harness & MCP Server
 
 A harness and Model Context Protocol (MCP) server for viewing and querying `dita-bootstrap.ast` transtype output.
-The workspace supports discovering and displaying multiple AST documentation sets (books, guides, or document sets) stored in subdirectories under the backend's data folder.
+The workspace supports discovering and displaying multiple Abstract Syntax Tree (AST) documentation sets (books, guides, or document sets) stored in subdirectories under the data-store's data folder.
 
-- **`backend/`** — Express static file server and API. Serves JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin, scans for documentation sets recursively (`toc.json`), and builds per-set MiniSearch indices.
-- **`frontend/`** — Next.js + react-bootstrap web app that presents a card grid library landing page and renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars and dark mode support.
+- **`data-store/`** — Express static file server and API. Serves JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin, scans for documentation sets recursively (`toc.json`), and builds per-set MiniSearch indices.
+- **`renderer/`** — Next.js + react-bootstrap web app that presents a card grid library landing page and renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars and dark mode support.
 - **`mcp-server/`** — MCP Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), MiniSearch full-text search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces.
+- **`mcp-client/`** - LLM-agnostic web chatbot client for the MCP Server, featuring real-time AI assistant chat with automatic Model Context Protocol (MCP) tool calling and interactive UI rendering.
 
 ## Prerequisites
 
@@ -17,24 +18,24 @@ dita --input=path/to/your.ditamap \
      --output=path/to/output
 ```
 
-Then sync the generated output folder into a subdirectory under `backend/data/`:
+Then sync the generated output folder into a subdirectory under `data-store/data/`:
 
 ```console
-rsync -a --delete path/to/output/ backend/data/my-doc-set/
+rsync -a --delete path/to/output/ data-store/data/my-doc-set/
 ```
 
-Any subdirectory in `backend/data/` containing a `toc.json` file will automatically be discovered as a documentation set.
+Any subdirectory in `data-store/data/` containing a `toc.json` file will automatically be discovered as a documentation set.
 
 ## Running
 
 ```console
-# 1. backend (port 4000)
-cd backend
+# 1. data-store (port 4000)
+cd data-store
 npm install
 npm run dev
 
-# 2. frontend (port 3100)
-cd frontend
+# 2. renderer (port 3100)
+cd renderer
 npm install
 npm run dev -- -p 3100
 
@@ -59,7 +60,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
       "args": [
         "/path/to/react-harness/mcp-server/dist/mcp-server/src/index.js",
         "--transport", "stdio",
-        "--data-dir", "/path/to/react-harness/backend/data"
+        "--data-dir", "/path/to/react-harness/data-store/data"
       ]
     }
   }
@@ -76,7 +77,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 
 ## Environment Variables
 
-### Frontend (`frontend/`)
+### Renderer (`renderer/`)
 
 | Variable | Default | Description |
 |---|---|---|
@@ -84,10 +85,10 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language code passed to root `<html lang="...">` element when not specified in topic metadata. |
 | `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags (e.g. `http://localhost:3100`). |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional path or URL to an additional custom stylesheet. Defaults to adding nothing (null check). |
-| `DOCS_TITLE` | `"Documentation"` / `"AI Assistant"` | Custom title displayed in navbar branding and header (`frontend` defaults to `"Documentation"`, `mcp-client` defaults to `"AI Assistant"`). |
+| `DOCS_TITLE` | `"Documentation"` / `"AI Assistant"` | Custom title displayed in navbar branding and header (`renderer` defaults to `"Documentation"`, `mcp-client` defaults to `"AI Assistant"`). |
 | `DOCS_DESCRIPTION` | `"Documentation"` | Site description used in HTML metadata tags. |
 | `NEXT_PUBLIC_DATA_URL` | `http://localhost:4000/data` | Base URL used to fetch `toc.json`, topic files, and search indices. |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api` | Base URL for backend API endpoints like `GET /api/docs`. |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api` | Base URL for data-store API endpoints like `GET /api/docs`. |
 
 ### MCP Server (`mcp-server/`)
 
@@ -110,7 +111,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into chatbot interface. Defaults to adding nothing (null check). |
 | `WEB_CONCURRENCY` / `CLUSTER_MODE` | *(single)* | Set `WEB_CONCURRENCY=<number>` or `CLUSTER_MODE=true` to scale chatbot request handlers across multiple CPU cores. |
 
-### Backend (`backend/`)
+### Data Store (`data-store/`)
 
 | Variable | Default | Description |
 |---|---|---|
@@ -128,11 +129,11 @@ During DITA-OT publishing (`org.dita-bootstrap.ast`), include files are specifie
 
 The AST includes support for:
 - `<document-title/>` — automatically inserts the title of the document set.
-- `role="search"` — intercepted by the frontend to render live client-side search.
-- `role="theme-toggle"` — intercepted by the frontend to render the dark mode toggle button.
+- `role="search"` — intercepted by the renderer to render live client-side search.
+- `role="theme-toggle"` — intercepted by the renderer to render the dark mode toggle button.
 
 ### Overriding Favicons & Icons
-- **Frontend Portal (`frontend/`)**: Replace `frontend/public/favicon.svg` or `frontend/app/icon.svg` with your custom SVG icon file.
+- **Renderer Portal (`renderer/`)**: Replace `renderer/public/favicon.svg` or `renderer/app/icon.svg` with your custom SVG icon file.
 - **Chatbot Client (`mcp-client/`)**: Replace `mcp-client/public/favicon.svg` with your custom SVG icon file.
 
 ## License

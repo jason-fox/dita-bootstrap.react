@@ -5,7 +5,7 @@
       "args": [
         "mcp-server/dist/mcp-server/src/index.js",
         "--transport", "stdio",
-        "--data-dir", "backend/data"
+        "--data-dir", "data-store/data"
       ]
     }
   }

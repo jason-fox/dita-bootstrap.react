@@ -1,4 +1,4 @@
-# MCP Server
+# Abstract Syntax Tree MCP Server
 
 Model Context Protocol (MCP) server providing DITA documentation search, content retrieval, and rich **MCP-UI** React component rendering to AI assistants.
 
@@ -23,13 +23,13 @@ npm run build
 ### 1. Standard I/O Transport (`stdio` - default)
 
 ```console
-npx dita-docs-mcp --transport stdio --data-dir ../backend/data
+npx dita-docs-mcp --transport stdio --data-dir ../data-store/data
 ```
 
 ### 2. Streamable HTTP Transport (`http`)
 
 ```console
-npx dita-docs-mcp --transport http --port 4001 --data-dir ../backend/data
+npx dita-docs-mcp --transport http --port 4001 --data-dir ../data-store/data
 ```
 
 Serves the current MCP Streamable HTTP spec on a single `/mcp` endpoint (`POST` for

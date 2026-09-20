@@ -1,6 +1,6 @@
-# DITA Bootstrap AST File Server & API
+# Abstract Syntax Tree Data Store
 
-Express static file server and API that serves `dita-bootstrap.ast` transtype output (per-topic JSON files plus `toc.json`) to the `frontend/` app.
+Express static file server and API that serves `dita-bootstrap.ast` transtype output (one file per topic JSON files plus a `toc.json`) to the `renderer/` app.
 
 See the [top-level README](../README.md) for how to generate AST output from the DITA-OT toolkit and sync it into `data/`.
 

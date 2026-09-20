@@ -20,7 +20,7 @@ export default async function HomePage() {
             <i className="bi bi-info-circle display-6 d-block mb-3" />
             <h4>No Documentation Sets Found</h4>
             <p className="mb-0">
-              Ensure the backend is running and point <code>DATA_DIR</code> at output directories containing <code>toc.json</code>.
+              Ensure the data-store is running and point <code>DATA_DIR</code> at output directories containing <code>toc.json</code>.
             </p>
           </div>
         ) : (

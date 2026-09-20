@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["../frontend/*"],
+      "@/*": ["../renderer/*"],
       "@modelcontextprotocol/ext-apps/server": ["./node_modules/@modelcontextprotocol/ext-apps/dist/src/server/index.d.ts"],
       "@modelcontextprotocol/ext-apps/react": ["./node_modules/@modelcontextprotocol/ext-apps/dist/src/react/index.d.ts"]
     }

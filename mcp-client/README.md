@@ -1,6 +1,6 @@
-# MCP Client
+# Abstract Syntax Tree MCP Client
 
-LLM-agnostic web chatbot client for the **DITA Docs MCP Server**, featuring real-time AI assistant chat with automatic Model Context Protocol (MCP) tool calling and interactive UI rendering.
+LLM-agnostic web chatbot client for the **AST MCP Server**, featuring real-time AI assistant chat with automatic Model Context Protocol (MCP) tool calling and interactive UI rendering.
 
 ## Features
 

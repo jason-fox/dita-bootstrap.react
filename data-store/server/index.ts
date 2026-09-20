@@ -241,7 +241,7 @@ if (numWorkers > 1 && cluster.isPrimary) {
   );
 
   app.listen(PORT, () => {
-    console.log(`dita-docs backend worker ${process.pid} listening on http://localhost:${PORT}`);
+    console.log(`AST data-store worker ${process.pid} listening on http://localhost:${PORT}`);
     console.log(`serving ${DATA_DIR} under /data`);
   });
 }
