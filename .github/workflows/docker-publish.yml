@@ -71,6 +71,8 @@ jobs:
       - name: Extract Docker metadata & OCI Annotations
         id: meta
         uses: docker/metadata-action@v5
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service.image_name }}
           tags: |
@@ -85,11 +87,11 @@ jobs:
             org.opencontainers.image.vendor=${{ github.repository_owner }}
             org.opencontainers.image.licenses=Apache-2.0
           annotations: |
-            org.opencontainers.image.title=${{ matrix.service.title }}
-            org.opencontainers.image.description=${{ matrix.service.description }}
-            org.opencontainers.image.documentation=https://github.com/${{ github.repository }}/blob/main/${{ matrix.service.name }}/README.md
-            org.opencontainers.image.vendor=${{ github.repository_owner }}
-            org.opencontainers.image.licenses=Apache-2.0
+            manifest,index:org.opencontainers.image.title=${{ matrix.service.title }}
+            manifest,index:org.opencontainers.image.description=${{ matrix.service.description }}
+            manifest,index:org.opencontainers.image.documentation=https://github.com/${{ github.repository }}/blob/main/${{ matrix.service.name }}/README.md
+            manifest,index:org.opencontainers.image.vendor=${{ github.repository_owner }}
+            manifest,index:org.opencontainers.image.licenses=Apache-2.0
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
