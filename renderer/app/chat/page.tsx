@@ -211,13 +211,6 @@ export default function ChatPage() {
     }
   };
 
-  const samplePrompts = [
-    "What documentation sets are available?",
-    "Show me the Accordion component and example",
-    "Search for Card component usage",
-    "How do alert utility classes work?",
-  ];
-
   const chatBotConfig = chrome?.["chat-bot"];
   const docsPageConfig = chrome?.["docs-page"];
   const chatTitle = chatBotConfig?.title || docsPageConfig?.title || "AI Assistant";
@@ -283,35 +276,13 @@ export default function ChatPage() {
         <div ref={chatContainerRef} className="flex-grow-1 overflow-y-auto mb-3 p-3 bg-body rounded border" style={{ minHeight: "350px" }}>
           {messages.length === 0 ? (
             <div className="py-4 my-auto">
-              {welcomeCardAst ? (
+              {welcomeCardAst && (
                 <div className="max-w-xl mx-auto mb-4" style={{ maxWidth: "700px" }}>
                   <AstRenderer
                     nodes={[welcomeCardAst]}
                     title={chatTitle}
                     onSendPrompt={(promptText) => handleSend(undefined, promptText)}
                   />
-                </div>
-              ) : (
-                <div className="text-center">
-                  <i className="bi bi-chat-left-text display-4 text-secondary mb-3 d-block" />
-                  <h5 className="fw-semibold">Welcome to {chatTitle}</h5>
-                  <p className="text-body-secondary max-w-md mx-auto mb-4" style={{ maxWidth: "500px" }}>
-                    {chatDescription}
-                  </p>
-                  <div className="d-flex flex-wrap justify-content-center gap-2 max-w-lg mx-auto" style={{ maxWidth: "600px" }}>
-                    {samplePrompts.map((prompt, idx) => (
-                      <Button
-                        key={idx}
-                        variant="outline-primary"
-                        size="sm"
-                        className="rounded-pill px-3"
-                        disabled={isLlmDisabled}
-                        onClick={() => handleSend(undefined, prompt)}
-                      >
-                        <i className="bi bi-lightbulb me-1" /> {prompt}
-                      </Button>
-                    ))}
-                  </div>
                 </div>
               )}
             </div>
