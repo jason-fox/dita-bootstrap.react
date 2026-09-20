@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import Link from "next/link";
 import { fetchDocs, type DocSetInfo } from "@/lib/api";
 import Shell from "@/components/Shell";
@@ -9,24 +7,12 @@ import CardTitle from "react-bootstrap/CardTitle";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
-async function fetchPublicFragment(file: string): Promise<string> {
-  return readFile(path.join(process.cwd(), "public", file), "utf-8").catch(
-    () => "",
-  );
-}
-
 export default async function HomePage() {
-  const [docs, headerHtml, navLinksHtml] = await Promise.all([
-    fetchDocs(),
-    fetchPublicFragment("header.html"),
-    fetchPublicFragment("nav-links.html"),
-  ]);
+  const docs = await fetchDocs();
 
   return (
     <Shell
       title={process.env.DOCS_TITLE ?? "Documentation"}
-      headerHtml={headerHtml}
-      navLinksHtml={navLinksHtml}
     >
       <div className="py-4">
         {docs.length === 0 ? (

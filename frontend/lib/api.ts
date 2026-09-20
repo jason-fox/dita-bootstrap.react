@@ -47,6 +47,9 @@ export interface TocDoc {
   // frontend to interpret; Toc.tsx branches on navToc (collapsible/list-group*/nav-pill*)
   navToc?: string;
   scrollspyToc?: string;
+  header?: AstArray;
+  footer?: AstArray;
+  accessibility?: { main?: string; nav?: string };
 }
 
 export function isPropsObject(

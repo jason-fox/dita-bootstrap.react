@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import type { Metadata } from "next";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -18,12 +16,6 @@ import {
   resolveHref,
   type AstArray,
 } from "@/lib/api";
-
-async function fetchPublicFragment(file: string): Promise<string> {
-  return readFile(path.join(process.cwd(), "public", file), "utf-8").catch(
-    () => "",
-  );
-}
 
 function firstHref(entries: AstArray[]): string | undefined {
   for (const [, maybeProps, ...rest] of entries) {
@@ -89,11 +81,7 @@ export default async function ViewPage({
   params: Promise<{ file: string[] }>;
 }) {
   const { file } = await params;
-  const [docs, headerHtml, navLinksHtml] = await Promise.all([
-    fetchDocs(),
-    fetchPublicFragment("header.html"),
-    fetchPublicFragment("nav-links.html"),
-  ]);
+  const docs = await fetchDocs();
   const { docId, topicPath } = matchDocSet(file, docs);
 
   const toc = await fetchToc(docId).catch(() => null);
@@ -115,7 +103,7 @@ export default async function ViewPage({
   const article = (
     <article>
       {doc.meta.breadcrumbs && <Breadcrumbs items={doc.meta.breadcrumbs} docId={docId} />}
-      {doc.meta.title && <h1>{doc.meta.title}</h1>}
+      {doc.meta.title && <h1 id="ariaid-title1" tabIndex={-1}>{doc.meta.title}</h1>}
       {doc.meta.shortdesc && (
         <p className="shortdesc text-body-secondary lead">
           {doc.meta.shortdesc}
@@ -143,8 +131,9 @@ export default async function ViewPage({
       lang={doc.meta.lang || toc?.lang}
       tocEntries={toc?.toc ?? []}
       navToc={toc?.navToc}
-      headerHtml={headerHtml}
-      navLinksHtml={navLinksHtml}
+      headerAst={toc?.header}
+      footerAst={toc?.footer}
+      accessibility={toc?.accessibility}
     >
       {content}
     </Shell>

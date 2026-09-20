@@ -8,6 +8,7 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 
 import Header from "./Header";
 import Toc from "./Toc";
+import AstRenderer from "./AstRenderer";
 import type { AstArray } from "../lib/api";
 
 export default function Shell({
@@ -16,8 +17,9 @@ export default function Shell({
   title,
   docId,
   lang,
-  headerHtml,
-  navLinksHtml,
+  headerAst,
+  footerAst,
+  accessibility,
   children,
 }: {
   tocEntries?: AstArray[];
@@ -25,8 +27,9 @@ export default function Shell({
   title: string;
   docId?: string;
   lang?: string;
-  headerHtml: string;
-  navLinksHtml: string;
+  headerAst?: AstArray;
+  footerAst?: AstArray;
+  accessibility?: { main?: string; nav?: string };
   children: ReactNode;
 }) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -40,15 +43,30 @@ export default function Shell({
 
   return (
     <>
+      <div className="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary">
+        <div className="container-xl">
+          <a
+            className="d-inline-flex m-1 btn btn-outline-primary btn-sm"
+            href="#ariaid-title1"
+          >
+            {accessibility?.main || "Skip to main content"}
+          </a>
+          <a
+            className="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm"
+            href="#bs-sidebar-nav"
+          >
+            {accessibility?.nav || "Skip to docs navigation"}
+          </a>
+        </div>
+      </div>
       <Header
+        headerAst={headerAst}
         title={title}
         docId={docId}
         lang={lang}
-        headerHtml={headerHtml}
-        navLinksHtml={navLinksHtml}
         onToggleSidebar={hasSidebar ? () => setShowSidebar((value) => !value) : undefined}
       />
-      <Container fluid="xxl" style={{ paddingTop: "76px" }}>
+      <Container fluid="xxl">
         {hasSidebar ? (
           <Row>
             <div className="col-lg-2 py-3 overflow-y-auto bs-sidebar">
@@ -66,14 +84,19 @@ export default function Shell({
                 </Offcanvas.Body>
               </Offcanvas>
             </div>
-            <Col lg={10} as="main" className="py-3">
+            <Col lg={10} as="main" id="content" tabIndex={-1} className="py-3">
               {children}
             </Col>
           </Row>
         ) : (
-          <main className="py-3">{children}</main>
+          <main id="content" tabIndex={-1} className="py-3">{children}</main>
         )}
       </Container>
+      {footerAst && (
+        <footer className="footer mt-auto py-3 bg-primary-subtle border-top">
+          <AstRenderer nodes={[footerAst]} docId={docId} lang={lang} />
+        </footer>
+      )}
     </>
   );
 }

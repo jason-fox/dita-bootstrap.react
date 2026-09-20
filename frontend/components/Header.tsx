@@ -4,38 +4,35 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Search from "./Search";
 import DarkModeToggle from "./DarkModeToggle";
+import AstRenderer from "./AstRenderer";
+import type { AstArray } from "../lib/api";
 
 export default function Header({
+  headerAst,
   title,
   docId,
   lang,
-  headerHtml,
-  navLinksHtml,
   onToggleSidebar,
 }: {
+  headerAst?: AstArray;
   title: string;
   docId?: string;
   lang?: string;
-  headerHtml?: string;
-  navLinksHtml?: string;
   onToggleSidebar?: () => void;
 }) {
-  const navTextRaw = (process.env.NAVBAR_TEXT ?? "dark").trim();
-  const navThemeRaw = (process.env.NAVBAR_THEME ?? "dark").trim();
-
-  const textVal = navTextRaw.replace(/^navbar-/, "");
-  const colorScheme = `navbar-${textVal}`;
-  const variant = textVal === "light" ? "light" : "dark";
-  const bgColor = navThemeRaw.startsWith("bg-") ? navThemeRaw : `bg-${navThemeRaw}`;
+  if (headerAst) {
+    return (
+      <AstRenderer
+        nodes={[headerAst]}
+        docId={docId}
+        lang={lang}
+        onToggleSidebar={onToggleSidebar}
+      />
+    );
+  }
 
   return (
-    <Navbar
-      className={`${colorScheme} ${bgColor}`}
-      variant={variant}
-      data-bs-theme={variant}
-      expand="lg"
-      fixed="top"
-    >
+    <Navbar className="navbar-dark bg-primary" variant="dark" data-bs-theme="dark" expand="lg" sticky="top">
       <Container fluid="xxl" className="px-4">
         {onToggleSidebar && (
           <button
@@ -48,36 +45,22 @@ export default function Header({
             <i className="bi bi-list" />
           </button>
         )}
-
-        {headerHtml ? (
-          // headerHtml comes from public/header.html, a build-time-editable file, not user input
-          <span dangerouslySetInnerHTML={{ __html: headerHtml }} />
-        ) : (
-          <a className="navbar-brand d-flex align-items-center fw-semibold" href="/">
-            <img
-              src="/favicon.svg"
-              alt=""
-              className="me-2"
-              style={{ width: "1.75rem", height: "1.75rem", objectFit: "contain" }}
-              onError={(e) => (e.currentTarget.style.display = "none")}
-            />
-            <span>{title}</span>
-          </a>
-        )}
-
+        <a className="navbar-brand d-flex align-items-center fw-semibold" href="/">
+          <img
+            src="/favicon.svg"
+            alt=""
+            className="me-2"
+            style={{ width: "1.75rem", height: "1.75rem", objectFit: "contain" }}
+            onError={(e) => (e.currentTarget.style.display = "none")}
+          />
+          <span>{title}</span>
+        </a>
         <Navbar.Toggle aria-controls="navbarContent" />
         <Navbar.Collapse id="navbarContent">
-          {navLinksHtml && (
-            <div
-              className="navbar-nav"
-              dangerouslySetInnerHTML={{ __html: navLinksHtml }}
-            />
-          )}
           <div className="navbar-nav ms-auto align-items-lg-center">
             {docId && <Search docId={docId} lang={lang} />}
             <DarkModeToggle />
           </div>
-
         </Navbar.Collapse>
       </Container>
     </Navbar>

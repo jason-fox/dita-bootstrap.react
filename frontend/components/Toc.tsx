@@ -302,6 +302,7 @@ export default function Toc({
     <nav
       aria-label="Table of contents"
       id="bs-sidebar-nav"
+      tabIndex={-1}
       role="navigation"
       className="d-flex flex-column h-100 overflow-y-auto"
     >

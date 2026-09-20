@@ -15,16 +15,26 @@ import {
   Button,
   Card,
   Carousel,
+  Col,
   Collapse as BsCollapse,
+  Container,
+  Form,
+  FormControl,
+  InputGroup,
   Nav,
+  NavDropdown,
+  Navbar,
   Offcanvas as BsOffcanvas,
   OverlayTrigger,
   Pagination,
   Popover as BsPopover,
+  Row,
   Tab,
   Table,
   Tooltip as BsTooltip,
 } from "react-bootstrap";
+import Search from "./Search";
+import DarkModeToggle from "./DarkModeToggle";
 import Prism from "prismjs";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
@@ -208,6 +218,46 @@ function PopoverTriggerFromAst({
   );
 }
 
+function FaviconFromAst({
+  className = "me-2",
+  style,
+  ...props
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+  [key: string]: unknown;
+}) {
+  const defaultStyle: React.CSSProperties = {
+    width: "1.75rem",
+    height: "1.75rem",
+    objectFit: "contain",
+  };
+  return (
+    <img
+      src="/favicon.svg"
+      alt=""
+      className={className}
+      style={style ?? defaultStyle}
+      onError={(e) => (e.currentTarget.style.display = "none")}
+      {...props}
+    />
+  );
+}
+
+function IconFromAst({
+  name,
+  className = "",
+  ...props
+}: {
+  name?: string;
+  className?: string;
+  [key: string]: unknown;
+}) {
+  const iconName = name ?? "";
+  const iconClass = iconName.startsWith("bi-") ? iconName : `bi-${iconName}`;
+  return <i className={`bi ${iconClass} ${className}`.trim()} {...props} />;
+}
+
 // PascalCase AST types map to react-bootstrap components; anything not listed here falls
 // through to `type` itself as a literal HTML tag (e.g. "div", "p", "a").
 const componentRegistry: Record<string, React.ElementType> = {
@@ -233,6 +283,22 @@ const componentRegistry: Record<string, React.ElementType> = {
   Nav,
   NavItem: Nav.Item,
   NavLink: Nav.Link,
+  NavDropdown,
+  NavDropdownItem: NavDropdown.Item,
+  Navbar,
+  NavbarBrand: Navbar.Brand,
+  NavbarToggle: Navbar.Toggle,
+  NavbarCollapse: Navbar.Collapse,
+  Container,
+  Row,
+  Col,
+  Form,
+  InputGroup,
+  InputGroupText: InputGroup.Text,
+  FormControl: Form.Control,
+  Icon: IconFromAst,
+  Favicon: FaviconFromAst,
+  favicon: FaviconFromAst,
   Carousel,
   CarouselItem: Carousel.Item,
   CarouselCaption: Carousel.Caption,
@@ -317,7 +383,9 @@ function renderNode(
   node: AstNode,
   key: React.Key,
   docId?: string,
+  lang?: string,
   onNavigate?: (docId: string, topicPath: string) => void,
+  onToggleSidebar?: () => void,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -335,6 +403,28 @@ function renderNode(
     ...(props.srcset ? { srcSet: resolveSrc(props.srcset, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
+
+  // Intercept search form role or class
+  if (
+    resolvedProps.role === "search" ||
+    (typeof resolvedProps.className === "string" &&
+      resolvedProps.className.includes("search-box"))
+  ) {
+    return <Search key={key} docId={docId} lang={lang} />;
+  }
+
+  // Intercept theme toggle button role
+  if (resolvedProps.role === "theme-toggle") {
+    return <DarkModeToggle key={key} />;
+  }
+
+  // Intercept sidebar toggle button click
+  if (resolvedProps["aria-controls"] === "bdSidebar" && onToggleSidebar) {
+    resolvedProps.onClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      onToggleSidebar();
+    };
+  }
 
   // Intercept anchor <a> or <xref> link clicks inside AstRenderer
   if ((type === "a" || type === "xref") && typeof props.href === "string") {
@@ -354,7 +444,7 @@ function renderNode(
       };
 
       const renderedChildren = children.map((child, index) =>
-        renderNode(child, index, docId, onNavigate),
+        renderNode(child, index, docId, lang, onNavigate, onToggleSidebar),
       );
       return React.createElement(
         "a",
@@ -385,7 +475,9 @@ function renderNode(
     resolvedProps.id
   ) {
     const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
-    const renderedChildren = children.map((child, index) => renderNode(child, index, docId, onNavigate));
+    const renderedChildren = children.map((child, index) =>
+      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar),
+    );
     return (
       <CollapseFromAst
         key={key}
@@ -409,7 +501,9 @@ function renderNode(
     );
   }
   const Component = componentRegistry[type] ?? type;
-  const rendered = children.map((child, index) => renderNode(child, index, docId, onNavigate));
+  const rendered = children.map((child, index) =>
+    renderNode(child, index, docId, lang, onNavigate, onToggleSidebar),
+  );
 
   return React.createElement(Component, { key, ...resolvedProps }, ...rendered);
 }
@@ -417,15 +511,21 @@ function renderNode(
 export default function AstRenderer({
   nodes,
   docId,
+  lang,
   onNavigate,
+  onToggleSidebar,
 }: {
   nodes: AstNode[];
   docId?: string;
+  lang?: string;
   onNavigate?: (docId: string, topicPath: string) => void;
+  onToggleSidebar?: () => void;
 }) {
   return (
     <ToggleProvider>
-      {nodes.map((node, index) => renderNode(node, index, docId, onNavigate))}
+      {nodes.map((node, index) =>
+        renderNode(node, index, docId, lang, onNavigate, onToggleSidebar),
+      )}
     </ToggleProvider>
   );
 }

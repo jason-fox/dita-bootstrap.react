@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import NavDropdown from "react-bootstrap/NavDropdown";
 
 type Mode = "light" | "dark" | "auto";
 
@@ -9,6 +10,11 @@ const ICONS: Record<Mode, string> = {
   light: "bi-brightness-high-fill",
   dark: "bi-moon-stars-fill",
   auto: "bi-circle-half",
+};
+const LABELS: Record<Mode, string> = {
+  light: "Light",
+  dark: "Dark",
+  auto: "Auto",
 };
 const STORAGE_KEY = "theme";
 
@@ -26,8 +32,6 @@ function applyMode(mode: Mode) {
 }
 
 export default function DarkModeToggle() {
-  // starts "auto" on both server and client render so hydration matches;
-  // the real (possibly stored) mode is only applied client-side after mount
   const [mode, setMode] = useState<Mode>("auto");
 
   useEffect(() => {
@@ -37,21 +41,32 @@ export default function DarkModeToggle() {
     applyMode(initial);
   }, []);
 
-  function cycle() {
-    const next = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
-    setMode(next);
-    localStorage.setItem(STORAGE_KEY, next);
-    applyMode(next);
+  function handleSelect(selected: Mode) {
+    setMode(selected);
+    localStorage.setItem(STORAGE_KEY, selected);
+    applyMode(selected);
   }
 
   return (
-    <button
-      type="button"
-      className="nav-link px-0 px-lg-2 d-flex align-items-center"
-      aria-label={`Switch to ${MODES[(MODES.indexOf(mode) + 1) % MODES.length]} mode (currently ${mode})`}
-      onClick={cycle}
+    <NavDropdown
+      id="bd-theme"
+      title={<i className={`bi ${ICONS[mode]} fs-5`} />}
+      align="end"
+      className="nav-item"
+      aria-label="Toggle theme"
     >
-      <i className={`bi ${ICONS[mode]} fs-5`} />
-    </button>
+      {MODES.map((m) => (
+        <NavDropdown.Item
+          key={m}
+          active={mode === m}
+          onClick={() => handleSelect(m)}
+          className="d-flex align-items-center gap-2"
+        >
+          <i className={`bi ${ICONS[m]}`} />
+          <span>{LABELS[m]}</span>
+          {mode === m && <i className="bi bi-check2 ms-auto" />}
+        </NavDropdown.Item>
+      ))}
+    </NavDropdown>
   );
 }

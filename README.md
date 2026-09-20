@@ -81,8 +81,6 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | Variable | Default | Description |
 |---|---|---|
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
-| `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
-| `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language code passed to root `<html lang="...">` element when not specified in topic metadata. |
 | `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags (e.g. `http://localhost:3100`). |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional path or URL to an additional custom stylesheet. Defaults to adding nothing (null check). |
@@ -96,8 +94,6 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | Variable | Default | Description |
 |---|---|---|
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output. `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
-| `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
-| `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag used for the root `<html lang="...">` attribute in `render_topic_ui` HTML output. |
 | `FEATURED_DOCS` | *(empty)* | Comma-separated list of document set IDs to prioritize at the top of TOC listings and search discovery. |
 | `CORPUS_SUMMARY_OVERRIDE` | *(null)* | Optional custom text description of the documentation corpus. Overrides automatic document title slicing for the LLM `docs://summary` resource. |
@@ -109,8 +105,6 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | Variable | Default | Description |
 |---|---|---|
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for chatbot interface (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
-| `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
-| `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag set on root `<html lang="...">` HTML element. |
 | `CORPUS_SUMMARY_OVERRIDE` | *(null)* | Optional custom text string injected into the chatbot's system prompt to describe loaded document sets. |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into chatbot interface. Defaults to adding nothing (null check). |
@@ -124,40 +118,22 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
 | `WEB_CONCURRENCY` / `CLUSTER_MODE` | *(single)* | Set `WEB_CONCURRENCY=<number>` or `CLUSTER_MODE=true` to run pre-fork search indexing and multi-worker cluster server execution. |
 
-## Customizing Branding, Favicons, and Default Links
+## Header, Navbar & Footer Customization via AST
 
-### 1. Overriding Favicons & Icons
+Header navigation bars and optional footers are rendered dynamically from AST definitions serialized into `toc.json` under `"header"` and `"footer"` keys.
+
+During DITA-OT publishing (`org.dita-bootstrap.ast`), include files are specified via build parameters:
+- `--args.hdr`: Path to custom XML header template (defaults to standard Bootstrap navbar with branding, nav links, search box, and dark mode toggle).
+- `--args.ftr`: Path to custom XML footer template (optional).
+
+The AST includes support for:
+- `<document-title/>` — automatically inserts the title of the document set.
+- `role="search"` — intercepted by the frontend to render live client-side search.
+- `role="theme-toggle"` — intercepted by the frontend to render the dark mode toggle button.
+
+### Overriding Favicons & Icons
 - **Frontend Portal (`frontend/`)**: Replace `frontend/public/favicon.svg` or `frontend/app/icon.svg` with your custom SVG icon file.
 - **Chatbot Client (`mcp-client/`)**: Replace `mcp-client/public/favicon.svg` with your custom SVG icon file.
-
-### 2. Overriding Navbar Branding Logo & Title (`header.html`)
-To override the default navbar brand logo and title link:
-- Place your custom HTML snippet in `public/header.html` (under `frontend/public/header.html` or `mcp-client/public/header.html`).
-- **Example `public/header.html`**:
-  ```html
-  <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
-    <img src="/favicon.svg" alt="Logo" class="me-2" style="width: 1.75rem; height: 1.75rem;">
-    <span>My Custom Documentation</span>
-  </a>
-  ```
-
-### 3. Overriding Default Navigation Links (`nav-links.html`)
-To customize global top navigation links in the header navbar:
-- Place your custom HTML link list in `public/nav-links.html` (under `frontend/public/nav-links.html` or `mcp-client/public/nav-links.html`).
-- **Example `public/nav-links.html`**:
-  ```html
-  <ul class="navbar-nav me-auto">
-    <li class="nav-item">
-      <a class="nav-link" href="https://example.com/docs">Main Portal</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="https://example.com/api">API Reference</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="https://github.com/my-org/my-repo">GitHub</a>
-    </li>
-  </ul>
-  ```
 
 ## License
 
