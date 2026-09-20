@@ -20,11 +20,12 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
   switch (rawType) {
     case "Navbar":
       tag = "nav";
-      if (!props.className) classNames.push("navbar navbar-expand-lg");
+      if (!classNames.includes("navbar")) classNames.unshift("navbar");
+      if (!classNames.some((c) => c.includes("navbar-expand"))) classNames.push("navbar-expand-lg");
       break;
     case "NavbarBrand":
       tag = "a";
-      if (!props.className) classNames.push("navbar-brand d-flex align-items-center fw-semibold");
+      if (!classNames.includes("navbar-brand")) classNames.unshift("navbar-brand");
       if (!props.href) props.href = "#";
       if (docsTitle && children.length > 0) {
         children = children.map((c) => {
@@ -38,12 +39,17 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
         });
       }
       break;
+    case "NavLink":
+      tag = "a";
+      if (!classNames.includes("nav-link")) classNames.unshift("nav-link");
+      if (!props.href) props.href = "#";
+      break;
     case "NavbarToggle":
       if (props["aria-controls"] === "bdSidebar") {
         return "";
       }
       tag = "button";
-      if (!props.className) classNames.push("navbar-toggler p-2");
+      if (!classNames.includes("navbar-toggler")) classNames.unshift("navbar-toggler");
       if (!props.type) props.type = "button";
       if (!props["data-bs-toggle"]) props["data-bs-toggle"] = "collapse";
       if (children.length === 0) {
@@ -52,31 +58,32 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
       break;
     case "NavbarCollapse":
       tag = "div";
-      if (!props.className) classNames.push("collapse navbar-collapse");
+      if (!classNames.includes("navbar-collapse")) classNames.unshift("navbar-collapse");
+      if (!classNames.includes("collapse")) classNames.unshift("collapse");
       break;
     case "Nav":
       tag = "div";
-      if (!props.className) classNames.push("navbar-nav");
+      if (!classNames.includes("navbar-nav")) classNames.unshift("navbar-nav");
       break;
     case "NavDropdown":
       if (props.role === "theme-toggle") {
         const themeId = props.id || "bd-theme";
         const themeChildrenHtml = children.map((c) => astToHtml(c, docsTitle)).join("");
         return `<div class="nav-item dropdown ms-lg-2" id="${themeId}">
-          <button class="btn btn-link nav-link py-1 px-2 dropdown-toggle d-flex align-items-center text-body" id="theme-toggle-btn" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme">
-            <i class="bi bi-circle-half fs-5 me-1" id="theme-toggle-icon"></i>
-            <span class="d-lg-none ms-2">Toggle theme</span>
-          </button>
+          <a class="nav-link dropdown-toggle d-flex align-items-center" id="theme-toggle-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
+            <i class="bi bi-circle-half fs-5" id="theme-toggle-icon"></i>
+          </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-toggle-btn">
             ${themeChildrenHtml}
           </ul>
         </div>`;
       }
       tag = "div";
-      if (!props.className) classNames.push("nav-item dropdown");
+      if (!classNames.includes("nav-item")) classNames.unshift("nav-item");
+      if (!classNames.includes("dropdown")) classNames.push("dropdown");
       const dropdownChildrenHtml = children.map((c) => astToHtml(c, docsTitle)).join("");
       return `<div class="nav-item dropdown ${classNames.join(" ")}">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="${props.id || ''}">
+        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="${props.id || ''}">
           Dropdown
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
@@ -84,10 +91,11 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
         </ul>
       </div>`;
     case "NavDropdownItem":
-      classNames.push("dropdown-item d-flex align-items-center");
+      if (!classNames.includes("dropdown-item")) classNames.unshift("dropdown-item");
+      if (!classNames.includes("d-flex")) classNames.push("d-flex", "align-items-center", "gap-2");
       if (!props.href) props.href = "#";
-      if (props["data-bs-theme-value"]) {
-        const val = props["data-bs-theme-value"];
+      const val = props["data-bs-theme-value"];
+      if (val) {
         props.onclick = `selectTheme('${val}'); return false;`;
       }
       const itemAttrParts: string[] = [];
@@ -97,32 +105,33 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
         if (typeof v === "string" || typeof v === "number") itemAttrParts.push(`${k}="${v}"`);
       }
       const itemChildrenHtml = children.map((c) => astToHtml(c, docsTitle)).join("");
-      return `<li><a ${itemAttrParts.join(" ")}>${itemChildrenHtml}</a></li>`;
+      const checkIcon = val ? `<i class="bi bi-check2 ms-auto d-none" data-theme-check="${val}"></i>` : "";
+      return `<li><a ${itemAttrParts.join(" ")}>${itemChildrenHtml}${checkIcon}</a></li>`;
     case "Favicon":
       return '<img src="/favicon.svg" alt="" class="me-2" style="width:1.75rem;height:1.75rem;object-fit:contain;">';
     case "InputGroup":
       tag = "div";
-      if (!props.className) classNames.push("input-group");
+      if (!classNames.includes("input-group")) classNames.unshift("input-group");
       break;
     case "InputGroupText":
       tag = "span";
-      if (!props.className) classNames.push("input-group-text");
+      if (!classNames.includes("input-group-text")) classNames.unshift("input-group-text");
       break;
     case "Card":
       tag = "div";
-      if (!props.className) classNames.push("card");
+      if (!classNames.includes("card")) classNames.unshift("card");
       break;
     case "CardBody":
       tag = "div";
-      if (!props.className) classNames.push("card-body");
+      if (!classNames.includes("card-body")) classNames.unshift("card-body");
       break;
     case "CardTitle":
       tag = props.as || "h5";
-      if (!props.className) classNames.push("card-title");
+      if (!classNames.includes("card-title")) classNames.unshift("card-title");
       break;
     case "CardText":
       tag = props.as || "p";
-      if (!props.className) classNames.push("card-text");
+      if (!classNames.includes("card-text")) classNames.unshift("card-text");
       break;
     case "Form":
       tag = "form";
@@ -134,18 +143,38 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
       break;
     case "FormControl":
       tag = "input";
-      if (!props.className) classNames.push("form-control");
+      if (!classNames.includes("form-control")) classNames.unshift("form-control");
       break;
     case "Button":
       tag = "button";
-      const variant = props.variant || "primary";
-      const btnClass = `btn btn-${variant}`;
-      if (!classNames.some((c) => c.includes("btn-"))) {
-        classNames.unshift(btnClass);
-      } else if (!classNames.some((c) => c.split(" ").includes("btn"))) {
-        classNames.unshift("btn");
+      if (props.role === "clear-chat") {
+        if (!props.onclick) props.onclick = "clearChat()";
+      } else if (props.role === "theme-toggle") {
+        if (!props.id) props.id = "theme-toggle-btn";
+        if (!props.onclick) props.onclick = "cycleTheme()";
+        children = children.map((c) => {
+          if (Array.isArray(c) && c[0] === "Icon") {
+            const iconProps = isPropsObject(c[1]) ? { ...c[1], id: "theme-toggle-icon" } : { id: "theme-toggle-icon" };
+            return isPropsObject(c[1]) ? ["Icon", iconProps, ...c.slice(2)] : ["Icon", iconProps, ...c.slice(1)];
+          }
+          return c;
+        });
       }
-      if (!props.onclick && props.size === "sm") {
+      const allClassNames = classNames.flatMap((c) => c.split(" "));
+      const hasBtnVariant = allClassNames.some((c) => /^btn-(primary|secondary|success|danger|warning|info|light|dark|link|outline-)/.test(c));
+      const hasNavLink = allClassNames.includes("nav-link");
+
+      if (!hasNavLink) {
+        if (!allClassNames.includes("btn")) {
+          classNames.unshift("btn");
+        }
+        if (!hasBtnVariant) {
+          const variant = props.variant || "primary";
+          classNames.push(`btn-${variant}`);
+        }
+      }
+
+      if (!props.onclick && props.size === "sm" && props.role !== "clear-chat") {
         props.onclick = "sendQuickPrompt('What documentation sets are available?')";
       }
       break;
@@ -157,7 +186,12 @@ export function astToHtml(node: unknown, docsTitle?: string): string {
       break;
     case "Container":
       tag = "div";
-      if (!props.className) classNames.push("container");
+      if (props.fluid) {
+        const fluidClass = props.fluid === true ? "container-fluid" : `container-${props.fluid}`;
+        if (!classNames.includes(fluidClass)) classNames.unshift(fluidClass);
+      } else if (!classNames.some((c) => c.startsWith("container"))) {
+        classNames.unshift("container");
+      }
       break;
     case "Row":
       tag = "div";

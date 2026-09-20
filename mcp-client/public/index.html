@@ -238,7 +238,7 @@
       const iconEl = document.getElementById("theme-toggle-icon");
       const btnEl = document.getElementById("theme-toggle-btn");
       if (iconEl) {
-        iconEl.className = `bi ${ICONS[mode]} fs-5 me-1`;
+        iconEl.className = `bi ${ICONS[mode]} fs-5`;
       }
       if (btnEl) {
         const nextMode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
@@ -249,12 +249,15 @@
       // Update active state on theme toggle dropdown items
       document.querySelectorAll('[data-bs-theme-value]').forEach(el => {
         const val = el.getAttribute('data-bs-theme-value');
+        const check = el.querySelector('[data-theme-check]');
         if (val === mode) {
           el.classList.add('active');
           el.setAttribute('aria-current', 'true');
+          if (check) check.classList.remove('d-none');
         } else {
           el.classList.remove('active');
           el.removeAttribute('aria-current');
+          if (check) check.classList.add('d-none');
         }
       });
 
