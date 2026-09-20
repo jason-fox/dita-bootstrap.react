@@ -1,10 +1,15 @@
 import Link from "next/link";
 import Shell from "@/components/Shell";
+import { fetchChrome } from "@/lib/api";
 
 export default async function NotFound() {
+  const chrome = await fetchChrome().catch(() => null);
+
   return (
     <Shell
-      title={process.env.DOCS_TITLE ?? "Documentation"}
+      title={chrome?.["docs-page"]?.title ?? "Documentation"}
+      headerAst={chrome?.["docs-page"]?.header}
+      footerAst={chrome?.footer}
     >
       <div className="text-center py-5 col-lg-6 mx-auto">
         <i className="bi bi-exclamation-circle display-4 text-secondary mb-3 d-block" />

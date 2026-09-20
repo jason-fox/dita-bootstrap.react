@@ -8,6 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import Scrollspy from "@/components/Scrollspy";
 import Shell from "@/components/Shell";
 import {
+  fetchChrome,
   fetchDocs,
   fetchPage,
   fetchToc,
@@ -84,7 +85,10 @@ export default async function ViewPage({
   const docs = await fetchDocs();
   const { docId, topicPath } = matchDocSet(file, docs);
 
-  const toc = await fetchToc(docId).catch(() => null);
+  const [toc, chrome] = await Promise.all([
+    fetchToc(docId).catch(() => null),
+    fetchChrome().catch(() => null),
+  ]);
 
   // If visiting the root of a doc set (e.g. /dita-bootstrap-sample), redirect to its first topic
   if (!topicPath && toc) {
@@ -124,6 +128,8 @@ export default async function ViewPage({
     </Row>
   );
 
+  const footerAst = toc?.footer ?? chrome?.footer;
+
   return (
     <Shell
       title={toc?.title ?? docId}
@@ -133,7 +139,7 @@ export default async function ViewPage({
       navToc={toc?.navToc}
       menubar={toc?.menubar}
       headerAst={toc?.header}
-      footerAst={toc?.footer}
+      footerAst={footerAst}
       accessibility={toc?.accessibility}
     >
       {content}

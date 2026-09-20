@@ -389,6 +389,7 @@ function renderNode(
   onNavigate?: (docId: string, topicPath: string) => void,
   onToggleSidebar?: () => void,
   activeTheme?: string,
+  title?: string,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -406,6 +407,28 @@ function renderNode(
     ...(props.srcset ? { srcSet: resolveSrc(props.srcset, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
+
+  if (type === "NavbarBrand") {
+    const brandTitle = title || "Documentation";
+    const brandChildren = children.map((child) => {
+      if (child === "" || child === undefined) {
+        return brandTitle;
+      }
+      if (
+        Array.isArray(child) &&
+        child[0] === "span" &&
+        (child.length === 1 || (child.length === 2 && (child[1] === "" || child[1] === undefined)))
+      ) {
+        return ["span", brandTitle] as AstArray;
+      }
+      return child;
+    });
+    const renderedBrandChildren = brandChildren.map((child, index) =>
+      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
+    );
+    const Component = componentRegistry[type] ?? type;
+    return React.createElement(Component, { key, ...resolvedProps }, ...renderedBrandChildren);
+  }
 
   // Automatically apply activeTheme to NavDropdown and Dropdown popups if not explicitly set
   if (
@@ -461,7 +484,7 @@ function renderNode(
       };
 
       const renderedChildren = children.map((child, index) =>
-        renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
+        renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
       );
       return React.createElement(
         "a",
@@ -493,7 +516,7 @@ function renderNode(
   ) {
     const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
     const renderedChildren = children.map((child, index) =>
-      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
+      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
     );
     return (
       <CollapseFromAst
@@ -519,7 +542,7 @@ function renderNode(
   }
   const Component = componentRegistry[type] ?? type;
   const rendered = children.map((child, index) =>
-    renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
+    renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
   );
 
   return React.createElement(Component, { key, ...resolvedProps }, ...rendered);
@@ -527,12 +550,14 @@ function renderNode(
 
 export default function AstRenderer({
   nodes,
+  title,
   docId,
   lang,
   onNavigate,
   onToggleSidebar,
 }: {
   nodes: AstNode[];
+  title?: string;
   docId?: string;
   lang?: string;
   onNavigate?: (docId: string, topicPath: string) => void;
@@ -543,7 +568,7 @@ export default function AstRenderer({
   return (
     <ToggleProvider>
       {nodes.map((node, index) =>
-        renderNode(node, index, docId, lang, onNavigate, onToggleSidebar, activeTheme),
+        renderNode(node, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
       )}
     </ToggleProvider>
   );

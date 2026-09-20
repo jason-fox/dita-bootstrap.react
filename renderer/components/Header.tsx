@@ -24,6 +24,7 @@ export default function Header({
     return (
       <AstRenderer
         nodes={[headerAst]}
+        title={title}
         docId={docId}
         lang={lang}
         onToggleSidebar={onToggleSidebar}

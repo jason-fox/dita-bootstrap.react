@@ -8,10 +8,50 @@ import dotenv from "dotenv";
 import { McpClientService } from "./mcp.js";
 import { LlmService } from "./llm.js";
 
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 dotenv.config();
 
 const port = Number(process.env.PORT || 3200);
+
+const DATA_URL = process.env.DATA_URL || "http://localhost:4000/data";
+
+import { astToHtml } from "./astToHtml.js";
+
+export type AstNode = string | [string, ...unknown[]];
+
+export interface ChromeConfig {
+  "docs-page"?: {
+    title?: string;
+    description?: string;
+    header?: AstNode;
+    card?: AstNode;
+  };
+  "chat-bot"?: {
+    title?: string;
+    description?: string;
+    header?: AstNode;
+    card?: AstNode;
+    form?: AstNode;
+  };
+  footer?: AstNode;
+}
+
+let chromeCache: ChromeConfig | null = null;
+
+async function fetchChrome(): Promise<ChromeConfig> {
+  const url = `${DATA_URL.replace(/\/+$/, "")}/chrome.json`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`[Error] Fatal: Failed to fetch chrome.json from data store: status ${res.status}`);
+      process.exit(1);
+    }
+    chromeCache = (await res.json()) as ChromeConfig;
+    return chromeCache;
+  } catch (err: any) {
+    console.error(`[Error] Fatal: Failed to fetch chrome.json from data store:`, err.message || err);
+    process.exit(1);
+  }
+}
 
 const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
 const numWorkers = envWorkers
@@ -30,6 +70,12 @@ if (numWorkers > 1 && cluster.isPrimary) {
     cluster.fork();
   });
 } else {
+  startWorker();
+}
+
+async function startWorker() {
+  const chrome = await fetchChrome();
+
   const app = express();
 
   app.use(cors());
@@ -49,7 +95,8 @@ if (numWorkers > 1 && cluster.isPrimary) {
   const isDarkOnly = DARK_ONLY_THEMES.has(themeName);
   const useBootswatch = themeName !== "" && themeName !== "default" && themeName !== "none";
 
-  const docsTitle = (process.env.DOCS_TITLE || "AI Assistant").trim();
+  const docsTitle = chrome["chat-bot"]?.title || "AI Assistant";
+  const docsDescription = chrome["chat-bot"]?.description || "AI Assisted Documentation Search";
 
   const navTextRaw = (process.env.NAVBAR_TEXT || "dark").trim();
   const navThemeRaw = (process.env.NAVBAR_THEME || "dark").trim();
@@ -89,6 +136,11 @@ if (numWorkers > 1 && cluster.isPrimary) {
     process.env.SHOW_TOOLS === "true" ||
     process.env.DEBUG_TOOLS === "true";
 
+  // Route to get chrome config directly
+  app.get("/api/chrome", (_req, res) => {
+    res.json(chromeCache || {});
+  });
+
   // Health check endpoint
   app.get("/api/health", async (_req, res) => {
     const tools = await mcpClient.listTools();
@@ -116,10 +168,12 @@ if (numWorkers > 1 && cluster.isPrimary) {
       theme: themeName,
       isDarkOnly,
       docsTitle,
+      docsDescription,
       navbarText: textVal,
       navbarTheme: navThemeRaw,
       navbarColorScheme: navColorScheme,
       navbarBgColor: navBgColor,
+      chrome: chromeCache,
     });
   });
 
@@ -174,10 +228,35 @@ if (numWorkers > 1 && cluster.isPrimary) {
     const bsTheme = isDarkOnly ? "dark" : "light";
     html = html.replace(/<html lang="[^"]*"\s*(data-bs-theme="[^"]*")?>/, `<html lang="${defaultLang}" data-bs-theme="${bsTheme}">`);
 
+    // Replace header navbar with AST html if header is provided in chrome.json
+    const headerAst = chrome["chat-bot"]?.header ?? chrome["docs-page"]?.header;
+    if (headerAst) {
+      const headerHtml = astToHtml(headerAst, docsTitle);
+      html = html.replace(/<!-- HEADER_NAVBAR_START -->[\s\S]*?<!-- HEADER_NAVBAR_END -->/, headerHtml);
+    }
+
     if (docsTitle) {
       html = html.replace("<title>AI Assistant</title>", `<title>${docsTitle}</title>`);
       html = html.replace('<span id="nav-brand-title">AI Assistant</span>', `<span id="nav-brand-title">${docsTitle}</span>`);
       html = html.replace("Welcome to AI Assistant", `Welcome to ${docsTitle}`);
+    }
+
+    // Replace welcome card with AST html if chrome["chat-bot"]?.card is provided
+    if (chrome["chat-bot"]?.card) {
+      const cardHtml = astToHtml(chrome["chat-bot"].card);
+      html = html.replace(/<!-- WELCOME_CARD_START -->[\s\S]*?<!-- WELCOME_CARD_END -->/, cardHtml);
+    }
+
+    // Replace input box form card with AST html if chrome["chat-bot"]?.form is provided
+    if (chrome["chat-bot"]?.form) {
+      const formHtml = astToHtml(chrome["chat-bot"].form);
+      html = html.replace(/<!-- SUBMISSION_CARD_START -->[\s\S]*?<!-- SUBMISSION_CARD_END -->/, formHtml);
+    }
+
+    // Inject footer if present in chrome.json
+    if (chrome.footer) {
+      const footerHtml = `<footer class="py-3 border-top text-center text-body-secondary mt-auto flex-shrink-0">${astToHtml(chrome.footer)}</footer>`;
+      html = html.replace("</body>", `${footerHtml}\n</body>`);
     }
 
     if (customCssElement) {
@@ -201,9 +280,9 @@ if (numWorkers > 1 && cluster.isPrimary) {
 
   app.listen(port, () => {
     console.log(`DITA Docs MCP Client worker ${process.pid} running at http://localhost:${port}`);
+    console.log(`Loaded chrome.json from ${DATA_URL}/chrome.json (title: "${docsTitle}")`);
     console.log(`Active Provider: ${llmService.activeConfig.provider} (${llmService.activeConfig.model})`);
     console.log(`Bootswatch Theme: ${themeName} (darkOnly: ${isDarkOnly})`);
     console.log(`Navbar Styling: NAVBAR_THEME=${navThemeRaw} (${navBgColor}), NAVBAR_TEXT=${textVal} (${navColorScheme})`);
   });
 }
-

@@ -19,32 +19,36 @@ const DARK_ONLY_THEMES = new Set([
   "vapor",
 ]);
 
+import { fetchChrome } from "@/lib/api";
+
 const openGraphBase = (process.env.OPEN_GRAPH_URL ?? "").trim();
 
-const docsTitle = process.env.DOCS_TITLE ?? "Documentation";
+export async function generateMetadata(): Promise<Metadata> {
+  const chrome = await fetchChrome().catch(() => null);
+  const docsTitle = chrome?.["docs-page"]?.title ?? "Documentation";
+  const docsDescription = chrome?.["docs-page"]?.description ?? "Documentation";
 
-const docsDescription = process.env.DOCS_DESCRIPTION ?? "Documentation";
-
-export const metadata: Metadata = {
-  title: docsTitle,
-  description: docsDescription,
-  ...(openGraphBase
-    ? {
-        metadataBase: new URL(openGraphBase),
-        openGraph: {
-          title: docsTitle,
-          description: docsDescription,
-          type: "website",
-          url: openGraphBase,
-        },
-        twitter: {
-          card: "summary",
-          title: docsTitle,
-          description: docsDescription,
-        },
-      }
-    : {}),
-};
+  return {
+    title: docsTitle,
+    description: docsDescription,
+    ...(openGraphBase
+      ? {
+          metadataBase: new URL(openGraphBase),
+          openGraph: {
+            title: docsTitle,
+            description: docsDescription,
+            type: "website",
+            url: openGraphBase,
+          },
+          twitter: {
+            card: "summary",
+            title: docsTitle,
+            description: docsDescription,
+          },
+        }
+      : {}),
+  };
+}
 
 export default function RootLayout({
   children,

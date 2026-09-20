@@ -6,6 +6,7 @@ LLM-agnostic web chatbot client for the **AST MCP Server**, featuring real-time 
 
 - **LLM-Agnostic Support**: Compatible with Google Gemini, Anthropic Claude, OpenAI, and local/OpenAI-compatible LLM providers.
 - **MCP Integration**: Connects via Streamable HTTP (`MCP_SERVER_URL`) to discover tools, search documentation, retrieve topic content, and execute MCP-UI rendering.
+- **Dynamic Chrome & Layout**: Drives page title, welcome card, form, and footer from `chrome.json` served by `data-store`. On startup, `chrome.json` is validated and cached in memory; if unavailable, a fatal error is logged and the process exits (`process.exit(1)`).
 - **Dynamic Theming**: Full Bootswatch theme support (`BOOTSTRAP_THEME`), dark-mode detection, and custom CSS injection (`CUSTOM_CSS_PATH`).
 - **Navbar Styling**: Simple, human-friendly navbar overrides (`NAVBAR_THEME` and `NAVBAR_TEXT`).
 - **Tool Invocation Inspection**: Optional visibility into tool execution and parameters (`SHOW_TOOL_INVOCATIONS`).
@@ -40,6 +41,7 @@ The client will start by default at `http://localhost:3200`.
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `3200` | HTTP port for the MCP web client server. |
+| `DATA_URL` | `http://localhost:4000/data` | URL of `data-store` for retrieving `chrome.json`. Startup fails with error code `1` if unavailable. |
 | `MCP_SERVER_URL` | `http://localhost:4001/mcp` | Streamable HTTP endpoint of the `mcp-server`. |
 | `LLM_PROVIDER` | `gemini` | Active LLM provider (`gemini`, `anthropic`, `openai`, `ollama`). |
 | `GEMINI_API_KEY` | *(none)* | API key when using Google Gemini models. |
@@ -47,7 +49,6 @@ The client will start by default at `http://localhost:3200`.
 | `OPENAI_API_KEY` | *(none)* | API key when using OpenAI models. |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Base URL when using Ollama or local LLM instances. |
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). Defaults to `"default"` (standard Bootstrap). Dark-only themes automatically apply static dark styling and set `data-bs-theme="dark"`. |
-| `DOCS_TITLE` | `"AI Assistant"` | Custom title displayed in header branding, welcome card, and page title. |
 | `NAVBAR_THEME` | `"dark"` | Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). |
 | `NAVBAR_TEXT` | `"dark"` | Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). |
 | `CUSTOM_CSS_PATH` | *(none)* | Path or URL to an additional stylesheet to inject. Defaults to empty/null. |
@@ -55,7 +56,8 @@ The client will start by default at `http://localhost:3200`.
 
 ## API Endpoints
 
-- `GET /api/health` — Returns system status, active LLM provider/model, MCP connection status, tool count, and active theme configuration.
+- `GET /api/chrome` — Returns the cached `chrome.json` configuration.
+- `GET /api/health` — Returns system status, active LLM provider/model, MCP connection status, tool count, `chrome` config, and active theme configuration.
 - `GET /api/mcp/tools` — Lists all tools discovered from the connected MCP server.
 - `POST /api/chat` — Accepts `{ message, history }` payload and generates LLM responses, automatically calling MCP tools as needed.
 

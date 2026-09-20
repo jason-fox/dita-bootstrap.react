@@ -73,9 +73,11 @@ services:
     environment:
       - PORT=3200
       - MCP_SERVER_URL=http://mcp-server:4001/mcp
+      - DATA_URL=http://data-store:4000/data
       - BOOTSTRAP_THEME=default
       - NAVBAR_THEME=dark
       - NAVBAR_TEXT=dark
     depends_on:
       - mcp-server
+      - data-store
     restart: unless-stopped

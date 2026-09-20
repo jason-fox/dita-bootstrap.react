@@ -197,6 +197,23 @@ function buildAllSearchIndices(dataDir: string): void {
   }
 }
 
+function loadChromeData(dataDir: string): unknown {
+  const chromePath = path.join(dataDir, "chrome.json");
+  if (!fs.existsSync(chromePath)) {
+    console.error(`[Error] Fatal: chrome.json not found at ${chromePath}`);
+    process.exit(1);
+  }
+  try {
+    const content = fs.readFileSync(chromePath, "utf-8");
+    return JSON.parse(content);
+  } catch (err) {
+    console.error(`[Error] Fatal: Failed to read or parse ${chromePath}:`, err);
+    process.exit(1);
+  }
+}
+
+const chromeData = loadChromeData(DATA_DIR);
+
 if (numWorkers > 1 && cluster.isPrimary) {
   console.log(`Primary process ${process.pid} running. Building search indices once...`);
   buildAllSearchIndices(DATA_DIR);
@@ -219,6 +236,10 @@ if (numWorkers > 1 && cluster.isPrimary) {
 
   app.get("/health", (_req, res) => {
     res.json({ ok: true, dataDir: DATA_DIR, pid: process.pid, isWorker: cluster.isWorker });
+  });
+
+  app.get("/api/chrome", (_req, res) => {
+    res.json(chromeData);
   });
 
   app.get("/api/docs", (_req, res) => {

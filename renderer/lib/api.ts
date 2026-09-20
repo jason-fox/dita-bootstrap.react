@@ -54,6 +54,60 @@ export interface TocDoc {
   accessibility?: { main?: string; nav?: string };
 }
 
+export interface ChromeConfig {
+  "docs-page"?: {
+    title?: string;
+    description?: string;
+    header?: AstArray;
+    card?: AstArray;
+  };
+  "chat-bot"?: {
+    title?: string;
+    description?: string;
+    header?: AstArray;
+    card?: AstArray;
+    form?: AstArray;
+  };
+  footer?: AstArray;
+}
+
+let chromeCache: ChromeConfig | null = null;
+
+export async function fetchChrome(): Promise<ChromeConfig> {
+  if (chromeCache) {
+    return chromeCache;
+  }
+  let res: Response | null = null;
+  try {
+    res = await fetch(`${DATA_URL}/chrome.json`, { cache: "no-store" });
+  } catch (err: any) {
+    if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
+      throw err;
+    }
+    console.error("[Error] Fatal: Failed to fetch chrome.json from data store:", err);
+  }
+  if (!res || !res.ok) {
+    console.error(`[Error] Fatal: chrome.json not found or failed to load (status ${res?.status})`);
+    if (typeof window === "undefined") {
+      process.exit(1);
+    }
+    throw new Error("chrome.json not found");
+  }
+  try {
+    chromeCache = await res.json();
+    return chromeCache!;
+  } catch (err: any) {
+    if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
+      throw err;
+    }
+    console.error("[Error] Fatal: Failed to parse chrome.json:", err);
+    if (typeof window === "undefined") {
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
 export function isPropsObject(
   value: unknown,
 ): value is Record<string, unknown> {

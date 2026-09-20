@@ -45,7 +45,7 @@ export default function Shell({
   }, [lang]);
 
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <div className="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary">
         <div className="container-xl">
           <a
@@ -70,9 +70,9 @@ export default function Shell({
         onToggleSidebar={hasSidebar ? () => setShowSidebar((value) => !value) : undefined}
       />
       {menubar && <Menubar entries={tocEntries} docId={docId} />}
-      <Container fluid="xxl">
+      <Container fluid="xxl" className="flex-grow-1 d-flex flex-column">
         {hasSidebar ? (
-          <Row>
+          <Row className="flex-grow-1">
             <div className="col-lg-2 py-3 overflow-y-auto bs-sidebar">
               <Offcanvas
                 id="bdSidebar"
@@ -88,12 +88,12 @@ export default function Shell({
                 </Offcanvas.Body>
               </Offcanvas>
             </div>
-            <Col lg={10} as="main" id="content" tabIndex={-1} className="py-3">
+            <Col lg={10} as="main" id="content" tabIndex={-1} className="py-3 flex-grow-1 d-flex flex-column">
               {children}
             </Col>
           </Row>
         ) : (
-          <main id="content" tabIndex={-1} className="py-3">{children}</main>
+          <main id="content" tabIndex={-1} className="py-3 flex-grow-1 d-flex flex-column">{children}</main>
         )}
       </Container>
       {footerAst && (
@@ -101,6 +101,6 @@ export default function Shell({
           <AstRenderer nodes={[footerAst]} docId={docId} lang={lang} />
         </footer>
       )}
-    </>
+    </div>
   );
 }

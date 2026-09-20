@@ -85,8 +85,6 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language code passed to root `<html lang="...">` element when not specified in topic metadata. |
 | `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags (e.g. `http://localhost:3100`). |
 | `CUSTOM_CSS_PATH` | *(null)* | Optional path or URL to an additional custom stylesheet. Defaults to adding nothing (null check). |
-| `DOCS_TITLE` | `"Documentation"` / `"AI Assistant"` | Custom title displayed in navbar branding and header (`renderer` defaults to `"Documentation"`, `mcp-client` defaults to `"AI Assistant"`). |
-| `DOCS_DESCRIPTION` | `"Documentation"` | Site description used in HTML metadata tags. |
 | `NEXT_PUBLIC_DATA_URL` | `http://localhost:4000/data` | Base URL used to fetch `toc.json`, topic files, and search indices. |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api` | Base URL for data-store API endpoints like `GET /api/docs`. |
 
@@ -105,6 +103,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 
 | Variable | Default | Description |
 |---|---|---|
+| `DATA_URL` | `http://localhost:4000/data` | URL of `data-store` for retrieving `chrome.json`. Startup fails with error code `1` if unavailable. |
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for chatbot interface (`journal`, `darkly`, `flatly`, `cyborg`, etc.). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`. |
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag set on root `<html lang="...">` HTML element. |
 | `CORPUS_SUMMARY_OVERRIDE` | *(null)* | Optional custom text string injected into the chatbot's system prompt to describe loaded document sets. |
@@ -119,9 +118,15 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 | `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
 | `WEB_CONCURRENCY` / `CLUSTER_MODE` | *(single)* | Set `WEB_CONCURRENCY=<number>` or `CLUSTER_MODE=true` to run pre-fork search indexing and multi-worker cluster server execution. |
 
-## Header, Navbar & Footer Customization via AST
+## Header, Card & Footer Customization via AST & chrome.json
 
-Header navigation bars and optional footers are rendered dynamically from AST definitions serialized into `toc.json` under `"header"` and `"footer"` keys.
+Global layout templates and UI elements are driven by `chrome.json` in the data store, with document-specific overrides in `toc.json`:
+
+- `chrome.json` (`docs-page.header`): Root document list header navbar for `renderer`.
+- `chrome.json` (`docs-page.card`): Document card display template for the library landing page in `renderer`.
+- `chrome.json` (`chat-bot`): Page title, description, welcome card (`card`), and prompt form (`form`) for `mcp-client`.
+- `chrome.json` (`footer`): Global fallback footer for all documents, renderer landing page, and chatbot page.
+- `toc.json` (`header` & `footer`): Individual documents use their own `header` if defined, and fall back to `chrome.json`'s `footer` if no individual document `footer` is present.
 
 During DITA-OT publishing (`org.dita-bootstrap.ast`), include files are specified via build parameters:
 - `--args.hdr`: Path to custom XML header template (defaults to standard Bootstrap navbar with branding, nav links, search box, and dark mode toggle).
