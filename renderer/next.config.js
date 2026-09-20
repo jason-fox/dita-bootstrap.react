@@ -8,6 +8,15 @@ const nextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  async redirects() {
+    return [
+      {
+        source: "/docs",
+        destination: "/",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

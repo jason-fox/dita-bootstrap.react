@@ -391,6 +391,8 @@ function renderNode(
   onToggleSidebar?: () => void,
   activeTheme?: string,
   title?: string,
+  onClearChat?: () => void,
+  onSendPrompt?: (text: string) => void,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -517,7 +519,18 @@ function renderNode(
   ) {
     const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
     const renderedChildren = children.map((child, index) =>
-      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
+      renderNode(
+        child,
+        index,
+        docId,
+        lang,
+        onNavigate,
+        onToggleSidebar,
+        activeTheme,
+        title,
+        onClearChat,
+        onSendPrompt,
+      ),
     );
     return (
       <CollapseFromAst
@@ -529,6 +542,26 @@ function renderNode(
         {renderedChildren}
       </CollapseFromAst>
     );
+  }
+
+  // Intercept clear-chat button role
+  if (resolvedProps.role === "clear-chat" && onClearChat) {
+    resolvedProps.onClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      onClearChat();
+    };
+  }
+
+  // Intercept quick prompt buttons
+  if (type === "Button" && onSendPrompt && children.length > 0) {
+    resolvedProps.onClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      const text = children
+        .map((c) => (typeof c === "string" ? c : Array.isArray(c) ? String(c[c.length - 1]) : ""))
+        .join("")
+        .trim();
+      if (text) onSendPrompt(text);
+    };
   }
 
   // an unregistered PascalCase type would otherwise silently render as an invalid DOM tag
@@ -543,7 +576,18 @@ function renderNode(
   }
   const Component = componentRegistry[type] ?? type;
   const rendered = children.map((child, index) =>
-    renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
+    renderNode(
+      child,
+      index,
+      docId,
+      lang,
+      onNavigate,
+      onToggleSidebar,
+      activeTheme,
+      title,
+      onClearChat,
+      onSendPrompt,
+    ),
   );
 
   return React.createElement(Component, { key, ...resolvedProps }, ...rendered);
@@ -556,6 +600,8 @@ export default function AstRenderer({
   lang,
   onNavigate,
   onToggleSidebar,
+  onClearChat,
+  onSendPrompt,
 }: {
   nodes: AstNode[];
   title?: string;
@@ -563,15 +609,27 @@ export default function AstRenderer({
   lang?: string;
   onNavigate?: (docId: string, topicPath: string) => void;
   onToggleSidebar?: () => void;
+  onClearChat?: () => void;
+  onSendPrompt?: (text: string) => void;
 }) {
   const activeTheme = useActiveTheme();
 
   return (
     <ToggleProvider>
       {nodes.map((node, index) =>
-        renderNode(node, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
+        renderNode(
+          node,
+          index,
+          docId,
+          lang,
+          onNavigate,
+          onToggleSidebar,
+          activeTheme,
+          title,
+          onClearChat,
+          onSendPrompt,
+        ),
       )}
     </ToggleProvider>
   );
 }
-

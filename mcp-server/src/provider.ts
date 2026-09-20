@@ -347,11 +347,18 @@ export class DocProvider {
       case "i":
         return `*${childText}*`;
 
+      case "hr":
+        return "\n\n---\n\n";
+
       case "code":
         return childText.includes("\n") ? `\n\`\`\`\n${childText}\n\`\`\`\n` : `\`${childText}\``;
 
-      case "pre":
-        return `\n\`\`\`\n${childText}\n\`\`\`\n`;
+      case "codeblock":
+      case "pre": {
+        const rawLang = (props.outputclass as string) || (props.language as string) || (props.lang as string) || "xml";
+        const lang = rawLang.replace(/^language-/, "").trim();
+        return `\n\`\`\`${lang}\n${childText}\n\`\`\`\n`;
+      }
 
       case "ul":
         return `\n${children.map((c) => `- ${this.astToMarkdown(c, depth + 1).trim()}`).join("\n")}\n`;

@@ -36,7 +36,7 @@ services:
       - ./data-store/data:/app/data
     restart: unless-stopped
 
-  # 3. Next.js Documentation Renderer Portal
+  # 3. Next.js Documentation Renderer & AI Assistant Portal
   renderer:
     image: ghcr.io/jason-fox/ast-renderer:${TAG:-latest}
     build:
@@ -45,39 +45,21 @@ services:
     container_name: renderer
     ports:
       - "3100:3100"
+    env_file:
+      - .env
     environment:
       - PORT=3100
       - INTERNAL_DATA_URL=http://data-store:4000/data
       - INTERNAL_API_URL=http://data-store:4000/api
       - NEXT_PUBLIC_DATA_URL=http://localhost:4000/data
       - NEXT_PUBLIC_API_URL=http://localhost:4000/api
+      - MCP_SERVER_URL=http://mcp-server:4001/mcp
       - BOOTSTRAP_THEME=default
       - NAVBAR_THEME=dark
       - NAVBAR_TEXT=dark
       - OPEN_GRAPH_URL=http://localhost:3100
     depends_on:
       - data-store
+      - mcp-server
     restart: unless-stopped
 
-  # 4. LLM-Agnostic Chatbot MCP Client
-  mcp-client:
-    image: ghcr.io/jason-fox/ast-mcp-client:${TAG:-latest}
-    build:
-      context: ./mcp-client
-      dockerfile: Dockerfile
-    container_name: mcp-client
-    ports:
-      - "3200:3200"
-    env_file:
-      - .env
-    environment:
-      - PORT=3200
-      - MCP_SERVER_URL=http://mcp-server:4001/mcp
-      - DATA_URL=http://data-store:4000/data
-      - BOOTSTRAP_THEME=default
-      - NAVBAR_THEME=dark
-      - NAVBAR_TEXT=dark
-    depends_on:
-      - mcp-server
-      - data-store
-    restart: unless-stopped

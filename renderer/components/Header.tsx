@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Search from "./Search";
@@ -13,13 +14,28 @@ export default function Header({
   docId,
   lang,
   onToggleSidebar,
+  onClearChat,
 }: {
   headerAst?: AstArray;
   title: string;
   docId?: string;
   lang?: string;
   onToggleSidebar?: () => void;
+  onClearChat?: () => void;
 }) {
+  const [chatEnabled, setChatEnabled] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/health")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.chatEnabled === false) {
+          setChatEnabled(false);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   if (headerAst) {
     return (
       <AstRenderer
@@ -28,6 +44,7 @@ export default function Header({
         docId={docId}
         lang={lang}
         onToggleSidebar={onToggleSidebar}
+        onClearChat={onClearChat}
       />
     );
   }
@@ -60,6 +77,11 @@ export default function Header({
         <Navbar.Collapse id="navbarContent">
           <div className="navbar-nav ms-auto align-items-lg-center">
             {docId && <Search docId={docId} lang={lang} />}
+            {chatEnabled && (
+              <a href="/chat" className="nav-link me-2 d-flex align-items-center fw-medium">
+                <i className="bi bi-robot me-1" /> Assistant
+              </a>
+            )}
             <DarkModeToggle />
           </div>
         </Navbar.Collapse>
