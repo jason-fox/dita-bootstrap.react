@@ -1,6 +1,7 @@
 {
-  "name": "dita-docs-frontend",
+  "name": "ast-renderer",
   "version": "1.0.0",
+  "description": "Next.js web portal rendering DITA Abstract Syntax Tree topics into React Bootstrap components",
   "private": true,
   "license": "Apache-2.0",
   "scripts": {

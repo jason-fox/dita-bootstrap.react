@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import AstRenderer from "../../frontend/components/AstRenderer";
-import Breadcrumbs from "../../frontend/components/Breadcrumbs";
-import Scrollspy from "../../frontend/components/Scrollspy";
+import AstRenderer from "../../renderer/components/AstRenderer";
+import Breadcrumbs from "../../renderer/components/Breadcrumbs";
+import Scrollspy from "../../renderer/components/Scrollspy";
 import TocNav from "./TocNav";
 import type { TopicDoc } from "./provider";
-import type { TocDoc } from "../../frontend/lib/api";
+import type { TocDoc } from "../../renderer/lib/api";
 
 export interface TopicPageProps {
   docId: string;

@@ -1,7 +1,7 @@
 {
-  "name": "dita-docs-mcp-server",
+  "name": "ast-mcp-server",
   "version": "1.0.0",
-  "description": "MCP Server for DITA AST Documentation with MCP-UI React rendering",
+  "description": "Model Context Protocol server for Abstract Syntax Tree DITA documentation with MCP-UI React rendering",
   "main": "dist/mcp-server/src/index.js",
   "bin": {
     "dita-docs-mcp": "dist/mcp-server/src/index.js"

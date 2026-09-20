@@ -13,24 +13,23 @@ FROM node:22-alpine AS runner
 ARG BUILD_VERSION=0.0.1
 ARG BUILD_REVISION=unknown
 
-LABEL org.opencontainers.image.title="AST MCP Client"
-LABEL org.opencontainers.image.description="LLM-agnostic chatbot client for the Abstract Syntax Tree DITA documentation MCP Server"
+LABEL org.opencontainers.image.title="AST Renderer"
+LABEL org.opencontainers.image.description="Next.js web portal rendering DITA Abstract Syntax Tree topics into React Bootstrap components"
 LABEL org.opencontainers.image.source="https://github.com/jason-fox/dita-bootstrap.react"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.version=${BUILD_VERSION}
 LABEL org.opencontainers.image.revision=${BUILD_REVISION}
 
 ENV NODE_ENV=production
-ENV PORT=3200
+ENV PORT=3100
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
+# Copy standalone Next.js server bundle and static assets
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-RUN npm ci --omit=dev || npm install --only=production
+EXPOSE 3100
 
-EXPOSE 3200
-
-CMD ["node", "dist/index.js"]
+CMD ["node", "server.js"]

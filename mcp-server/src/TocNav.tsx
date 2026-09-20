@@ -1,5 +1,5 @@
 import React, { useState, type CSSProperties } from "react";
-import { isPropsObject, resolveStyle, type AstArray } from "../../frontend/lib/api";
+import { isPropsObject, resolveStyle, type AstArray } from "../../renderer/lib/api";
 
 // Ported from frontend/components/Toc.tsx: same visual variants (collapsible/list-group/nav-pill),
 // but that version depends on next/link + usePathname, which don't exist in this standalone,

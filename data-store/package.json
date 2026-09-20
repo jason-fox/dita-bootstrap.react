@@ -1,9 +1,9 @@
 {
-  "name": "dita-docs-backend",
+  "name": "ast-data-store",
   "version": "1.0.0",
   "private": true,
   "license": "Apache-2.0",
-  "description": "Serves dita-bootstrap.ast transtype output to the react-harness frontend",
+  "description": "Express API serving DITA AST JSON topic files and MiniSearch search indices",
   "scripts": {
     "dev": "tsx watch server/index.ts",
     "start": "tsx server/index.ts",

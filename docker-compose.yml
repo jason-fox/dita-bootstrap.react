@@ -2,30 +2,28 @@ version: "3.8"
 
 services:
   # 1. Express Backend Data API
-  backend:
+  data-store:
+    image: ghcr.io/jason-fox/ast-data-store:${TAG:-latest}
     build:
-      context: ./backend
+      context: ./data-store
       dockerfile: Dockerfile
-      args:
-        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
-    container_name: dita-docs-backend
+    container_name: data-store
     ports:
       - "4000:4000"
     environment:
       - PORT=4000
       - DATA_DIR=/app/data
     volumes:
-      - ./backend/data:/app/data
+      - ./data-store/data:/app/data
     restart: unless-stopped
 
   # 2. DITA MCP Server (HTTP Streamable Transport)
   mcp-server:
+    image: ghcr.io/jason-fox/ast-mcp-server:${TAG:-latest}
     build:
       context: .
       dockerfile: mcp-server/Dockerfile
-      args:
-        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
-    container_name: dita-docs-mcp-server
+    container_name: mcp-server
     ports:
       - "4001:4001"
     environment:
@@ -35,23 +33,22 @@ services:
       - NAVBAR_THEME=dark
       - NAVBAR_TEXT=dark
     volumes:
-      - ./backend/data:/app/data
+      - ./data-store/data:/app/data
     restart: unless-stopped
 
-  # 3. Next.js Documentation Frontend Portal
-  frontend:
+  # 3. Next.js Documentation Renderer Portal
+  renderer:
+    image: ghcr.io/jason-fox/ast-renderer:${TAG:-latest}
     build:
-      context: ./frontend
+      context: ./renderer
       dockerfile: Dockerfile
-      args:
-        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
-    container_name: dita-docs-frontend
+    container_name: renderer
     ports:
       - "3100:3100"
     environment:
       - PORT=3100
-      - INTERNAL_DATA_URL=http://backend:4000/data
-      - INTERNAL_API_URL=http://backend:4000/api
+      - INTERNAL_DATA_URL=http://data-store:4000/data
+      - INTERNAL_API_URL=http://data-store:4000/api
       - NEXT_PUBLIC_DATA_URL=http://localhost:4000/data
       - NEXT_PUBLIC_API_URL=http://localhost:4000/api
       - BOOTSTRAP_THEME=default
@@ -59,17 +56,16 @@ services:
       - NAVBAR_TEXT=dark
       - OPEN_GRAPH_URL=http://localhost:3100
     depends_on:
-      - backend
+      - data-store
     restart: unless-stopped
 
   # 4. LLM-Agnostic Chatbot MCP Client
   mcp-client:
+    image: ghcr.io/jason-fox/ast-mcp-client:${TAG:-latest}
     build:
       context: ./mcp-client
       dockerfile: Dockerfile
-      args:
-        BUILD_VERSION: ${BUILD_VERSION:-1.0.0}
-    container_name: dita-docs-mcp-client
+    container_name: mcp-client
     ports:
       - "3200:3200"
     env_file:

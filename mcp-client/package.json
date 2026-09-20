@@ -1,7 +1,7 @@
 {
-  "name": "dita-docs-mcp-client",
+  "name": "ast-mcp-client",
   "version": "1.0.0",
-  "description": "LLM-agnostic Chatbot Client for DITA Docs MCP Server",
+  "description": "LLM-agnostic chatbot client for the Abstract Syntax Tree DITA documentation MCP Server",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

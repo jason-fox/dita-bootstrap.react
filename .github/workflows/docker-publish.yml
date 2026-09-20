@@ -1,0 +1,105 @@
+name: Build and Publish Docker Images to GHCR
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push:
+    name: Build & Push ${{ matrix.service.name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: data-store
+            image_name: ast-data-store
+            title: AST Data Store
+            description: Express API serving DITA AST JSON topic files and MiniSearch search indices
+            context: ./data-store
+            dockerfile: ./data-store/Dockerfile
+          - name: mcp-server
+            image_name: ast-mcp-server
+            title: AST MCP Server
+            description: Model Context Protocol server for DITA AST documentation with MCP-UI React rendering
+            context: .
+            dockerfile: ./mcp-server/Dockerfile
+          - name: renderer
+            image_name: ast-renderer
+            title: AST Renderer
+            description: Next.js web portal rendering DITA AST topics into React Bootstrap components
+            context: ./renderer
+            dockerfile: ./renderer/Dockerfile
+          - name: mcp-client
+            image_name: ast-mcp-client
+            title: AST MCP Client
+            description: LLM-agnostic chatbot client for DITA AST MCP Server
+            context: ./mcp-client
+            dockerfile: ./mcp-client/Dockerfile
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata & OCI Annotations
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service.image_name }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=tag
+          labels: |
+            org.opencontainers.image.title=${{ matrix.service.title }}
+            org.opencontainers.image.description=${{ matrix.service.description }}
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+            org.opencontainers.image.licenses=Apache-2.0
+          annotations: |
+            org.opencontainers.image.title=${{ matrix.service.title }}
+            org.opencontainers.image.description=${{ matrix.service.description }}
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+            org.opencontainers.image.licenses=Apache-2.0
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          build-args: |
+            BUILD_VERSION=${{ steps.meta.outputs.version || '1.0.0' }}
+            BUILD_REVISION=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.service.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service.name }}

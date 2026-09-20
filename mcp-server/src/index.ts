@@ -16,7 +16,7 @@ import { registerAppTool, registerAppResource, RESOURCE_MIME_TYPE } from "@model
 import { DocProvider } from "./provider";
 import { renderAppShellHtml } from "./renderer";
 import type { TopicPageProps } from "./TopicPage";
-import type { TocDoc } from "../../frontend/lib/api";
+import type { TocDoc } from "../../renderer/lib/api";
 
 const TOPIC_VIEWER_RESOURCE_URI = "ui://dita-docs/topic-viewer.html";
 
@@ -27,7 +27,7 @@ program
   .description("MCP Server for Technical Documentation search, content extraction, and UI rendering")
   .option("-t, --transport <type>", "Transport type: stdio or http", "stdio")
   .option("-p, --port <number>", "Port to run HTTP server on", "4001")
-  .option("-d, --data-dir <path>", "Path to backend data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../backend/data"))
+  .option("-d, --data-dir <path>", "Path to backend data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../data-store/data"))
   .option("-c, --cluster [workers]", "Enable multi-core cluster mode")
   .option("-w, --workers <number>", "Number of worker processes in cluster mode");
 

@@ -19,7 +19,7 @@ const result = await esbuild.build({
   target: "es2020",
   jsx: "automatic",
   jsxImportSource: "react",
-  // AstRenderer.tsx is pulled in from ../../frontend/components, which has its own
+  // AstRenderer.tsx is pulled in from ../../renderer/components, which has its own
   // node_modules/react — without forcing resolution to mcp-server's copy, the bundle ends
   // up with two React instances and hooks crash with "Cannot read properties of null
   // (reading 'useState')" (null dispatcher) the moment a hook runs client-side.
