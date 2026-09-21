@@ -23,9 +23,10 @@ export default function Breadcrumbs({
           const handleClick = (e: React.MouseEvent) => {
             if (onNavigate && item.href) {
               e.preventDefault();
+              const escapedDocId = (docId || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
               const cleanTopic = item.href
                 .replace(/^(\.\.\/|\.\/|\/)+/, "")
-                .replace(new RegExp(`^${docId}/`), "")
+                .replace(new RegExp(`^${escapedDocId}/`), "")
                 .replace(/\.(json|html)(#.*)?$/, "");
               onNavigate(docId || "dita-bootstrap-sample", cleanTopic);
             }

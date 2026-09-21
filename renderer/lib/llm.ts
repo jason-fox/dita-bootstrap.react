@@ -150,7 +150,10 @@ export class LlmService {
       if (assistantMsg.tool_calls && assistantMsg.tool_calls.length > 0) {
         messages.push(assistantMsg);
 
-        const toolMessages = await Promise.all(
+        // tool calls run concurrently, so results land in completion order, not request
+        // order - collect both the message and the executed-result via the return value
+        // and only append to the shared arrays after Promise.all restores request order.
+        const toolOutcomes = await Promise.all(
           assistantMsg.tool_calls.map(async (toolCall: any) => {
             const functionName = toolCall.function.name;
             let functionArgs: Record<string, any> = {};
@@ -164,34 +167,37 @@ export class LlmService {
 
             try {
               const result = await mcpClient.callTool(functionName, functionArgs);
-              executedToolResults.push({
-                toolName: functionName,
-                args: functionArgs,
-                result,
-              });
-
               const resultContent = Array.isArray(result?.content)
                 ? result.content.map((c: any) => c.text || JSON.stringify(c)).join("\n")
                 : JSON.stringify(result);
 
               return {
-                role: "tool" as const,
-                tool_call_id: toolCall.id,
-                name: functionName,
-                content: resultContent,
+                toolResult: { toolName: functionName, args: functionArgs, result },
+                message: {
+                  role: "tool" as const,
+                  tool_call_id: toolCall.id,
+                  name: functionName,
+                  content: resultContent,
+                },
               };
             } catch (toolErr: any) {
               return {
-                role: "tool" as const,
-                tool_call_id: toolCall.id,
-                name: functionName,
-                content: `Error executing tool: ${toolErr.message}`,
+                toolResult: null,
+                message: {
+                  role: "tool" as const,
+                  tool_call_id: toolCall.id,
+                  name: functionName,
+                  content: `Error executing tool: ${toolErr.message}`,
+                },
               };
             }
           }),
         );
 
-        messages.push(...toolMessages);
+        for (const outcome of toolOutcomes) {
+          if (outcome.toolResult) executedToolResults.push(outcome.toolResult);
+        }
+        messages.push(...toolOutcomes.map((o) => o.message));
       } else {
         let text = assistantMsg.content ? assistantMsg.content.trim() : "";
         const hasUi = executedToolResults.some((tr: any) => tr.toolName === "render_topic_ui");

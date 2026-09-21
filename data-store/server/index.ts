@@ -159,8 +159,8 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
     const isFeaturedB = b.featured || featuredEnv.includes(b.id);
     if (isFeaturedA !== isFeaturedB) return isFeaturedB ? 1 : -1;
 
-    const prioA = a.priority ?? (featuredEnv.includes(a.id) ? 100 : 0);
-    const prioB = b.priority ?? (featuredEnv.includes(b.id) ? 100 : 0);
+    const prioA = a.priority ?? (isFeaturedA ? 100 : 0);
+    const prioB = b.priority ?? (isFeaturedB ? 100 : 0);
     if (prioA !== prioB) return prioB - prioA;
 
     return a.title.localeCompare(b.title);

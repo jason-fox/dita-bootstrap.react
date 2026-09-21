@@ -83,8 +83,8 @@ export class DocProvider {
       const isFeaturedB = b.featured || featuredEnv.includes(b.id);
       if (isFeaturedA !== isFeaturedB) return isFeaturedB ? 1 : -1;
 
-      const prioA = a.priority ?? (featuredEnv.includes(a.id) ? 100 : 0);
-      const prioB = b.priority ?? (featuredEnv.includes(b.id) ? 100 : 0);
+      const prioA = a.priority ?? (isFeaturedA ? 100 : 0);
+      const prioB = b.priority ?? (isFeaturedB ? 100 : 0);
       if (prioA !== prioB) return prioB - prioA;
 
       return a.title.localeCompare(b.title);
@@ -125,7 +125,12 @@ export class DocProvider {
           try {
             const indexDoc = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
             const meta = indexDoc.meta ?? {};
-            if (meta.shortdesc) description = meta.shortdesc;
+            const shortdesc =
+              meta.shortdesc ??
+              meta.shortDesc ??
+              (typeof indexDoc.shortdesc === "string" ? indexDoc.shortdesc : undefined) ??
+              (typeof indexDoc.shortDesc === "string" ? indexDoc.shortDesc : undefined);
+            if (shortdesc) description = shortdesc;
             if (Array.isArray(meta.keywords)) keywords = meta.keywords;
             if (meta.author) author = meta.author;
             if (meta.prodinfo) prodinfo = meta.prodinfo;
@@ -416,10 +421,11 @@ export class DocProvider {
           return padded;
         };
         const header = headerRows[0] ?? bodyRows.shift() ?? [];
+        const extraHeaderRows = headerRows.slice(1);
         const lines = [
           `| ${pad(header).join(" | ")} |`,
-          `| ${(header.length ? header : Array(colCount).fill("")).map(() => "---").join(" | ")} |`,
-          ...bodyRows.map((r) => `| ${pad(r).join(" | ")} |`),
+          `| ${Array(colCount).fill("---").join(" | ")} |`,
+          ...[...extraHeaderRows, ...bodyRows].map((r) => `| ${pad(r).join(" | ")} |`),
         ];
         return `\n\n${lines.join("\n")}\n\n`;
       }

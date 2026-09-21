@@ -61,3 +61,4 @@ yarn-error.log*
 
 # personal Claude Code permission overrides, not shared with the team
 /.claude/settings.local.json
+.claudeignore

@@ -93,11 +93,6 @@ async function startWorker() {
     process.env.SHOW_TOOLS === "true" ||
     process.env.DEBUG_TOOLS === "true";
 
-  // Route to get chrome config directly
-  app.get("/api/chrome", (_req, res) => {
-    res.json(chromeCache || {});
-  });
-
   // Health check endpoint
   app.get("/api/health", async (_req, res) => {
     const tools = await mcpClient.listTools();
@@ -130,7 +125,6 @@ async function startWorker() {
       navbarTheme: navThemeRaw,
       navbarColorScheme: navColorScheme,
       navbarBgColor: navBgColor,
-      chrome: chromeCache,
     });
   });
 

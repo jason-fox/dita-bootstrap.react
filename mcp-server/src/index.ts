@@ -336,9 +336,11 @@ async function main() {
             return;
           }
 
+          // socket.unshift() only affects this process's own Socket object - send()
+          // transfers just the raw fd, so the buffered bytes must ride in the IPC message
+          // itself for the worker to unshift onto its own (new) Socket wrapping that fd.
           const targetWorker = activeWorkers[hashString(key) % activeWorkers.length];
-          targetWorker.send({ type: "sticky-connection" }, socket);
-          socket.unshift(buffered);
+          targetWorker.send({ type: "sticky-connection", rawData: buffered.toString("base64") }, socket);
         };
         socket.on("data", onData);
       });
@@ -469,6 +471,9 @@ async function main() {
     if (isCluster && cluster.isWorker) {
       process.on("message", (msg: any, socket: net.Socket) => {
         if (msg?.type === "sticky-connection" && socket) {
+          if (msg.rawData) {
+            socket.unshift(Buffer.from(msg.rawData, "base64"));
+          }
           httpServer.emit("connection", socket);
           socket.resume();
         }
