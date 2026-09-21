@@ -150,9 +150,8 @@ export class LlmService {
       if (assistantMsg.tool_calls && assistantMsg.tool_calls.length > 0) {
         messages.push(assistantMsg);
 
-        // tool calls run concurrently, so results land in completion order, not request
-        // order - collect both the message and the executed-result via the return value
-        // and only append to the shared arrays after Promise.all restores request order.
+        // concurrent tool calls resolve out of request order, so return each result
+        // and only push to the shared arrays after Promise.all restores that order.
         const toolOutcomes = await Promise.all(
           assistantMsg.tool_calls.map(async (toolCall: any) => {
             const functionName = toolCall.function.name;

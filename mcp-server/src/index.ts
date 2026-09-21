@@ -336,9 +336,8 @@ async function main() {
             return;
           }
 
-          // socket.unshift() only affects this process's own Socket object - send()
-          // transfers just the raw fd, so the buffered bytes must ride in the IPC message
-          // itself for the worker to unshift onto its own (new) Socket wrapping that fd.
+          // send() only transfers the raw fd, not this process's own Socket buffer -
+          // the bytes must ride in the message so the worker can unshift them itself.
           const targetWorker = activeWorkers[hashString(key) % activeWorkers.length];
           targetWorker.send({ type: "sticky-connection", rawData: buffered.toString("base64") }, socket);
         };
