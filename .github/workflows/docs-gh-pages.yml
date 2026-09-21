@@ -25,10 +25,11 @@ jobs:
       - name: Build DITA AST Documentation
         uses: dita-ot/dita-ot-action@master
         with:
+          plugins: |
+            fox.jason.extend.css
+            org.dita-bootstrap.html
           install: |
-            dita install fox.jason.extend.css
-            dita install org.dita-bootstrap.html
-            dita install org.dita-bootstrap.ast
+            dita install ./plugins/dita-bootstrap.ast
           input: react-harness/sample/document.ditamap
           transtype: ast-bootstrap
           output-path: out/sample
