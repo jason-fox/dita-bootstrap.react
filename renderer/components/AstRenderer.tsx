@@ -35,6 +35,12 @@ import {
 } from "react-bootstrap";
 import Search from "./Search";
 import DarkModeToggle from "./DarkModeToggle";
+import dynamic from "next/dynamic";
+
+const InteractiveTable = dynamic(() => import("./InteractiveTable"), {
+  loading: () => <div className="spinner-border spinner-border-sm text-primary" role="status" />,
+  ssr: false,
+});
 import Prism from "prismjs";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
@@ -311,6 +317,7 @@ const componentRegistry: Record<string, React.ElementType> = {
   Pagination,
   PaginationItem: Pagination.Item,
   Table,
+  InteractiveTable,
   TooltipTrigger: TooltipTriggerFromAst,
   PopoverTrigger: PopoverTriggerFromAst,
 };
@@ -410,6 +417,19 @@ function renderNode(
     ...(props.srcset ? { srcSet: resolveSrc(props.srcset, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
+
+  let nodeType = type;
+  if (
+    nodeType === "Table" &&
+    (resolvedProps.searchable ||
+      resolvedProps.sortable ||
+      resolvedProps.paginated ||
+      resolvedProps["data-search"] ||
+      resolvedProps["data-sortable"] ||
+      resolvedProps["data-pagination"])
+  ) {
+    nodeType = "InteractiveTable";
+  }
 
   if (type === "NavbarBrand") {
     const brandTitle = title || "Documentation";
@@ -572,14 +592,14 @@ function renderNode(
   // an unregistered PascalCase type would otherwise silently render as an invalid DOM tag
   if (
     process.env.NODE_ENV !== "production" &&
-    !componentRegistry[type] &&
-    /^[A-Z]/.test(type)
+    !componentRegistry[nodeType] &&
+    /^[A-Z]/.test(nodeType)
   ) {
     console.warn(
-      `AstRenderer: no componentRegistry entry for AST type "${type}"`,
+      `AstRenderer: no componentRegistry entry for AST type "${nodeType}"`,
     );
   }
-  const Component = componentRegistry[type] ?? type;
+  const Component = componentRegistry[nodeType] ?? nodeType;
   const rendered = children.map((child, index) =>
     renderNode(
       child,
