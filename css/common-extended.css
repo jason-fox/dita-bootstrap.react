@@ -1,0 +1,364 @@
+
+/*!
+ *  This file is part of the DITA Bootstrap plug-in for DITA Open Toolkit.
+ *  See the accompanying LICENSE file for applicable licenses.
+ */
+
+:root {
+  --dita-prussian-blue: #1d365d;
+  --dita-maroon: #800000;
+  --dita-violet: var(--bs-purple);
+}
+
+.list-group-item.active,
+.nav-link.active,
+[data-bs-theme='dark'] {
+  --dita-prussian-blue: #6a91cf;
+  --dita-violet: #cc99cd;
+  --dita-maroon: #ff7676;
+}
+
+.list-group-item {
+  border-radius: 0;
+}
+
+.tab-pane pre[class*='language-'] {
+  margin: 0;
+}
+
+.d-dark,
+.d-light {
+  display: none;
+}
+
+[data-bs-theme='light'] .d-light {
+  display: inherit;
+}
+
+[data-bs-theme='light'] .d-auto {
+  display: none;
+}
+
+[data-bs-theme='dark'] .d-dark {
+  display: inherit;
+}
+
+[data-bs-theme='dark'] .d-auto {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dita-prussian-blue: #6a91cf;
+    --dita-violet: #cc99cd;
+    --dita-maroon: #ff7676;
+  }
+
+  [data-bs-theme='light'] {
+    --dita-prussian-blue: #1d365d;
+    --dita-maroon: #800000;
+    --dita-violet: var(--bs-purple);
+  }
+}
+
+.syntaxdiagram {
+  color: var(--dita-maroon);
+}
+
+.numcharref,
+.parameterentity,
+.textentity,
+.xmlatt,
+.xmlelement,
+.xmlnsname,
+.xmlpi {
+  font-family: var(--bs-font-monospace);
+  color: var(--dita-violet);
+  overflow-wrap: break-word;
+}
+
+.cmdname,
+.codeph,
+.filepath,
+.option,
+.parmname {
+  font-family: var(--bs-font-monospace);
+  color: var(--bs-code-color);
+  overflow-wrap: break-word;
+}
+
+.cmdname,
+.parmname {
+  font-weight: 700;
+  color: var(--dita-prussian-blue);
+}
+
+.boolean {
+  color: var(--bs-green);
+}
+
+.state {
+  color: var(--bs-red);
+}
+
+.navbar-brand > svg {
+  margin: 4px 6px;
+  vertical-align: text-top;
+}
+
+.bs-container {
+  margin: 3rem auto;
+}
+
+.bs-sidebar-nav {
+  overflow: auto;
+}
+
+[type='search']::placeholder {
+  color: rgba(var(--bs-body-color-rgb), 0.3);
+}
+
+.search-box:hover,
+.search-box:focus-visible {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+
+/*!
+ *  This file is part of the DITA Bootstrap plug-in for DITA Open Toolkit.
+ *  See the accompanying LICENSE file for applicable licenses.
+ */
+
+/*! These values define the relative width of the
+ *  main content window compared with the sidebar-nav
+ */
+
+.bs-container {
+  display: grid;
+  grid-template-areas: 'sidebar main';
+  grid-template-columns: 1fr 5fr;
+  gap: 1.5rem;
+}
+
+.bs-sidebar {
+  grid-area: sidebar;
+}
+
+.bs-main {
+  grid-area: main;
+}
+
+.bs-content {
+  grid-area: content;
+  min-width: 1px;
+}
+
+.bs-fixed-sidetoc {
+  height: calc(100vh - 10rem);
+}
+.bs-fixed-footer {
+  height: auto;
+  padding-top: 0.25rem;
+}
+
+@media (max-width: 991.98px) {
+  .bs-main {
+    margin-inline: auto;
+  }
+  .bs-fixed-sidetoc {
+    height: calc(100vh);
+  }
+}
+
+@media (min-width: 768px) {
+  .bs-main {
+    display: grid;
+    grid-template-areas: 'content';
+    grid-template-rows: auto auto 1fr;
+    gap: inherit;
+  }
+}
+
+@media (min-width: 992px) {
+  .bs-main {
+    grid-template-areas: 'content';
+    grid-template-rows: auto 1fr;
+  }
+
+  .codeblock {
+    min-width: 100%;
+    max-width: calc(80vw - 2rem);
+  }
+
+  .bs-sidebar {
+    position: sticky;
+    top: 5rem;
+    display: block !important;
+    height: calc(100vh - 6rem);
+    padding-left: 0.25rem;
+    margin-left: -0.25rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .bd-navbar .bd-navbar-toggle {
+    width: 4.25rem;
+  }
+
+  .bs-container {
+    grid-template-columns: 0fr 1fr;
+  }
+
+  .codeblock,
+  .table,
+  .tablist,
+  .note,
+  .carousel,
+  .section,
+  .shortdesc,
+  .topic {
+    max-width: calc(100vw - 4rem);
+  }
+
+  .bs-sidebar .offcanvas-lg {
+    border-right-color: var(--bs-border-color);
+  }
+}
+
+.nested0 {
+  margin-top: 0;
+}
+
+.nested1 {
+  margin-top: 1em;
+}
+
+.nested0,
+article h1 {
+  scroll-margin-top: 7.25rem;
+}
+
+.nested1,
+article h2,
+article h3,
+article h4,
+article [tabindex='0'] {
+  scroll-margin-top: 5.25rem;
+}
+
+/*!
+ *  This file is part of the DITA Bootstrap plug-in for DITA Open Toolkit.
+ *  See the accompanying LICENSE file for applicable licenses.
+ */
+
+/*! These values define the relative width of the
+ *  main content window compared with the sidebar-nav
+ */
+
+.bd-links {
+  padding-left: none;
+  overflow: auto;
+  font-weight: 600;
+}
+
+.bd-links a {
+  padding: 0.1875rem 0.5rem;
+  margin-top: 0.125rem;
+  color: var(--bs-body-color);
+  text-decoration: none;
+}
+
+.bd-links a:hover {
+  color: var(--bs-link-hover-color);
+}
+
+.bd-links span {
+  color: var(--bs-body-color);
+}
+
+.bd-links span:hover {
+  color: var(--bs-link-hover-color);
+}
+
+.bd-links span.bd-divider:hover {
+  color: var(--bs-body-color);
+}
+
+@media (min-width: 768px) {
+  .bd-links {
+    position: sticky;
+    display: block !important;
+    padding: 0 0.25rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .bd-links > ul {
+    padding: 1.5rem 0.75rem;
+    background-color: var(--bs-body-bg);
+  }
+}
+
+.bd-links li li a {
+  font-size: 0.875em;
+}
+
+.bd-divider {
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+.bd-links .btn {
+  padding: 0.25rem !important;
+  font-weight: 600;
+  color: var(--bs-body-color);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.bd-links svg:hover {
+  color: var(--bs-link-hover-color);
+}
+
+.bd-links .ps-2 {
+  padding-left: 0.5rem !important;
+}
+
+[dir='rtl'] .bd-links .ps-2 {
+  padding-right: 0.5rem !important;
+  padding-left: 0 !important;
+}
+
+.bd-links .ps-3 {
+  padding-left: 0.75rem !important;
+}
+
+[dir='rtl'] .bd-links .ps-3 {
+  padding-right: 0.75rem !important;
+  padding-left: 0 !important;
+}
+
+.bd-links .ps-4 {
+  padding-left: 1rem !important;
+}
+
+[dir='rtl'] .bd-links .ps-4 {
+  padding-right: 1rem !important;
+  padding-left: 0 !important;
+}
+
+[dir='rtl'] .bd-links svg {
+  transform: rotate(180deg);
+}
+
+.bd-links .btn[aria-expanded='true'] svg {
+  transform: rotate(90deg);
+}
+
+.bd-links .btn:focus-visible {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+
+.bd-links .active {
+  font-weight: 600;
+  color: var(--bs-body-color);
+}
