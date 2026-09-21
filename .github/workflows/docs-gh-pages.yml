@@ -36,11 +36,10 @@ jobs:
             fox.jason.favicon
             fox.jason.open-graph
           project: .github/dita-ot/html.xml
-          output-path: out/sample
 
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.6.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: out/sample
+          folder: out/html
