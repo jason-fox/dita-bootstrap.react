@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="index">
+  <title>React Harness User Guide</title>
+  <shortdesc>User guide for viewing, rendering, and chatting with DITA documentation using the React Harness web application and AI Assistant.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>User Guide</indexterm>
+        <indexterm>Viewing Documentation</indexterm>
+        <indexterm>Rendering Controls</indexterm>
+        <indexterm>AI Chat</indexterm>
+        <indexterm>Docker Compose</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Welcome to React Harness</title>
+      <p>The <b>React Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
+    </section>
+
+    <section>
+      <title>Publishing &amp; Adding Documentation</title>
+      <p>Adding documentation to the library requires only one simple publishing step:</p>
+      <ol>
+        <li>Publish your DITA map using the <codeph>ast-bootstrap</codeph> format directly into the data store output folder:
+          <codeblock outputclass="language-bash">dita --input=path/to/your.ditamap \
+     --format=ast-bootstrap \
+     --output=react-harness/data-store/data/my-doc-set</codeblock>
+        </li>
+        <li>That's it! The system automatically detects the new documentation set, builds full-text search indices, and displays it in your documentation catalog.</li>
+      </ol>
+    </section>
+
+    <section>
+      <title>Quick Start with Docker Compose</title>
+      <p>Launch the complete React Harness documentation system using a single Docker Compose command:</p>
+      
+      <codeblock outputclass="language-bash"># Launch all documentation services in the background
+docker compose up -d</codeblock>
+
+      <p>Once launched, access the system in your browser:</p>
+      <ul>
+        <li><b>Documentation Portal:</b> <filepath>http://localhost:3100</filepath> — View and browse loaded documentation sets.</li>
+        <li><b>AI Assistant Chat:</b> <filepath>http://localhost:3100/chat</filepath> — Chat with the AI documentation assistant.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Viewing, Rendering &amp; Navigation Features</title>
+      <p>The web reader offers rich interactive controls for viewing and reading documentation:</p>
+
+      <parml>
+        <plentry>
+          <pt><b>Documentation Library Portal (<filepath>/</filepath>)</b></pt>
+          <pd>A visual catalog displaying all published document sets. Select any card to open its topic reader view.</pd>
+        </plentry>
+        <plentry>
+          <pt><b>Collapsible Navigation Sidebar</b></pt>
+          <pd>A multi-level Table of Contents sidebar for expanding chapters and navigating directly between topics.</pd>
+        </plentry>
+        <plentry>
+          <pt><b>Interactive Component Rendering</b></pt>
+          <pd>DITA elements (tables, accordions, alerts, badges, cards, code blocks, figures) render as live interactive Bootstrap components with column sorting, text filtering, and pagination.</pd>
+        </plentry>
+        <plentry>
+          <pt><b>Header Search Bar</b></pt>
+          <pd>Type keywords into the header search bar to view instant search results with section deep-links.</pd>
+        </plentry>
+        <plentry>
+          <pt><b>Dark Mode Switcher</b></pt>
+          <pd>Toggle between Light, Dark, and System Auto color themes via the header menu.</pd>
+        </plentry>
+        <plentry>
+          <pt><b>AI Assistant Chat (<filepath>/chat</filepath>)</b></pt>
+          <pd>Chat with an AI Assistant to answer questions about the documentation corpus or preview interactive topic components inline.</pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>User Configuration (.env)</title>
+      <p>Customize site theme and AI Assistant credentials using environment variables in your <filepath>.env</filepath> file:</p>
+
+      <parml otherprops="cols(4)">
+        <plentry>
+          <pt><parmname>BOOTSTRAP_THEME</parmname></pt>
+          <pd>Selects the visual theme (e.g. <option>default</option>, <option>journal</option>, <option>darkly</option>, <option>flatly</option>, <option>cyborg</option>).</pd>
+        </plentry>
+        <plentry>
+          <pt><parmname>CHAT_BOT_PROVIDER</parmname></pt>
+          <pd>Active AI provider: <option>gemini</option>, <option>anthropic</option>, <option>openai</option>, or <option>ollama</option>.</pd>
+        </plentry>
+        <plentry>
+          <pt><parmname>GEMINI_API_KEY</parmname></pt>
+          <pd>API authentication key for Google Gemini AI Chat capabilities.</pd>
+        </plentry>
+        <plentry>
+          <pt><parmname>SHOW_TOOL_INVOCATIONS</parmname></pt>
+          <pd>Set to <option>true</option> to display expandable details for AI tool execution in chat threads.</pd>
+        </plentry>
+      </parml>
+    </section>
+  </body>
+</topic>

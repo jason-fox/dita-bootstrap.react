@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
+<bookmap>
+  <title>React Harness &amp; DITA Bootstrap AST Documentation</title>
+  <frontmatter deliveryTarget="pdf">
+    <booklists>
+      <toc/>
+    </booklists>
+  </frontmatter>
+  <chapter>
+    <topicmeta>
+      <navtitle>Getting Started</navtitle>
+      <othermeta name="icon" content="bi-rocket-takeoff-fill"/>
+      <othermeta name="icon-style" content="color: var(--bs-primary)"/>
+    </topicmeta>
+    <topicref navtitle="Introduction &amp; React Components" href="index.dita" locktitle="yes"/>
+  </chapter>
+  <chapter>
+    <topicmeta>
+      <navtitle>Architecture &amp; Components</navtitle>
+      <othermeta name="icon" content="bi-cpu-fill"/>
+      <othermeta name="icon-style" content="color: var(--bs-info)"/>
+    </topicmeta>
+    <topicref navtitle="Core System Components" href="system-components.dita" locktitle="yes"/>
+    <topicref navtitle="Standalone MCP Web Client" href="mcp-client.dita" locktitle="yes"/>
+  </chapter>
+  <chapter>
+    <topicmeta>
+      <navtitle>Plug-in &amp; Configuration</navtitle>
+      <othermeta name="icon" content="bi-plugin"/>
+      <othermeta name="icon-style" content="color: var(--bs-success)"/>
+    </topicmeta>
+    <topicref navtitle="DITA Bootstrap AST Plug-in &amp; Chrome" href="ast-plugin.dita" locktitle="yes"/>
+    <topicref navtitle="Search Bar &amp; AI Chat Bot" href="search-and-chatbot.dita" locktitle="yes"/>
+  </chapter>
+  <backmatter deliveryTarget="pdf">
+    <booklists>
+      <indexlist/>
+    </booklists>
+  </backmatter>
+</bookmap>

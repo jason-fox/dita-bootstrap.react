@@ -1,0 +1,41 @@
+name: Build and Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'react-harness/sample/**'
+      - 'plugins/dita-bootstrap.ast/**'
+      - '.github/workflows/docs-gh-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy-docs:
+    name: Build & Deploy DITA Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Build DITA AST Documentation
+        uses: dita-ot/dita-ot-action@master
+        with:
+          install: |
+            dita install fox.jason.extend.css
+            dita install org.dita-bootstrap.html
+            dita install org.dita-bootstrap.ast
+          input: react-harness/sample/document.ditamap
+          transtype: ast-bootstrap
+          output-path: out/sample
+
+      - name: Deploy Documentation to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: out/sample

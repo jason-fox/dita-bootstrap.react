@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="1000" height="750" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <!-- Background -->
+  <rect width="1000" height="750" fill="#f8f9fa" rx="8"/>
+
+  <!-- Chat Topbar Header -->
+  <rect width="1000" height="56" fill="#212529" rx="8"/>
+  <rect y="48" width="1000" height="8" fill="#212529"/>
+  <text x="24" y="34" font-size="18" font-weight="700" fill="#ffffff">🤖 AI Assistant</text>
+  <rect x="150" y="16" width="140" height="24" fill="#0d6efd" rx="12"/>
+  <text x="162" y="32" font-size="11" font-weight="600" fill="#ffffff">gemini-3.6-flash</text>
+
+  <!-- Clear Chat & Theme Buttons -->
+  <rect x="740" y="12" width="110" height="32" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-opacity="0.3" rx="4"/>
+  <text x="755" y="33" font-size="12" fill="#ffffff">🗑️ Clear Chat</text>
+  <rect x="860" y="12" width="115" height="32" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-opacity="0.3" rx="4"/>
+  <text x="875" y="33" font-size="12" fill="#ffffff">🌓 Theme</text>
+
+  <!-- User Query Bubble (Right-aligned) -->
+  <g transform="translate(540, 80)">
+    <rect width="436" height="48" fill="#0d6efd" rx="12"/>
+    <text x="20" y="30" font-size="15" font-weight="500" fill="#ffffff">Give me a page about Alerts</text>
+  </g>
+
+  <!-- Assistant Response Card (Left-aligned) -->
+  <g transform="translate(24, 145)">
+    <rect width="952" height="520" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="8"/>
+    
+    <!-- Tool Invocations Accordion -->
+    <rect x="20" y="18" width="912" height="40" fill="#f1f3f5" stroke="#ced4da" stroke-width="1" rx="6"/>
+    <text x="40" y="43" font-size="13" font-weight="600" fill="#495057">🛠️ Tool Invocations (1 executed)</text>
+    <text x="40" y="75" font-size="12" font-family="monospace" fill="#0d6efd">render_topic_ui({ docId: "dita-bootstrap", topicId: "alerts.json" }) ➔ MCP-UI HTML Frame</text>
+
+    <!-- Intro Text -->
+    <text x="40" y="105" font-size="14" fill="#212529">Here is the interactive documentation page for Bootstrap <tspan font-weight="700">&lt;Alert&gt;</tspan> components rendered directly from AST nodes:</text>
+
+    <!-- Embedded MCP-UI Frame Container -->
+    <rect x="20" y="125" width="912" height="375" fill="#f8f9fa" stroke="#0d6efd" stroke-width="2" rx="8"/>
+    
+    <!-- MCP-UI Frame Header -->
+    <rect x="20" y="125" width="912" height="36" fill="#e7f1ff" rx="8"/>
+    <rect x="20" y="153" width="912" height="8" fill="#e7f1ff"/>
+    <text x="35" y="148" font-size="13" font-weight="700" fill="#0d6efd">📱 MCP-UI Topic Component Frame: DITA Bootstrap > Components > Alerts</text>
+
+    <!-- Rendered Topic Title & Shortdesc inside Frame -->
+    <text x="40" y="190" font-size="20" font-weight="700" fill="#212529">Alerts</text>
+    <text x="40" y="215" font-size="13" fill="#6c757d">Provide contextual feedback messages for typical user actions with flexible alert boxes.</text>
+
+    <!-- Rendered Bootstrap Alert 1: Primary -->
+    <rect x="40" y="235" width="872" height="45" fill="#cfe2ff" stroke="#9ec5fe" stroke-width="1" rx="4"/>
+    <text x="60" y="262" font-size="13" font-weight="600" fill="#084298">Info: A simple primary alert—check it out!</text>
+    <text x="880" y="262" font-size="14" font-weight="700" fill="#084298">×</text>
+
+    <!-- Rendered Bootstrap Alert 2: Success -->
+    <rect x="40" y="292" width="872" height="45" fill="#d1e7dd" stroke="#a3cfbb" stroke-width="1" rx="4"/>
+    <text x="60" y="319" font-size="13" font-weight="600" fill="#0f5132">Success: Well done! You successfully rendered this DITA section outputclass="alert-success".</text>
+    <text x="880" y="319" font-size="14" font-weight="700" fill="#0f5132">×</text>
+
+    <!-- Rendered Bootstrap Alert 3: Danger / Warning -->
+    <rect x="40" y="349" width="872" height="45" fill="#f8d7da" stroke="#f5c2c7" stroke-width="1" rx="4"/>
+    <text x="60" y="376" font-size="13" font-weight="600" fill="#842029">Warning: Ensure outputclass="alert-danger" is specified on your DITA section tags.</text>
+    <text x="880" y="376" font-size="14" font-weight="700" fill="#842029">×</text>
+
+    <!-- Rendered Codeblock inside Frame -->
+    <rect x="40" y="405" width="872" height="80" fill="#212529" rx="4"/>
+    <text x="55" y="430" font-size="12" font-family="monospace" fill="#6ea8fe">&lt;section outputclass="alert-primary"&gt;</text>
+    <text x="75" y="450" font-size="12" font-family="monospace" fill="#ffffff">&lt;title&gt;Info:&lt;/title&gt;</text>
+    <text x="75" y="470" font-size="12" font-family="monospace" fill="#ffffff">&lt;p&gt;A simple primary alert—check it out!&lt;/p&gt;</text>
+    <text x="55" y="480" font-size="12" font-family="monospace" fill="#6ea8fe">&lt;/section&gt;</text>
+  </g>
+
+  <!-- Prompt Input Bar at Bottom -->
+  <rect x="24" y="680" width="952" height="56" fill="#ffffff" stroke="#ced4da" stroke-width="1" rx="8"/>
+  <text x="44" y="714" font-size="14" fill="#6c757d">Ask a technical question or request a component preview...</text>
+  <rect x="860" y="692" width="100" height="32" fill="#0d6efd" rx="4"/>
+  <text x="890" y="713" font-size="13" font-weight="600" fill="#ffffff">Send ↗</text>
+</svg>

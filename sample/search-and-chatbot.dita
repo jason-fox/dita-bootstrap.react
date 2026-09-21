@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="search-and-chatbot">
+  <title>Search Bar &amp; AI Chat Bot User Guide</title>
+  <shortdesc>User guide for searching documentation using the header search bar and running the AI Chat Assistant interfaces.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Search Bar</indexterm>
+        <indexterm>MiniSearch</indexterm>
+        <indexterm>AI Assistant</indexterm>
+        <indexterm>Chat Examples</indexterm>
+        <indexterm>User Guide</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Using the Search Bar</title>
+      <p>The documentation header includes an instant full-text search bar powered by <codeph>MiniSearch</codeph>:</p>
+      <ul>
+        <li><b>Instant Search Results</b> — Click the search bar or press <codeph>/</codeph> to open the search modal. Type keywords to search topic titles, section headings, and body paragraphs.</li>
+        <li><b>Section Deep-Links</b> — Click any search result item to jump directly to the matched section anchor within the topic.</li>
+      </ul>
+
+      <fig id="fig-search">
+        <title>Interactive Search Bar and Instant Search Results Modal</title>
+        <image href="src/search-result.png" align="center"/>
+      </fig>
+    </section>
+
+    <section>
+      <title>Running the AI Chat Assistant</title>
+      <p>You can access the AI Assistant using two containerized deployment options:</p>
+
+      <p><b>Option 1: Integrated Portal Assistant (<filepath>/chat</filepath>)</b></p>
+      <p>Launch the React Harness stack using Docker Compose with your AI credentials in <filepath>.env</filepath>:</p>
+      <codeblock outputclass="language-bash"># Set your AI credentials in .env
+CHAT_BOT_PROVIDER=gemini
+GEMINI_API_KEY=your_api_key
+
+# Launch with Docker Compose
+docker compose up -d</codeblock>
+      <p>Open your browser to <filepath>http://localhost:3100/chat</filepath> to start using the assistant.</p>
+
+      <p><b>Option 2: Standalone Web Chatbot Container (<codeph>mcp-client</codeph>)</b></p>
+      <p>Launch the standalone chatbot container on port <codeph>3200</codeph> using a single Docker command:</p>
+      <codeblock outputclass="language-bash">docker run -d -p 3200:3200 \
+  -e MCP_SERVER_URL=http://host.docker.internal:4001/mcp \
+  -e CHAT_BOT_PROVIDER=gemini \
+  -e GEMINI_API_KEY=your_api_key \
+  ghcr.io/jason-fox/ast-mcp-client:latest</codeblock>
+      <p>Open your browser to <filepath>http://localhost:3200</filepath>.</p>
+    </section>
+
+    <section>
+      <title>Chat Interaction Examples</title>
+      <p>The AI Assistant chatbot handles user queries by dynamically selecting between two primary interaction models based on the intent of the prompt: <b>Text Q&amp;A Reasoning</b> and <b>Interactive Topic UI Rendering</b>.</p>
+
+      <p><b>Example 1: Text Q&amp;A Reasoning Interaction</b></p>
+      <p>Sample User Question: <codeph>"Is holly a good summer flower?"</codeph></p>
+      <p>When you ask factual domain questions, the AI Assistant searches the documentation set and reads topic content (<filepath>flowers/concepts/winterFlowers.json</filepath>). It responds with clear text reasoning:</p>
+      <ul>
+        <li><b>Direct Answer:</b> Clarifies that Holly (Holly berry) is a winter flower, not a summer flower.</li>
+        <li><b>Contextual Details:</b> Notes that Holly blooms during winter (December–February in the Northern hemisphere).</li>
+        <li><b>Summer Recommendations:</b> Recommends summer-blooming flowers from the corpus (Gardenia, Gerbera, Iris, Lilac, Rose, Salvia).</li>
+      </ul>
+
+      <fig id="fig-chat-text">
+        <title>Chat Interaction Example 1: Text Reasoning Response for "Is holly a good summer flower?"</title>
+        <image href="src/chat-text-interaction.png" align="center"/>
+      </fig>
+
+      <p><b>Example 2: Interactive Topic UI Component Frame Interaction</b></p>
+      <p>Sample User Request: <codeph>"Give me a page about Alerts"</codeph></p>
+      <p>When you ask to view a documentation page or component preview, the AI Assistant invokes the <codeph>render_topic_ui</codeph> tool. It embeds a live interactive topic component frame directly inside your conversation thread:</p>
+      <ul>
+        <li><b>Live Component Rendering:</b> Displays interactive <xmlelement>Alert</xmlelement> components (<codeph>alert-primary</codeph>, <codeph>alert-success</codeph>, <codeph>alert-danger</codeph>) with dismiss buttons.</li>
+        <li><b>Code Samples:</b> Shows DITA XML source markup snippets for authoring the component.</li>
+      </ul>
+
+      <fig id="fig-chat-ui">
+        <title>Chat Interaction Example 2: Interactive MCP-UI Topic Component Frame for "Give me a page about Alerts"</title>
+        <image href="src/chat-ui-interaction.png" align="center"/>
+      </fig>
+    </section>
+  </body>
+</topic>

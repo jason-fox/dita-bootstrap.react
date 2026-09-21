@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <!-- Background -->
+  <rect width="1000" height="640" fill="#f8f9fa" rx="8"/>
+
+  <!-- Topbar Header -->
+  <rect width="1000" height="56" fill="#0d6efd" rx="8"/>
+  <rect y="48" width="1000" height="8" fill="#0d6efd"/>
+  
+  <!-- Navbar Content -->
+  <text x="24" y="34" font-size="18" font-weight="700" fill="#ffffff">Documentation Store</text>
+  <text x="220" y="34" font-size="14" fill="#e0e0e0">Portal</text>
+  
+  <!-- Search Input in Header -->
+  <rect x="620" y="12" width="220" height="32" fill="#ffffff" fill-opacity="0.2" rx="4"/>
+  <text x="635" y="33" font-size="13" fill="#ffffff">🔍 Search docs store...</text>
+  
+  <!-- Theme Switcher -->
+  <rect x="855" y="12" width="120" height="32" fill="#ffffff" fill-opacity="0.2" rx="4"/>
+  <text x="870" y="33" font-size="13" fill="#ffffff">🌙 Dark Mode</text>
+
+  <!-- Hero Section -->
+  <rect x="24" y="80" width="952" height="100" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="6"/>
+  <text x="48" y="120" font-size="22" font-weight="700" fill="#212529">Documentation Library</text>
+  <text x="48" y="148" font-size="14" fill="#6c757d">Browse discovered AST documentation sets served by data-store (/api/docs)</text>
+  <rect x="820" y="115" width="130" height="36" fill="#0d6efd" rx="4"/>
+  <text x="840" y="138" font-size="13" font-weight="600" fill="#ffffff">🤖 Open AI Chat</text>
+
+  <!-- Card Grid Title -->
+  <text x="24" y="215" font-size="16" font-weight="700" fill="#495057">Available Document Sets (4)</text>
+
+  <!-- Card 1: DITA Bootstrap -->
+  <rect x="24" y="235" width="464" height="175" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="6"/>
+  <rect x="24" y="235" width="464" height="6" fill="#0d6efd" rx="6"/>
+  <text x="44" y="270" font-size="17" font-weight="700" fill="#0d6efd">DITA Bootstrap</text>
+  <rect x="180" y="255" width="110" height="20" fill="#e7f1ff" rx="10"/>
+  <text x="190" y="269" font-size="11" font-weight="600" fill="#0d6efd">html5-bootstrap</text>
+  <text x="44" y="300" font-size="13" fill="#6c757d">Main DITA Bootstrap framework and component reference documentation.</text>
+  <text x="44" y="325" font-size="12" fill="#495057">📁 <tspan font-weight="600">ID:</tspan> dita-bootstrap  •  39 Topics</text>
+  <rect x="44" y="350" width="100" height="32" fill="#0d6efd" rx="4"/>
+  <text x="72" y="371" font-size="13" font-weight="600" fill="#ffffff">Browse</text>
+
+  <!-- Card 2: Interactive Tables -->
+  <rect x="512" y="235" width="464" height="175" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="6"/>
+  <rect x="512" y="235" width="464" height="6" fill="#198754" rx="6"/>
+  <text x="532" y="270" font-size="17" font-weight="700" fill="#198754">AST Interactive Tables</text>
+  <rect x="740" y="255" width="90" height="20" fill="#e8f5e9" rx="10"/>
+  <text x="750" y="269" font-size="11" font-weight="600" fill="#198754">ast-bootstrap</text>
+  <text x="532" y="300" font-size="13" fill="#6c757d">Dynamic interactive data tables featuring client-side sorting and search.</text>
+  <text x="532" y="325" font-size="12" fill="#495057">📁 <tspan font-weight="600">ID:</tspan> dita-bootstrap-ast-sample  •  3 Topics</text>
+  <rect x="532" y="350" width="100" height="32" fill="#198754" rx="4"/>
+  <text x="560" y="371" font-size="13" font-weight="600" fill="#ffffff">Browse</text>
+
+  <!-- Card 3: Growing Flowers -->
+  <rect x="24" y="430" width="464" height="175" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="6"/>
+  <rect x="24" y="430" width="464" height="6" fill="#6f42c1" rx="6"/>
+  <text x="44" y="465" font-size="17" font-weight="700" fill="#6f42c1">Growing Flowers</text>
+  <rect x="195" y="450" width="100" height="20" fill="#f3e8ff" rx="10"/>
+  <text x="205" y="464" font-size="11" font-weight="600" fill="#6f42c1">Sample Corpus</text>
+  <text x="44" y="495" font-size="13" fill="#6c757d">Botanical guide to spring, summer, autumn, and winter blooming flowers.</text>
+  <text x="44" y="520" font-size="12" fill="#495057">📁 <tspan font-weight="600">ID:</tspan> flowers  •  18 Topics</text>
+  <rect x="44" y="545" width="100" height="32" fill="#6f42c1" rx="4"/>
+  <text x="72" y="566" font-size="13" font-weight="600" fill="#ffffff">Browse</text>
+
+  <!-- Card 4: DITA OT Docs -->
+  <rect x="512" y="430" width="464" height="175" fill="#ffffff" stroke="#dee2e6" stroke-width="1" rx="6"/>
+  <rect x="512" y="430" width="464" height="6" fill="#fd7e14" rx="6"/>
+  <text x="532" y="465" font-size="17" font-weight="700" fill="#fd7e14">DITA Open Toolkit Docs</text>
+  <rect x="745" y="450" width="85" height="20" fill="#fff3e0" rx="10"/>
+  <text x="755" y="464" font-size="11" font-weight="600" fill="#fd7e14">User Guide</text>
+  <text x="532" y="495" font-size="13" fill="#6c757d">Complete official specification and architecture documentation for DITA-OT.</text>
+  <text x="532" y="520" font-size="12" fill="#495057">📁 <tspan font-weight="600">ID:</tspan> dita-ot-docs  •  112 Topics</text>
+  <rect x="532" y="545" width="100" height="32" fill="#fd7e14" rx="4"/>
+  <text x="560" y="566" font-size="13" font-weight="600" fill="#ffffff">Browse</text>
+</svg>

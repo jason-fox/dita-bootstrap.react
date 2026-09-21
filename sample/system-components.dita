@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="system-components">
+  <title>Core System Services</title>
+  <shortdesc>Overview of the containerized services supporting documentation storage, web rendering, and AI chat interactions.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>data-store</indexterm>
+        <indexterm>renderer</indexterm>
+        <indexterm>mcp-server</indexterm>
+        <indexterm>Viewing</indexterm>
+        <indexterm>Rendering</indexterm>
+        <indexterm>Chatting</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Services Architecture</title>
+      <p>The React Harness environment consists of three background services that operate automatically when launched via <codeph>docker compose up -d</codeph>:</p>
+      <ul>
+        <li><b>Data Store (<codeph>data-store</codeph>)</b> — Automatic content indexing engine and REST data API.</li>
+        <li><b>Web Renderer (<codeph>renderer</codeph>)</b> — User-facing web portal for viewing topics and chatting with the AI Assistant.</li>
+        <li><b>MCP Server (<codeph>mcp-server</codeph>)</b> — AI tool server providing smart search, content context, and interactive UI component previews.</li>
+      </ul>
+    </section>
+
+    <section id="data-store-component">
+      <title>1. Data Store Service (<codeph>data-store</codeph>)</title>
+      <p>The <b>data-store</b> service operates on port <codeph>4000</codeph>. It manages documentation discovery and full-text search automatically:</p>
+      <ul>
+        <li><b>Automatic Set Discovery</b> — Any published documentation set placed into <filepath>./data-store/data/</filepath> is automatically discovered and made available in the library.</li>
+        <li><b>Background Search Indexing</b> — Automatically builds full-text search indices for all loaded document sets upon startup.</li>
+      </ul>
+    </section>
+
+    <section id="renderer-component">
+      <title>2. Web Renderer Service (<codeph>renderer</codeph>)</title>
+      <p>The <b>renderer</b> service provides the main user web application at <filepath>http://localhost:3100</filepath>.</p>
+
+      <p>User Interfaces:</p>
+      <ul>
+        <li><b>Documentation Store Catalog (<filepath>/</filepath> or <filepath>/docs</filepath>)</b> — Portal landing page displaying all published document sets. Select any card to start reading.</li>
+        <li><b>Topic Reader View (<filepath>/view/&lt;doc-id&gt;/&lt;topic&gt;</filepath>)</b> — Topic viewer rendering DITA content into styled Bootstrap components with sidebar navigation.</li>
+        <li><b>AI Assistant Chat (<filepath>/chat</filepath>)</b> — Interactive chatbot interface for asking technical questions and previewing live topic components.</li>
+      </ul>
+
+      <fig id="fig-docs-store">
+        <title>Documentation Store Catalog Portal (/docs) Displaying Loaded Document Sets</title>
+        <image href="src/docs-store.png" align="center"/>
+      </fig>
+
+      <fig id="fig-topbar">
+        <title>Header Navbar and Global Navigation Layout</title>
+        <image href="src/topbar.png" align="center"/>
+      </fig>
+
+      <fig id="fig-collapsible">
+        <title>Collapsible Navigation Sidebar Component</title>
+        <image href="src/collapsible.png" align="center"/>
+      </fig>
+
+      <fig id="fig-table">
+        <title>Interactive Table Component with Column Sorting and Pagination</title>
+        <image href="src/table-sort.png" align="center"/>
+      </fig>
+    </section>
+
+    <section id="mcp-server-component">
+      <title>3. MCP Server Service (<codeph>mcp-server</codeph>)</title>
+      <p>The <b>mcp-server</b> service operates on port <codeph>4001</codeph>. It provides AI tools to enable smart search, Markdown text retrieval, and interactive topic UI frame rendering during chat interactions.</p>
+    </section>
+  </body>
+</topic>

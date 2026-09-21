@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="ast-plugin">
+  <title>DITA Bootstrap AST Plug-in &amp; Publishing</title>
+  <shortdesc>Simple guide on publishing DITA documentation into the React Harness data store, comparing transtypes, and automated CI publishing.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>org.dita-bootstrap.ast</indexterm>
+        <indexterm>ast-bootstrap</indexterm>
+        <indexterm>html5-bootstrap</indexterm>
+        <indexterm>Publishing</indexterm>
+        <indexterm>chrome.json</indexterm>
+        <indexterm>GitHub Actions</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Plug-in Overview &amp; Installation</title>
+      <p>The <codeph>org.dita-bootstrap.ast</codeph> plug-in allows authors to publish DITA documentation into the React Harness library. Install the plug-in into your DITA Open Toolkit instance:</p>
+      
+      <codeblock outputclass="language-bash"># Install plug-ins using the dita command:
+dita install fox.jason.extend.css
+dita install org.dita-bootstrap.ast</codeblock>
+    </section>
+
+    <section>
+      <title>Publishing to the Document Store</title>
+      <p>Publishing your documentation set requires a single command:</p>
+      
+      <codeblock outputclass="language-bash"># Publish documentation directly into the data store:
+dita --input=path/to/your.ditamap \
+     --format=ast-bootstrap \
+     --output=react-harness/data-store/data/my-doc-set</codeblock>
+
+      <p>Move or save the generated files to the data store directory (<filepath>data-store/data/my-doc-set</filepath>)—and that's it! The data store automatically discovers your document set and adds it to your browser library catalog.</p>
+
+      <p>Publishing Transtypes:</p>
+      <parml>
+        <plentry>
+          <pt><option>ast-bootstrap</option> (<codeph>org.dita-bootstrap.ast</codeph>)</pt>
+          <pd>Generates interactive documentation files for the React Harness web reader and AI Assistant chat.</pd>
+        </plentry>
+        <plentry>
+          <pt><option>html5-bootstrap</option> (<codeph>org.dita-bootstrap.html</codeph>)</pt>
+          <pd>Generates static HTML5 web pages styled with Bootstrap 5.3 for standard web servers.</pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>Customizing Chrome (Headers &amp; Footers)</title>
+      <p>Custom navigation headers and footers can be passed during publishing via command-line options:</p>
+      
+      <codeblock outputclass="language-bash">dita --input=path/to/your.ditamap \
+     --format=ast-bootstrap \
+     --args.hdr=path/to/custom-header.xml \
+     --args.ftr=path/to/custom-footer.xml \
+     --output=data-store/data/my-doc-set</codeblock>
+
+      <p>Header templates support special interactive roles:</p>
+      <ul>
+        <li><xmlelement>document-title/</xmlelement> — Inserts the title of the document set.</li>
+        <li><codeph>role="search"</codeph> — Renders the header search bar.</li>
+        <li><codeph>role="theme-toggle"</codeph> — Renders the Light/Dark mode selector.</li>
+        <li><codeph>role="clear-chat"</codeph> — Renders a clear chat conversation button in the AI Assistant.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Central Design System (chrome.json)</title>
+      <p>The <filepath>chrome.json</filepath> file (located at <filepath>data-store/data/chrome.json</filepath>) provides fallback header, footer, card, and chat interface templates. If a published document set does not include a custom header, the system automatically uses <filepath>chrome.json</filepath> to maintain consistent branding across all document sets.</p>
+    </section>
+
+    <section>
+      <title>Automated CI Publishing to GitHub Pages</title>
+      <p>You can automate documentation publishing using GitHub Actions. Add a workflow file at <filepath>.github/workflows/docs-gh-pages.yml</filepath>:</p>
+      
+      <codeblock outputclass="language-yaml">name: Build and Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'react-harness/sample/**'
+      - '.github/workflows/docs-gh-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy-docs:
+    name: Build &amp; Deploy DITA Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Build DITA AST Documentation
+        uses: dita-ot/dita-ot-action@master
+        with:
+          install: |
+            dita install fox.jason.extend.css
+            dita install org.dita-bootstrap.html
+            dita install org.dita-bootstrap.ast
+          input: react-harness/sample/document.ditamap
+          transtype: ast-bootstrap
+          output-path: out/sample
+
+      - name: Deploy Documentation to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: out/sample</codeblock>
+    </section>
+  </body>
+</topic>
