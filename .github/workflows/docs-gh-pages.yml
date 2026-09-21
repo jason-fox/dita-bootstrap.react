@@ -25,13 +25,17 @@ jobs:
       - name: Build DITA AST Documentation
         uses: dita-ot/dita-ot-action@master
         with:
+          install: |
+            apt-get update -q
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get install -qy --no-install-recommends nodejs
+            nodejs -v
           plugins: |
             fox.jason.extend.css
             org.dita-bootstrap.html
-          install: |
-            dita install ./plugins/dita-bootstrap.ast
-          input: react-harness/sample/document.ditamap
-          transtype: ast-bootstrap
+            fox.jason.favicon
+            fox.jason.open-graph
+          project: .github/dita-ot/html.xml
           output-path: out/sample
 
       - name: Deploy Documentation to GitHub Pages
