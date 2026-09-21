@@ -473,12 +473,17 @@ function renderNode(
   if ((type === "a" || type === "xref") && typeof props.href === "string") {
     const rawHref = props.href;
     const isHash = rawHref.startsWith("#");
-    const isExternal = rawHref.startsWith("http://") || rawHref.startsWith("https://");
+    const isExternal =
+      rawHref.startsWith("http://") ||
+      rawHref.startsWith("https://") ||
+      rawHref.startsWith("//") ||
+      rawHref.startsWith("mailto:");
 
     if (!isHash && !isExternal && onNavigate) {
+      const escapedDocId = (docId || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const cleanTopic = rawHref
         .replace(/^(\.\.\/|\.\/|\/)+/, "")
-        .replace(new RegExp(`^${docId}/`), "")
+        .replace(new RegExp(`^${escapedDocId}/`), "")
         .replace(/\.(json|html)(#.*)?$/, "");
 
       const handleClick = (e: React.MouseEvent) => {

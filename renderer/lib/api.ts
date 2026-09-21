@@ -87,10 +87,7 @@ export async function fetchChrome(): Promise<ChromeConfig> {
     console.error("[Error] Fatal: Failed to fetch chrome.json from data store:", err);
   }
   if (!res || !res.ok) {
-    console.error(`[Error] Fatal: chrome.json not found or failed to load (status ${res?.status})`);
-    if (typeof window === "undefined") {
-      process.exit(1);
-    }
+    console.error(`[Error] chrome.json not found or failed to load (status ${res?.status})`);
     throw new Error("chrome.json not found");
   }
   try {
@@ -100,10 +97,7 @@ export async function fetchChrome(): Promise<ChromeConfig> {
     if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
       throw err;
     }
-    console.error("[Error] Fatal: Failed to parse chrome.json:", err);
-    if (typeof window === "undefined") {
-      process.exit(1);
-    }
+    console.error("[Error] Failed to parse chrome.json:", err);
     throw err;
   }
 }
@@ -146,7 +140,8 @@ export function resolveHref(href: unknown, docId?: string): unknown {
     .replace(/\.(json|html)(#.*)?$/, (_, __, hash) => hash ?? "")
     .replace(/^(\.\.\/|\.\/|\/)+/, "");
   if (docId && docId !== "default") {
-    cleanPath = cleanPath.replace(new RegExp(`^${docId}/`), "");
+    const escapedDocId = docId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    cleanPath = cleanPath.replace(new RegExp(`^${escapedDocId}/`), "");
   }
   const prefix = docId && docId !== "default" ? `/${docId}` : "";
   return cleanPath ? `${prefix}/${cleanPath}` : `${prefix}`;

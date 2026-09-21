@@ -138,46 +138,50 @@ export class LlmService {
       if (assistantMsg.tool_calls && assistantMsg.tool_calls.length > 0) {
         messages.push(assistantMsg);
 
-        for (const toolCall of assistantMsg.tool_calls) {
-          const functionName = toolCall.function.name;
-          let functionArgs: Record<string, any> = {};
-          try {
-            functionArgs = typeof toolCall.function.arguments === "string"
-              ? JSON.parse(toolCall.function.arguments)
-              : toolCall.function.arguments;
-          } catch (e) {
-            functionArgs = {};
-          }
+        const toolMessages = await Promise.all(
+          assistantMsg.tool_calls.map(async (toolCall: any) => {
+            const functionName = toolCall.function.name;
+            let functionArgs: Record<string, any> = {};
+            try {
+              functionArgs = typeof toolCall.function.arguments === "string"
+                ? JSON.parse(toolCall.function.arguments)
+                : toolCall.function.arguments;
+            } catch (e) {
+              functionArgs = {};
+            }
 
-          console.log(`LLM requested tool call: ${functionName}`, functionArgs);
+            console.log(`LLM requested tool call: ${functionName}`, functionArgs);
 
-          try {
-            const result = await mcpClient.callTool(functionName, functionArgs);
-            executedToolResults.push({
-              toolName: functionName,
-              args: functionArgs,
-              result,
-            });
+            try {
+              const result = await mcpClient.callTool(functionName, functionArgs);
+              executedToolResults.push({
+                toolName: functionName,
+                args: functionArgs,
+                result,
+              });
 
-            const resultContent = Array.isArray(result?.content)
-              ? result.content.map((c: any) => c.text || JSON.stringify(c)).join("\n")
-              : JSON.stringify(result);
+              const resultContent = Array.isArray(result?.content)
+                ? result.content.map((c: any) => c.text || JSON.stringify(c)).join("\n")
+                : JSON.stringify(result);
 
-            messages.push({
-              role: "tool",
-              tool_call_id: toolCall.id,
-              name: functionName,
-              content: resultContent,
-            });
-          } catch (toolErr: any) {
-            messages.push({
-              role: "tool",
-              tool_call_id: toolCall.id,
-              name: functionName,
-              content: `Error executing tool: ${toolErr.message}`,
-            });
-          }
-        }
+              return {
+                role: "tool" as const,
+                tool_call_id: toolCall.id,
+                name: functionName,
+                content: resultContent,
+              };
+            } catch (toolErr: any) {
+              return {
+                role: "tool" as const,
+                tool_call_id: toolCall.id,
+                name: functionName,
+                content: `Error executing tool: ${toolErr.message}`,
+              };
+            }
+          }),
+        );
+
+        messages.push(...toolMessages);
       } else {
         let text = assistantMsg.content ? assistantMsg.content.trim() : "";
         if (!text) {

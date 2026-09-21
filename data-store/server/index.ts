@@ -28,6 +28,8 @@ interface DocSetInfo {
   scrollspyToc?: string;
   menubar?: boolean;
   topicCount: number;
+  featured?: boolean;
+  priority?: number;
 }
 
 interface SearchDoc {
@@ -100,6 +102,8 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
       const topicCount = findTopicFiles(dir).length;
 
       let description: string | undefined = toc.description ?? toc.shortdesc;
+      let featured: boolean | undefined = toc.featured;
+      let priority: number | undefined = typeof toc.priority === "number" ? toc.priority : undefined;
       const indexPath = path.join(dir, "index.json");
       if (fs.existsSync(indexPath)) {
         try {
@@ -112,6 +116,8 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
           if (shortdesc) {
             description = shortdesc;
           }
+          if (typeof indexDoc.meta?.featured === "boolean") featured = indexDoc.meta.featured;
+          if (typeof indexDoc.meta?.priority === "number") priority = indexDoc.meta.priority;
         } catch (e) {
           console.error(`Error reading ${indexPath}:`, e);
         }
@@ -126,6 +132,8 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
         scrollspyToc: toc.scrollspyToc,
         menubar: toc.menubar,
         topicCount,
+        featured,
+        priority,
       });
     } catch (e) {
       console.error(`Error reading ${tocPath}:`, e);
@@ -137,6 +145,26 @@ function findDocSets(dataDir: string, dir: string = dataDir): DocSetInfo[] {
       results.push(...findDocSets(dataDir, path.join(dir, entry.name)));
     }
   }
+
+  if (dir !== dataDir) return results;
+
+  // Dynamic ranking: Featured / Priority docs first, then alphabetical - mirrors mcp-server/src/provider.ts's findDocSets
+  const featuredEnv = (process.env.FEATURED_DOCS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  results.sort((a, b) => {
+    const isFeaturedA = a.featured || featuredEnv.includes(a.id);
+    const isFeaturedB = b.featured || featuredEnv.includes(b.id);
+    if (isFeaturedA !== isFeaturedB) return isFeaturedB ? 1 : -1;
+
+    const prioA = a.priority ?? (featuredEnv.includes(a.id) ? 100 : 0);
+    const prioB = b.priority ?? (featuredEnv.includes(b.id) ? 100 : 0);
+    if (prioA !== prioB) return prioB - prioA;
+
+    return a.title.localeCompare(b.title);
+  });
 
   return results;
 }

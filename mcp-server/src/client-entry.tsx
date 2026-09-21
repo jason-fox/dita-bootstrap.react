@@ -32,14 +32,33 @@ function AppShell() {
   const [data, setData] = useState<TopicPageProps | null>(null);
   const [resultError, setResultError] = useState<string | null>(null);
 
+  // ontoolresult/handleWindowMessage outlive the render that created them, so track prior
+  // state in a ref kept in sync with every setData call, not via a lagging effect.
+  const dataRef = React.useRef<TopicPageProps | null>(null);
+  const commitData = (payload: TopicPageProps) => {
+    dataRef.current = payload;
+    setData(payload);
+  };
+
+  const mergeWithPrevious = (payload: TopicPageProps, prev: TopicPageProps | null): TopicPageProps => {
+    if (!payload.toc && prev?.toc) payload.toc = prev.toc;
+    if (payload.previewMode === undefined && prev?.previewMode !== undefined) {
+      payload.previewMode = prev.previewMode;
+    }
+    return payload;
+  };
+
   React.useEffect(() => {
     const handleWindowMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "SET_PAYLOAD" && event.data.payload) {
         const payload = extractPayload(event.data.payload);
         if (payload) {
+          mergeWithPrevious(payload, dataRef.current);
           applyPayload(payload);
-          setData(payload);
+          commitData(payload);
           setResultError(null);
+          // let the embedding parent know it can stop retry-broadcasting SET_PAYLOAD
+          (event.source as Window | null)?.postMessage({ type: "PAYLOAD_ACK" }, "*");
         }
       }
     };
@@ -61,8 +80,9 @@ function AppShell() {
           setResultError("Received an unreadable response from render_topic_ui.");
           return;
         }
+        mergeWithPrevious(payload, dataRef.current);
         applyPayload(payload);
-        setData(payload);
+        commitData(payload);
         setResultError(null);
       };
     },
@@ -70,7 +90,9 @@ function AppShell() {
 
   const handleNavigate = async (docId: string, topicPath: string, theme?: string) => {
     try {
-      const currentToc = data?.toc;
+      // snapshot taken before the await, so a SET_PAYLOAD/ontoolresult event that lands
+      // mid-navigation can't get merged into this navigation's payload (or vice versa)
+      const snapshot = dataRef.current;
       if (app && isConnected) {
         const result = await app.callServerTool({
           name: "render_topic_ui",
@@ -79,9 +101,9 @@ function AppShell() {
         if (!result.isError) {
           const payload = extractPayload(result);
           if (payload) {
-            if (!payload.toc && currentToc) payload.toc = currentToc;
+            mergeWithPrevious(payload, snapshot);
             applyPayload(payload);
-            setData(payload);
+            commitData(payload);
             setResultError(null);
             return;
           }
@@ -95,15 +117,15 @@ function AppShell() {
       if (!res.ok) throw new Error(`HTTP ${res.status} loading ${topicPath}`);
       const doc = await res.json();
 
-      let toc = currentToc;
+      let toc = snapshot?.toc;
       if (!toc) {
         const tocRes = await fetch(`${window.location.protocol}//${window.location.hostname}:4000/data/${docId}/toc.json`).catch(() => null);
         if (tocRes && tocRes.ok) toc = await tocRes.json();
       }
 
-      const payload: TopicPageProps = { docId, topicPath, doc, toc, theme: (theme as any) || "light" };
+      const payload: TopicPageProps = { docId, topicPath, doc, toc, theme: (theme as any) || "light", previewMode: snapshot?.previewMode };
       applyPayload(payload);
-      setData(payload);
+      commitData(payload);
       setResultError(null);
     } catch (err) {
       setResultError(err instanceof Error ? err.message : String(err));

@@ -273,8 +273,9 @@ export class DocProvider {
             : undefined,
         });
 
+        const escapedDocSetId = docSet.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         for (const hit of hits.slice(0, 10)) {
-          const rawTopicPath = hit.id.replace(new RegExp(`^${docSet.id}/`), "");
+          const rawTopicPath = hit.id.replace(new RegExp(`^${escapedDocSetId}/`), "");
           const hitId = docSet.id === "default" ? rawTopicPath : `${docSet.id}/${rawTopicPath}`;
           allResults.push({
             id: hitId,
@@ -378,6 +379,50 @@ export class DocProvider {
       case "note":
         const variant = (props.variant as string) || (props.type as string) || "note";
         return `\n> **${variant.toUpperCase()}:** ${childText}\n`;
+
+      case "table": {
+        const headerRows: string[][] = [];
+        const bodyRows: string[][] = [];
+        let colCount = 0;
+
+        const rawChildren = (n: unknown): unknown[] => {
+          if (!Array.isArray(n) || n.length === 0) return [];
+          const [, maybeP, ...r] = n;
+          const isP = typeof maybeP === "object" && maybeP !== null && !Array.isArray(maybeP);
+          return (isP ? r : [maybeP, ...r]).filter((c) => c !== undefined);
+        };
+        const tagOf = (n: unknown) => (Array.isArray(n) && n.length > 0 ? String(n[0]).toLowerCase() : "");
+
+        const collectRow = (n: unknown, target: string[][]) => {
+          if (tagOf(n) !== "tr") return;
+          const cells = rawChildren(n).map((c) =>
+            this.astToMarkdown(c, depth + 1).trim().replace(/\|/g, "\\|").replace(/\s*\n\s*/g, " "),
+          );
+          colCount = Math.max(colCount, cells.length);
+          target.push(cells);
+        };
+        const walkSection = (n: unknown) => {
+          const tg = tagOf(n);
+          if (tg === "thead") rawChildren(n).forEach((k) => collectRow(k, headerRows));
+          else if (tg === "tbody" || tg === "tfoot") rawChildren(n).forEach((k) => collectRow(k, bodyRows));
+          else if (tg === "tr") collectRow(n, bodyRows);
+        };
+        children.forEach(walkSection);
+
+        if (headerRows.length === 0 && bodyRows.length === 0) return "";
+        const pad = (cells: string[]) => {
+          const padded = [...cells];
+          while (padded.length < colCount) padded.push("");
+          return padded;
+        };
+        const header = headerRows[0] ?? bodyRows.shift() ?? [];
+        const lines = [
+          `| ${pad(header).join(" | ")} |`,
+          `| ${(header.length ? header : Array(colCount).fill("")).map(() => "---").join(" | ")} |`,
+          ...bodyRows.map((r) => `| ${pad(r).join(" | ")} |`),
+        ];
+        return `\n\n${lines.join("\n")}\n\n`;
+      }
 
       default:
         return childText ? ` ${childText} ` : "";

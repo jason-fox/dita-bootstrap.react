@@ -313,8 +313,20 @@ async function main() {
       }
 
       const server = net.createServer({ pauseOnConnect: true }, (socket) => {
-        socket.once("data", (buffer) => {
-          const text = buffer.toString("utf-8");
+        // headers may span multiple TCP segments (large headers, slow client, proxy) -
+        // buffer until we see the header terminator, capped so a malformed client can't grow this unbounded
+        const MAX_HEADER_BYTES = 16 * 1024;
+        let buffered = Buffer.alloc(0);
+
+        const onData = (chunk: Buffer) => {
+          buffered = Buffer.concat([buffered, chunk]);
+          const text = buffered.toString("utf-8");
+          const haveFullHeaders = text.includes("\r\n\r\n");
+          if (!haveFullHeaders && buffered.length < MAX_HEADER_BYTES) {
+            return;
+          }
+          socket.removeListener("data", onData);
+
           const match = text.match(/mcp-session-id:\s*([^\r\n]+)/i);
           const key = match ? match[1].trim() : (socket.remoteAddress || "default");
 
@@ -326,8 +338,9 @@ async function main() {
 
           const targetWorker = activeWorkers[hashString(key) % activeWorkers.length];
           targetWorker.send({ type: "sticky-connection" }, socket);
-          socket.unshift(buffer);
-        });
+          socket.unshift(buffered);
+        };
+        socket.on("data", onData);
       });
 
       server.listen(port, () => {

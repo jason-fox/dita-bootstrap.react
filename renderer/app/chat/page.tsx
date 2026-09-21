@@ -49,8 +49,14 @@ function TopicIframe({
   previewMode?: boolean;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const retryTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const mcpServerUrl = process.env.NEXT_PUBLIC_MCP_SERVER_URL || "http://localhost:4001";
   const viewerUrl = `${mcpServerUrl.replace(/\/mcp\/?$/, "")}/viewer`;
+
+  const clearRetries = () => {
+    retryTimers.current.forEach(clearTimeout);
+    retryTimers.current = [];
+  };
 
   const sendPayload = () => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
@@ -63,6 +69,21 @@ function TopicIframe({
     }
   };
 
+  // the iframe app acks once SET_PAYLOAD lands, so we can stop retrying below -
+  // otherwise a late retry can clobber a topic the user already navigated to.
+  useEffect(() => {
+    const handleAck = (event: MessageEvent) => {
+      if (event.data?.type === "PAYLOAD_ACK" && event.source === iframeRef.current?.contentWindow) {
+        clearRetries();
+      }
+    };
+    window.addEventListener("message", handleAck);
+    return () => {
+      window.removeEventListener("message", handleAck);
+      clearRetries();
+    };
+  }, []);
+
   return (
     <iframe
       ref={iframeRef}
@@ -70,10 +91,9 @@ function TopicIframe({
       className="w-100 border-0 d-block"
       style={{ height }}
       onLoad={() => {
+        clearRetries();
         sendPayload();
-        setTimeout(sendPayload, 150);
-        setTimeout(sendPayload, 400);
-        setTimeout(sendPayload, 900);
+        retryTimers.current = [150, 400, 900].map((delay) => setTimeout(sendPayload, delay));
       }}
     />
   );

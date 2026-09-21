@@ -77,13 +77,13 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const [docs, chrome] = await Promise.all([
     fetchDocs(),
-    fetchChrome(),
+    fetchChrome().catch(() => null),
   ]);
 
-  const docsTitle = chrome["docs-page"]?.title ?? "Documentation";
-  const headerAst = chrome["docs-page"]?.header;
-  const cardTemplate = chrome["docs-page"]?.card;
-  const footerAst = chrome.footer;
+  const docsTitle = chrome?.["docs-page"]?.title ?? "Documentation";
+  const headerAst = chrome?.["docs-page"]?.header;
+  const cardTemplate = chrome?.["docs-page"]?.card;
+  const footerAst = chrome?.footer;
 
   return (
     <Shell
