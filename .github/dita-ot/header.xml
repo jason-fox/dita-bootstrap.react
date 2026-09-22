@@ -2,7 +2,7 @@
   <!-- Modify -xxl to change container size -->
   <div class="container-xxl">
     <!-- This shows the menu on mobile -->
-    <div class="bd-navbar-toggle">
+    <div class="d-none d-sm-block d-md-none">
       <button
         class="navbar-toggler p-2"
         type="button"
