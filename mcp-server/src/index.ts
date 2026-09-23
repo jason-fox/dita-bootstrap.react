@@ -28,13 +28,14 @@ program
   .option("-t, --transport <type>", "Transport type: stdio or http", "stdio")
   .option("-p, --port <number>", "Port to run HTTP server on", "4001")
   .option("-d, --data-dir <path>", "Path to data-store data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../data-store/data"))
+  .option("-r, --rag-service-url <url>", "Optional URL to standalone RAG vector search service", process.env.RAG_SERVICE_URL)
   .option("-c, --cluster [workers]", "Enable multi-core cluster mode")
   .option("-w, --workers <number>", "Number of worker processes in cluster mode");
 
 program.parse(process.argv);
 const options = program.opts();
 
-const provider = new DocProvider(options.dataDir);
+const provider = new DocProvider(options.dataDir, options.ragServiceUrl);
 
 function createMcpServer(): McpServer {
   const mcpServer = new McpServer({
@@ -99,7 +100,7 @@ function createMcpServer(): McpServer {
       lang: z.string().optional().describe("Optional IETF BCP 47 language code filter (e.g., 'en', 'de', 'fr')"),
     },
     async ({ query, docId, lang }) => {
-      const hits = provider.search(query, docId, lang);
+      const hits = await provider.search(query, docId, lang);
       return {
         content: [
           {

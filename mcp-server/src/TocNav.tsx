@@ -1,10 +1,8 @@
 import React, { useState, type CSSProperties } from "react";
 import { isPropsObject, resolveStyle, type AstArray } from "../../renderer/lib/api";
 
-// Ported from frontend/components/Toc.tsx: same visual variants (collapsible/list-group/nav-pill),
-// but that version depends on next/link + usePathname, which don't exist in this standalone,
-// non-Next.js render. Navigation calls back into onNavigate (wired to app.callServerTool() in
-// client-entry.tsx) rather than a Link href - see the MCP Apps spec (SEP-1865) callServerTool API.
+// Ported from renderer/components/Toc.tsx, minus next/link + usePathname (no Next.js here) -
+// navigation goes through onNavigate -> app.callServerTool() in client-entry.tsx instead.
 export interface TocNavProps {
   entries: AstArray[];
   navToc?: string;

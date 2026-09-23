@@ -4,8 +4,9 @@ A harness and Model Context Protocol (MCP) server for viewing and querying `dita
 The workspace supports discovering and displaying multiple Abstract Syntax Tree (AST) documentation sets (books, guides, or document sets) stored in subdirectories under the data-store's data folder.
 
 - **`data-store/`** — Express static file server and API. Serves JSON AST files produced by the `org.dita-bootstrap.ast` DITA-OT plugin, scans for documentation sets recursively (`toc.json`), and builds per-set MiniSearch indices.
+- **`rag-service/`** — *(Optional)* Standalone RAG vector search service. Transforms incoming AST topics into Markdown chunks, computes SHA-256 hashes for incremental sync and current-data verification, and provides a semantic vector search API endpoint.
 - **`renderer/`** — Next.js + react-bootstrap web app that presents a card grid library landing page, renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars, and includes an integrated AI Assistant Chat (`/chat`).
-- **`mcp-server/`** — MCP Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), MiniSearch full-text search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces.
+- **`mcp-server/`** — MCP Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces. Transparently delegates search to `rag-service` when configured, with automatic fallback to MiniSearch.
 - **`mcp-client/`** — Standalone legacy reference web chatbot client for the MCP Server.
 
 ## Prerequisites
@@ -104,6 +105,7 @@ The MCP server in `mcp-server/` can be added to your AI assistant configuration 
 |---|---|---|
 | `PORT` | `4001` | HTTP port when running with `--transport http`. |
 | `DATA_DIR` | `./data-store/data` | Path to data-store data directory containing documentation sets. |
+| `RAG_SERVICE_URL` | *(none)* | Optional URL of the standalone RAG vector search service (`http://localhost:4002`). When set, `search_documentation` delegates to semantic RAG search with transparent MiniSearch fallback. |
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output (`render_topic_ui`). `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. |
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag used for the root `<html lang="...">` attribute in `render_topic_ui` HTML output. |
 | `FEATURED_DOCS` | *(empty)* | Comma-separated list of document set IDs to prioritize at the top of TOC listings and search discovery. |

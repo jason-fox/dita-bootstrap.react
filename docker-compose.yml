@@ -29,6 +29,7 @@ services:
     environment:
       - PORT=4001
       - DATA_DIR=/app/data
+      - RAG_SERVICE_URL=http://rag-service:4002
       - BOOTSTRAP_THEME=default
       - NAVBAR_THEME=dark
       - NAVBAR_TEXT=dark
@@ -36,7 +37,23 @@ services:
       - ./data-store/data:/app/data
     restart: unless-stopped
 
-  # 3. Next.js Documentation Renderer & AI Assistant Portal
+  # 3. Optional Standalone RAG Service (Semantic Vector Search)
+  rag-service:
+    image: ghcr.io/jason-fox/ast-rag-service:${TAG:-latest}
+    build:
+      context: ./rag-service
+      dockerfile: Dockerfile
+    container_name: rag-service
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+      - DATA_DIR=/app/data
+    volumes:
+      - ./data-store/data:/app/data
+    restart: unless-stopped
+
+  # 4. Next.js Documentation Renderer & AI Assistant Portal
   renderer:
     image: ghcr.io/jason-fox/ast-renderer:${TAG:-latest}
     build:

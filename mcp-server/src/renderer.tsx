@@ -40,9 +40,8 @@ function getCustomCssElement(): string {
   return `<link rel="stylesheet" href="${customCssPath}">`;
 }
 
-// Static MCP App shell (registered once via registerAppResource, see index.ts). Topic content
-// is rendered client-side in client-entry.tsx once the app connects and receives tool-result
-// data - this shell carries no per-topic data itself.
+// Static MCP App shell (registered via registerAppResource in index.ts) - carries no per-topic
+// data itself, since client-entry.tsx fills it in once the app connects and gets a tool result.
 export function renderAppShellHtml(themeOverride?: string, langOverride?: string): string {
   const rawTheme = (themeOverride || process.env.BOOTSTRAP_THEME || "default").trim();
   const themeName = rawTheme.toLowerCase();

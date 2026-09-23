@@ -11,7 +11,7 @@ export interface SearchDoc {
 }
 
 // must match the MiniSearch(options) used to build the index in
-// backend/server/index.ts - the serialized index only carries term data, not this config
+// data-store/src/index.ts - the serialized index only carries term data, not this config
 const SEARCH_INDEX_OPTIONS = {
   fields: ["title", "shortdesc", "keywords", "text"],
   storeFields: ["title", "shortdesc", "lang"],

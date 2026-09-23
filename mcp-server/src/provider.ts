@@ -34,9 +34,10 @@ export interface SearchHit {
   docId?: string;
   topicPath?: string;
   title: string;
-  shortdesc: string;
+  shortdesc?: string;
   lang?: string;
   score: number;
+  snippet?: string;
 }
 
 const SEARCH_INDEX_OPTIONS = {
@@ -51,12 +52,14 @@ interface CachedIndex {
 
 export class DocProvider {
   private dataDir: string;
+  private ragServiceUrl?: string;
   private indexCache = new Map<string, CachedIndex>();
   private docSetsCache: { data: DocSetOasisMetadata[]; timestamp: number } | null = null;
   private readonly DOC_SETS_CACHE_TTL_MS = 5000;
 
-  constructor(dataDir: string) {
+  constructor(dataDir: string, ragServiceUrl?: string) {
     this.dataDir = path.resolve(dataDir);
+    this.ragServiceUrl = ragServiceUrl || process.env.RAG_SERVICE_URL;
   }
 
   public getDataDir(): string {
@@ -247,7 +250,29 @@ export class DocProvider {
     }
   }
 
-  public search(query: string, docId?: string, lang?: string): SearchHit[] {
+  public async search(query: string, docId?: string, lang?: string): Promise<SearchHit[]> {
+    if (this.ragServiceUrl) {
+      try {
+        const response = await fetch(`${this.ragServiceUrl.replace(/\/$/, "")}/api/search`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, docId, lang, topK: 10 }),
+        });
+        if (response.ok) {
+          const hits = (await response.json()) as SearchHit[];
+          if (Array.isArray(hits) && hits.length > 0) {
+            return hits;
+          }
+        }
+      } catch (error) {
+        console.warn(`[DocProvider] RAG service search at ${this.ragServiceUrl} failed, falling back to MiniSearch:`, error);
+      }
+    }
+
+    return this.searchMiniSearch(query, docId, lang);
+  }
+
+  public searchMiniSearch(query: string, docId?: string, lang?: string): SearchHit[] {
     const docSets = this.findDocSets();
     const targetSets = docId
       ? docSets.filter((s) => s.id === docId || s.id.startsWith(`${docId}/`))
