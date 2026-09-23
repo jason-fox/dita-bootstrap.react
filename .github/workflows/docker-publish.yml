@@ -40,6 +40,12 @@ jobs:
             description: Model Context Protocol server for DITA AST documentation with MCP-UI React rendering
             context: .
             dockerfile: ./mcp-server/Dockerfile
+          - name: rag-service
+            image_name: ast-rag-service
+            title: AST RAG Service
+            description: Optional standalone RAG vector search service for AST DITA documentation
+            context: ./rag-service
+            dockerfile: ./rag-service/Dockerfile
           - name: renderer
             image_name: ast-renderer
             title: AST Renderer
