@@ -1,16 +1,23 @@
 # Abstract Syntax Tree MCP Server
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](../LICENSE)
+
 Model Context Protocol (MCP) server providing DITA documentation search, content retrieval, and rich **MCP-UI** React component rendering to AI assistants.
 
-## Features
+## Table of Contents
 
-- **DITA OASIS Metadata**: Discovers all documentation sets and presents standard metadata (`title`, `navtitle`, `description`, `keywords`, `category`, `author`, `prodinfo`, `lang`).
-- **Token-Efficient Context**: Converts raw AST JSON trees into clean **Markdown** for LLM question-answering and reasoning (`get_topic_content`).
-- **Rich MCP-UI React Views**: Uses `react-dom/server` + `AstRenderer` to render self-contained HTML/CSS UI resources (`render_topic_ui`) with Bootstrap 5 components directly inside supporting AI interfaces.
-- **Full-Text Search**: Scopes MiniSearch queries across all or individual documentation sets.
-- **Dual Transport Support**: Supports `--transport stdio` (default for Claude Desktop / Cursor) and `--transport http` (Streamable HTTP, for web applications).
+- [Background](#background)
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Installation
+## Background
+
+The Model Context Protocol (MCP) enables LLMs to interface directly with external knowledge tools and interactive visual frames. `mcp-server` bridges DITA documentation sets with AI assistants (Claude Desktop, Cursor, Antigravity, etc.) by exposing tools to discover OASIS metadata, fetch clean Markdown context, perform search, and render full interactive `react-bootstrap` UI components inline in chat windows using MCP-UI.
+
+## Install
 
 ```console
 cd mcp-server
@@ -18,9 +25,9 @@ npm install
 npm run build
 ```
 
-## Running
+## Usage
 
-### 1. Standard I/O Transport (`stdio` - default)
+### 1. Standard I/O Transport (`stdio` - Default)
 
 ```console
 npx dita-docs-mcp --transport stdio --data-dir ../data-store/data
@@ -32,34 +39,43 @@ npx dita-docs-mcp --transport stdio --data-dir ../data-store/data
 npx dita-docs-mcp --transport http --port 4001 --data-dir ../data-store/data
 ```
 
-Serves the current MCP Streamable HTTP spec on a single `/mcp` endpoint (`POST` for
-requests, `GET` for the server-to-client SSE stream, `DELETE` to end a session),
-identifying sessions via the `Mcp-Session-Id` response/request header.
+Serves the MCP Streamable HTTP spec on a single `/mcp` endpoint (`POST` for requests, `GET` for server-to-client SSE stream, `DELETE` to end a session).
 
-## Available MCP Tools
+## API
+
+### Available MCP Tools
 
 | Tool | Parameters | Description |
 |---|---|---|
 | `list_documentation_sets` | *(none)* | Discovers and returns metadata for all available documentation sets. |
 | `get_toc` | `docId` | Returns the hierarchical Table of Contents for a doc set. |
-| `search_documentation` | `query`, `docId?` | Performs full-text MiniSearch query across topics. |
-| `get_topic_content` | `docId`, `topicPath` | Returns clean Markdown text extracted from the topic for LLM reasoning. |
-| `render_topic_ui` | `docId`, `topicPath`, `theme?` | **MCP-UI Tool**: Returns a self-contained HTML/CSS frame rendering the interactive React UI. Supports Bootswatch themes. |
+| `search_documentation` | `query`, `docId?`, `lang?` | Search query across topics. Delegates to `rag-service` if configured, with MiniSearch fallback. |
+| `get_topic_content` | `docId`, `topicPath` | Returns clean Markdown text extracted from topic AST for LLM reasoning. |
+| `render_topic_ui` | `docId`, `topicPath`, `theme?` | **MCP-UI Tool**: Returns a self-contained HTML/CSS frame rendering interactive React UI. |
 
-## Environment Variables
+### Available MCP Resources
 
-- `BOOTSTRAP_THEME` — Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). Defaults to `"default"`. Setting `"default"` or `"none"` acts as a valid no-op using standard Bootstrap. Dark-only themes automatically apply `bootswatch-static.css` and set `data-bs-theme="dark"`.
-- `NAVBAR_THEME` — Navbar background theme (`dark` -> `bg-dark`, `primary` -> `bg-primary`, `light` -> `bg-light`, etc.). Defaults to `"dark"`.
-- `NAVBAR_TEXT` — Navbar text scheme (`dark` -> `navbar-dark`, `light` -> `navbar-light`). Defaults to `"dark"`.
-- `CUSTOM_CSS_PATH` — File path or URL to an additional custom stylesheet. Defaults to `null`/empty (adds nothing). If a local file path exists, its CSS content is inlined into the MCP-UI shell.
+- `docs://library`: JSON resource listing available documentation sets and OASIS metadata.
+- `docs://{docId}/toc`: Table of contents resource.
+- `docs://{docId}/topics/{topicPath}`: Direct Markdown resource for topic content.
+- `ui://{docId}/topics/{topicPath}`: MCP-UI HTML resource.
 
-## Available MCP Resources
+### Environment Variables & Options
 
-- `docs://library` — JSON resource listing available documentation sets and OASIS metadata.
-- `docs://{docId}/toc` — Table of contents resource.
-- `docs://{docId}/topics/{topicPath}` — Direct Markdown resource for topic content.
-- `ui://{docId}/topics/{topicPath}` — MCP-UI HTML resource.
+| Parameter / Variable | Default | Description |
+|---|---|---|
+| `-p, --port` / `PORT` | `4001` | HTTP port when running with `--transport http`. |
+| `-d, --data-dir` / `DATA_DIR` | `../data-store/data` | Path to data directory containing documentation sets. |
+| `-r, --rag-service-url` / `RAG_SERVICE_URL` | *(none)* | Optional URL of standalone RAG vector search service (`http://localhost:4002`). |
+| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output (`render_topic_ui`). |
+| `NAVBAR_THEME` / `NAVBAR_TEXT` | `"dark"` / `"dark"` | Optional navbar theme and text scheme overrides. |
+| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag used for root `<html lang="...">`. |
+| `CUSTOM_CSS_PATH` | *(null)* | File path or URL to an additional custom stylesheet to inline into MCP-UI frames. |
+
+## Contributing
+
+PRs accepted. Refer to the root repository contributing guidelines.
 
 ## License
 
-Apache License 2.0 - see [LICENSE](../LICENSE).
+[Apache-2.0](../LICENSE) © Jason Fox

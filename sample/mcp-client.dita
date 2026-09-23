@@ -1,120 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
-<topic id="mcp-client">
-  <title>Standalone MCP Web Client Container</title>
-  <shortdesc>User guide for running the standalone reference web chatbot container (<codeph>mcp-client</codeph>) using a single Docker command.</shortdesc>
+<topic id="mcp-client-guide">
+  <title>Standalone Reference MCP Web Client (mcp-client)</title>
+  <shortdesc>User guide for running the standalone reference chatbot client for the MCP Server using containerized deployment.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
         <indexterm>mcp-client</indexterm>
-        <indexterm>Docker Container</indexterm>
-        <indexterm>Standalone Chatbot</indexterm>
-        <indexterm>User Guide</indexterm>
+        <indexterm>Web Client</indexterm>
+        <indexterm>Reference Client</indexterm>
+        <indexterm>Docker</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
     <section>
-      <title>Overview &amp; Usage</title>
-      <p>The <codeph>mcp-client</codeph> is a standalone web chatbot container designed for users who wish to deploy an independent AI chat client connected to the AST MCP Server. It provides an LLM-agnostic chatbot interface running on port <codeph>3200</codeph>.</p>
-      
-      <p>Features for users:</p>
-      <ul>
-        <li><b>Single-Command Container Launch</b> — Run the complete client using Docker without installing Node.js or building code.</li>
-        <li><b>Pluggable LLM Support</b> — Connects to Google Gemini, Anthropic Claude, OpenAI, or local Ollama instances.</li>
-        <li><b>Theme Customization</b> — Configure Bootswatch themes, dark mode, and navbar styling using simple environment variables.</li>
-      </ul>
+      <title>Overview</title>
+      <p>The <b>mcp-client</b> service provides a standalone reference web chatbot interface on port <codeph>3200</codeph>. It connects to <codeph>mcp-server</codeph> via Streamable HTTP transport to execute Model Context Protocol (MCP) tool calls and render MCP-UI topic component previews.</p>
     </section>
 
     <section>
-      <title>Running with Docker</title>
-      <p>Launch the standalone chatbot container using a single Docker command:</p>
-      
-      <codeblock outputclass="language-bash"># Run the pre-built Docker container on port 3200
-docker run -d \
-  --name ast-mcp-client \
-  -p 3200:3200 \
+      <title>Container Deployment</title>
+      <p>Run the standalone chatbot client using a single Docker container command:</p>
+
+      <codeblock outputclass="language-bash">docker run -d -p 3200:3200 \
   -e MCP_SERVER_URL=http://host.docker.internal:4001/mcp \
   -e CHAT_BOT_PROVIDER=gemini \
-  -e GEMINI_API_KEY=your_gemini_api_key \
+  -e GEMINI_API_KEY=your_api_key \
   ghcr.io/jason-fox/ast-mcp-client:latest</codeblock>
 
-      <p>Alternatively, if using Docker Compose profiles:</p>
-      <codeblock outputclass="language-bash">docker compose --profile client up -d mcp-client</codeblock>
-
-      <p>After launching, open your browser to <filepath>http://localhost:3200</filepath> to start chatting with the AI Assistant.</p>
+      <p>Open your web browser to <filepath>http://localhost:3200</filepath>.</p>
     </section>
 
     <section>
-      <title>User Environment Configuration</title>
-      <p>Configure container settings using environment variables or an <filepath>.env</filepath> file:</p>
-
-      <parml otherprops="cols(4)">
+      <title>Configuration Options</title>
+      <parml>
         <plentry>
-          <pt><parmname>PORT</parmname></pt>
-          <pd>HTTP port for the web chatbot interface (defaults to <codeph>3200</codeph>).</pd>
+          <pt><codeph>PORT</codeph></pt>
+          <pd>HTTP port for the web chatbot server (default: <codeph>3200</codeph>).</pd>
         </plentry>
         <plentry>
-          <pt><parmname>MCP_SERVER_URL</parmname></pt>
-          <pd>URL endpoint of the AST MCP Server (defaults to <filepath>http://localhost:4001/mcp</filepath>).</pd>
+          <pt><codeph>MCP_SERVER_URL</codeph></pt>
+          <pd>Streamable HTTP endpoint of the connected MCP server (default: <filepath>http://localhost:4001/mcp</filepath>).</pd>
         </plentry>
         <plentry>
-          <pt><parmname>CHAT_BOT_PROVIDER</parmname></pt>
-          <pd>Active AI provider: <option>gemini</option>, <option>anthropic</option>, <option>openai</option>, or <option>ollama</option>.</pd>
+          <pt><codeph>CHAT_BOT_PROVIDER</codeph></pt>
+          <pd>Active LLM provider (<codeph>gemini</codeph>, <codeph>anthropic</codeph>, <codeph>openai</codeph>, <codeph>ollama</codeph>).</pd>
         </plentry>
         <plentry>
-          <pt><parmname>GEMINI_API_KEY</parmname></pt>
-          <pd>API authentication key when using Google Gemini services.</pd>
-        </plentry>
-        <plentry>
-          <pt><parmname>BOOTSTRAP_THEME</parmname></pt>
-          <pd>Bootswatch theme name (e.g. <option>default</option>, <option>journal</option>, <option>darkly</option>, <option>flatly</option>).</pd>
-        </plentry>
-        <plentry>
-          <pt><parmname>NAVBAR_THEME</parmname></pt>
-          <pd>Navbar color scheme (<option>dark</option>, <option>primary</option>, <option>light</option>).</pd>
-        </plentry>
-        <plentry>
-          <pt><parmname>SHOW_TOOL_INVOCATIONS</parmname></pt>
-          <pd>Set to <option>true</option> to display expandable details for AI tool execution in chat threads.</pd>
+          <pt><codeph>SHOW_TOOL_INVOCATIONS</codeph></pt>
+          <pd>Set to <codeph>true</codeph> to display MCP tool call parameters and execution details in chat responses.</pd>
         </plentry>
       </parml>
-    </section>
-
-    <section>
-      <title>Standalone Client vs. Integrated Portal Chat</title>
-      <table frame="all" rowsep="1" colsep="1">
-        <title>Client Deployment Comparison</title>
-        <tgroup cols="3">
-          <colspec colname="c1" colwidth="1*"/>
-          <colspec colname="c2" colwidth="1*"/>
-          <colspec colname="c3" colwidth="1*"/>
-          <thead>
-            <row>
-              <entry>Feature</entry>
-              <entry>Standalone Container (mcp-client)</entry>
-              <entry>Integrated Portal Chat (/chat)</entry>
-            </row>
-          </thead>
-          <tbody>
-            <row>
-              <entry><b>URL Access</b></entry>
-              <entry><filepath>http://localhost:3200</filepath></entry>
-              <entry><filepath>http://localhost:3100/chat</filepath></entry>
-            </row>
-            <row>
-              <entry><b>Deployment Method</b></entry>
-              <entry>Single <codeph>docker run</codeph> container</entry>
-              <entry>Included in <codeph>docker compose up</codeph></entry>
-            </row>
-            <row>
-              <entry><b>Best For</b></entry>
-              <entry>Dedicated chatbot web widget deployment</entry>
-              <entry>Integrated documentation portal browsing &amp; chat</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
     </section>
   </body>
 </topic>

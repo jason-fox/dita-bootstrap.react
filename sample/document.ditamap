@@ -21,8 +21,11 @@
       <othermeta name="icon" content="bi-cpu-fill"/>
       <othermeta name="icon-style" content="color: var(--bs-info)"/>
     </topicmeta>
-    <topicref navtitle="Core System Components" href="system-components.dita" locktitle="yes"/>
-    <topicref navtitle="Standalone MCP Web Client" href="mcp-client.dita" locktitle="yes"/>
+    <topicref navtitle="Data Store Service (data-store)" href="data-store.dita" locktitle="yes"/>
+    <topicref navtitle="Web Renderer &amp; AI Chat Portal (renderer)" href="renderer.dita" locktitle="yes"/>
+    <topicref navtitle="MCP Server Service (mcp-server)" href="mcp-server.dita" locktitle="yes"/>
+    <topicref navtitle="RAG Vector Search Service (rag-service)" href="rag-service.dita" locktitle="yes"/>
+    <topicref navtitle="Standalone Reference MCP Client (mcp-client)" href="mcp-client.dita" locktitle="yes"/>
   </chapter>
   <chapter>
     <topicmeta>
@@ -30,8 +33,8 @@
       <othermeta name="icon" content="bi-plugin"/>
       <othermeta name="icon-style" content="color: var(--bs-success)"/>
     </topicmeta>
-    <topicref navtitle="DITA Bootstrap AST Plug-in &amp; Chrome" href="ast-plugin.dita" locktitle="yes"/>
-    <topicref navtitle="Search Bar &amp; AI Chat Bot" href="search-and-chatbot.dita" locktitle="yes"/>
+    <topicref navtitle="DITA Bootstrap AST Plug-in &amp; Layout Publishing" href="ast-plugin.dita" locktitle="yes"/>
+    <topicref navtitle="Search Bar &amp; AI Chat Bot User Guide" href="search-and-chatbot.dita" locktitle="yes"/>
   </chapter>
   <backmatter deliveryTarget="pdf">
     <booklists>

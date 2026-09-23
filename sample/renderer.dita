@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="renderer-service">
+  <title>Web Renderer &amp; AI Chat Portal Service (renderer)</title>
+  <shortdesc>User-facing web portal for browsing documentation sets, reading AST topics, and interacting with the integrated AI Assistant chat.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>renderer</indexterm>
+        <indexterm>Next.js</indexterm>
+        <indexterm>React Bootstrap</indexterm>
+        <indexterm>Web Portal</indexterm>
+        <indexterm>AI Assistant Chat</indexterm>
+        <indexterm>chrome.json</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Service Overview</title>
+      <p>The <b>renderer</b> service provides the primary web interface on port <codeph>3100</codeph>. It fetches JSON AST topic trees produced by DITA-OT and renders them dynamically into real Bootstrap components (accordions, tabs, alerts, cards, code blocks).</p>
+    </section>
+
+    <section>
+      <title>Portal Views &amp; Features</title>
+      <ul>
+        <li><b>Documentation Store Catalog (<filepath>/</filepath>)</b> — Card grid landing page displaying all discovered documentation sets with direct navigation links.</li>
+        <li><b>Topic Reader View (<filepath>/&lt;docId&gt;/&lt;topicPath&gt;</filepath>)</b> — Interactive topic viewer with collapsible TOC sidebar, breadcrumbs, scrollspy, and code block copy/syntax highlighting.</li>
+        <li><b>Integrated AI Assistant (<filepath>/chat</filepath>)</b> — Real-time conversational interface connected to <codeph>mcp-server</codeph> for technical question-answering and live component previews.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Fallback Layout Templates (chrome.json)</title>
+      <p>When published document sets omit custom header or footer parameters, the renderer automatically uses fallback AST layout templates from <filepath>data-store/data/chrome.json</filepath>:</p>
+      <ul>
+        <li><codeph>docs-page.header</codeph> — Landing catalog navbar template.</li>
+        <li><codeph>docs-page.card</codeph> — Document card grid template.</li>
+        <li><codeph>chat-bot.header</codeph> — AI Assistant header navbar template.</li>
+        <li><codeph>chat-bot.card</codeph> — Welcome card template in <filepath>/chat</filepath>.</li>
+        <li><codeph>chat-bot.form</codeph> — Prompt submission bar template in <filepath>/chat</filepath>.</li>
+        <li><codeph>footer</codeph> — Global fallback footer.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Container Deployment &amp; Configuration</title>
+      <p>Deploy using Docker Compose or a standalone Docker container:</p>
+
+      <codeblock outputclass="language-bash"># Launch using Docker Compose:
+docker compose up -d renderer
+
+# Or run as a standalone Docker container:
+docker run -d -p 3100:3100 \
+  -e INTERNAL_DATA_URL=http://data-store:4000/data \
+  -e INTERNAL_API_URL=http://data-store:4000/api \
+  -e MCP_SERVER_URL=http://mcp-server:4001/mcp \
+  -e CHAT_BOT_PROVIDER=gemini \
+  -e GEMINI_API_KEY=your_api_key \
+  ghcr.io/jason-fox/ast-renderer:latest</codeblock>
+
+      <p>Key Environment Variables:</p>
+      <parml>
+        <plentry>
+          <pt><codeph>PORT</codeph></pt>
+          <pd>HTTP port for the web application (default: <codeph>3100</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>BOOTSTRAP_THEME</codeph></pt>
+          <pd>Bootswatch theme name (e.g. <codeph>default</codeph>, <codeph>darkly</codeph>, <codeph>journal</codeph>, <codeph>flatly</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>CHAT_BOT_PROVIDER</codeph></pt>
+          <pd>Active LLM provider for <filepath>/chat</filepath> (<codeph>gemini</codeph>, <codeph>anthropic</codeph>, <codeph>openai</codeph>, <codeph>ollama</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>MCP_SERVER_URL</codeph></pt>
+          <pd>Streamable HTTP endpoint of the MCP server service (default: <codeph>http://localhost:4001/mcp</codeph>).</pd>
+        </plentry>
+      </parml>
+    </section>
+  </body>
+</topic>

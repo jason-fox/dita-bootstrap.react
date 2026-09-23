@@ -1,66 +1,75 @@
 # Abstract Syntax Tree RAG Service
 
-Optional standalone vector search service for `dita-bootstrap.ast` documentation sets. It transforms DITA AST JSON topics into Markdown chunks, computes term-frequency vector embeddings, enforces data freshness using SHA-256 content hashing and `toc.json` verification, and exposes a semantic search API.
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](../LICENSE)
 
-See the [top-level README](../README.md) for overall repository architecture and setup instructions.
+Optional standalone vector search service for `dita-bootstrap.ast` documentation sets.
 
-## Features
+It transforms DITA AST JSON topics into Markdown chunks, computes term-frequency vector embeddings, enforces data freshness using SHA-256 content hashing and `toc.json` verification, and exposes a semantic vector search API.
 
-- **AST to Markdown Conversion**: Converts DITA AST structures into clean Markdown text prior to chunking.
-- **Semantic Boundary Chunking**: Splits topics along natural section and heading (`#`, `##`) boundaries rather than arbitrary token counts.
-- **Vector Embedding & Search**: Computes term-frequency vectors and cosine similarity distance for semantic search queries.
-- **Data Currency & Invalidation**:
-  - Computes SHA-256 hashes per topic file for fast incremental indexing.
-  - Verifies active topic paths against `toc.json` manifests and automatically purges vectors for deleted or renamed topics.
-- **Transparent Fallback Integration**: Used optionally by `mcp-server` when `RAG_SERVICE_URL` is set, with automatic fallback to MiniSearch keyword search.
+## Table of Contents
 
-## API Routes
+- [Background](#background)
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+- [License](#license)
 
-- `GET /health` — Returns status, resolved `DATA_DIR`, total indexed topics, and total vector chunks.
-- `POST /api/search` — Accepts `{ query, docId?, lang?, topK? }` and returns ranked `SearchHit[]` results.
-- `POST /api/reindex` — Triggers an on-demand scan of `DATA_DIR` and performs incremental hash re-indexing.
+## Background
+
+Large documentation sets benefit from vector search prior to LLM selection. Raw DITA AST JSON files contain wrapper props and tag metadata that dilute semantic vector distance calculations.
+
+`rag-service` solves this by converting AST tuples to Markdown, chunking along semantic heading boundaries (`#`, `##`), and serving vector similarity search results. It maintains data currency by calculating SHA-256 hashes per topic and purging deleted topics against active `toc.json` manifests.
 
 ## Install
 
 ```console
+cd rag-service
 npm install
 ```
 
-## Build & Run
+## Usage
+
+### Development Mode
 
 ```console
-# Development with hot reload
 npm run dev
+```
 
-# Compile TypeScript
+### Production Build & Startup
+
+```console
 npm run build
-
-# Start production server
 npm run start
 ```
 
-Listens on `PORT` (default `4002`) and indexes `DATA_DIR` (default `../data-store/data`).
-
-## Environment Variables & CLI Options
-
-- `PORT` (`-p, --port`) — Port to listen on (default `4002`).
-- `DATA_DIR` (`-d, --data-dir`) — Directory containing documentation sets (default `../data-store/data`).
-
-## CLI Usage
+### CLI Command
 
 ```console
-node dist/server.js --port 4002 --data-dir ../data-store/data
+node dist/index.js --port 4002 --data-dir ../data-store/data
 ```
 
-## Docker
-
-Build and run using the standalone Docker container:
+### Docker
 
 ```console
 docker build -t ast-rag-service .
 docker run -p 4002:4002 -v ./data-store/data:/app/data ast-rag-service
 ```
 
+## API
+
+### HTTP Endpoints
+
+- **`GET /health`**: Returns system status, resolved `DATA_DIR`, total indexed topics, and total vector chunks.
+- **`POST /api/search`**: Accepts `{ query: string, docId?: string, lang?: string, topK?: number }` payload and returns ranked `SearchHit[]` objects.
+- **`POST /api/reindex`**: Triggers an on-demand scan of `DATA_DIR` and performs incremental hash re-indexing.
+
+### Environment Variables & Parameters
+
+| Parameter | Environment Variable | Default | Description |
+|---|---|---|---|
+| `-p, --port` | `PORT` | `4002` | Port for the Express server to listen on. |
+| `-d, --data-dir` | `DATA_DIR` | `../data-store/data` | Path to data directory containing documentation sets. |
+
 ## License
 
-Apache License 2.0 - see [LICENSE](../LICENSE).
+[Apache-2.0](../LICENSE) © Jason Fox

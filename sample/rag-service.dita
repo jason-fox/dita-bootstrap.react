@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="rag-service-component">
+  <title>RAG Vector Search Service (rag-service)</title>
+  <shortdesc>Optional standalone vector search service providing semantic topic chunking, term-frequency vector embeddings, and incremental content verification.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>rag-service</indexterm>
+        <indexterm>RAG</indexterm>
+        <indexterm>Semantic Search</indexterm>
+        <indexterm>Vector Store</indexterm>
+        <indexterm>SHA-256 Hashing</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Service Overview</title>
+      <p>The <b>rag-service</b> operates as an optional background service on port <codeph>4002</codeph>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<codeph>#</codeph>, <codeph>##</codeph>), computes normalized TF-IDF vector embeddings, and exposes a high-speed semantic search API endpoint.</p>
+    </section>
+
+    <section>
+      <title>Data Ingestion &amp; Currency Pipeline</title>
+      <p>To ensure vector search returns current data only, the service performs automated hash checks and active TOC manifest synchronization:</p>
+      <ul>
+        <li><b>AST to Markdown Chunking</b> — Transforms JSON AST nodes into clean Markdown text and splits content along natural section heading boundaries.</li>
+        <li><b>SHA-256 Content Hashing</b> — Calculates cryptographic hashes for each topic file. Unchanged topics are skipped instantly during updates; modified topics are re-chunked and re-indexed.</li>
+        <li><b>Active TOC Sync &amp; Purging</b> — Verifies active topic paths against <filepath>toc.json</filepath>. Topics deleted from disk or removed from the TOC manifest are automatically hard-purged from vector memory.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>HTTP REST Endpoints</title>
+      <parml>
+        <plentry>
+          <pt><codeph>GET /health</codeph></pt>
+          <pd>Returns server health status, resolved data directory path, total indexed topics, and total vector chunk count.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>POST /api/search</codeph></pt>
+          <pd>Accepts JSON payload <codeph>{"query": "...", "docId": "...", "lang": "...", "topK": 10}</codeph> and returns ranked semantic search hits.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>POST /api/reindex</codeph></pt>
+          <pd>Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <filepath>DATA_DIR</filepath>.</pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>Triggering RAG Index Updates</title>
+      <p>RAG re-indexing occurs automatically on service startup and can be triggered on-demand following DITA-OT publishing runs:</p>
+
+      <codeblock outputclass="language-bash"># Trigger on-demand RAG re-indexing via HTTP POST:
+curl -X POST http://localhost:4002/api/reindex</codeblock>
+    </section>
+
+    <section>
+      <title>Container Deployment &amp; Configuration</title>
+      <p>Deploy using Docker Compose or a standalone Docker container:</p>
+
+      <codeblock outputclass="language-bash"># Launch using Docker Compose:
+docker compose up -d rag-service
+
+# Or run as a standalone Docker container:
+docker run -d -p 4002:4002 \
+  -v /path/to/data:/app/data \
+  ghcr.io/jason-fox/ast-rag-service:latest</codeblock>
+
+      <p>Configuration Environment Variables:</p>
+      <parml>
+        <plentry>
+          <pt><codeph>PORT</codeph></pt>
+          <pd>HTTP port for the Express vector search server (default: <codeph>4002</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>DATA_DIR</codeph></pt>
+          <pd>Directory path containing published documentation sets (default: <filepath>/app/data</filepath>).</pd>
+        </plentry>
+      </parml>
+    </section>
+  </body>
+</topic>

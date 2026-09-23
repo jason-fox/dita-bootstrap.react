@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="mcp-server-service">
+  <title>MCP Server Service (mcp-server)</title>
+  <shortdesc>Model Context Protocol (MCP) server providing OASIS metadata, clean Markdown text context, search, and MCP-UI interactive component rendering to AI assistants.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>mcp-server</indexterm>
+        <indexterm>Model Context Protocol</indexterm>
+        <indexterm>MCP Tools</indexterm>
+        <indexterm>MCP-UI</indexterm>
+        <indexterm>Fallback</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Service Overview</title>
+      <p>The <b>mcp-server</b> service operates on port <codeph>4001</codeph> (HTTP transport) or via standard I/O (<codeph>stdio</codeph> transport). It connects AI models to published DITA documentation sets.</p>
+    </section>
+
+    <section>
+      <title>Exposed MCP Tools</title>
+      <parml>
+        <plentry>
+          <pt><codeph>list_documentation_sets</codeph></pt>
+          <pd>Discovers available documentation sets and returns OASIS metadata (<codeph>title</codeph>, <codeph>description</codeph>, <codeph>keywords</codeph>, <codeph>category</codeph>, <codeph>lang</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>get_toc</codeph></pt>
+          <pd>Returns the hierarchical Table of Contents structure for a document set.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>search_documentation</codeph></pt>
+          <pd>Executes documentation search queries. Transparently delegates to <codeph>rag-service</codeph> if configured, with automatic fallback to MiniSearch keyword search.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>get_topic_content</codeph></pt>
+          <pd>Converts topic AST JSON trees into clean Markdown text for LLM reasoning and question-answering.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>render_topic_ui</codeph></pt>
+          <pd><b>MCP-UI Tool</b> returning a self-contained HTML/CSS frame rendering interactive React components directly inside chat windows.</pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>Search Delegation &amp; Fallback Architecture</title>
+      <p>When the <codeph>search_documentation</codeph> tool is called, <codeph>mcp-server</codeph> evaluates its configured search providers:</p>
+      <ul>
+        <li><b>Semantic RAG Search:</b> If <codeph>RAG_SERVICE_URL</codeph> is set (e.g. <filepath>http://rag-service:4002</filepath>), queries are sent to the standalone vector search service.</li>
+        <li><b>Keyword Search Fallback:</b> If <codeph>rag-service</codeph> is unconfigured, unreachable, or returns empty results, queries automatically fall back to local MiniSearch indices without disrupting chat flow.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Container Deployment &amp; Configuration</title>
+      <p>Deploy using Docker Compose or a standalone Docker container:</p>
+
+      <codeblock outputclass="language-bash"># Launch using Docker Compose:
+docker compose up -d mcp-server
+
+# Or run as a standalone Docker container:
+docker run -d -p 4001:4001 \
+  -v /path/to/data:/app/data \
+  -e RAG_SERVICE_URL=http://rag-service:4002 \
+  ghcr.io/jason-fox/ast-mcp-server:latest</codeblock>
+
+      <p>Configuration Parameters:</p>
+      <parml>
+        <plentry>
+          <pt><codeph>PORT</codeph></pt>
+          <pd>HTTP port for Streamable HTTP transport (default: <codeph>4001</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>RAG_SERVICE_URL</codeph></pt>
+          <pd>Optional URL of the standalone RAG vector search service (e.g. <filepath>http://localhost:4002</filepath>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>BOOTSTRAP_THEME</codeph></pt>
+          <pd>Bootswatch theme name used for <codeph>render_topic_ui</codeph> frames (default: <codeph>default</codeph>).</pd>
+        </plentry>
+      </parml>
+    </section>
+  </body>
+</topic>
