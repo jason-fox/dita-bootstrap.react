@@ -23,6 +23,7 @@ export default function Shell({
   footerAst,
   accessibility,
   onClearChat,
+  onSearch,
   children,
 }: {
   tocEntries?: AstArray[];
@@ -35,6 +36,7 @@ export default function Shell({
   footerAst?: AstArray;
   accessibility?: { main?: string; nav?: string };
   onClearChat?: () => void;
+  onSearch?: (query: string) => void;
   children: ReactNode;
 }) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -71,6 +73,7 @@ export default function Shell({
         lang={lang}
         onToggleSidebar={hasSidebar ? () => setShowSidebar((value) => !value) : undefined}
         onClearChat={onClearChat}
+        onSearch={onSearch}
       />
       {menubar && <Menubar entries={tocEntries} docId={docId} />}
       <Container fluid="xxl" className="flex-grow-1 d-flex flex-column">

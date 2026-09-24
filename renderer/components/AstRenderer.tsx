@@ -684,6 +684,7 @@ function SearchFormFromAst({
   title,
   onClearChat,
   onSendPrompt,
+  onSearch,
 }: {
   nodeKey: React.Key;
   resolvedProps: Record<string, unknown>;
@@ -696,6 +697,7 @@ function SearchFormFromAst({
   title?: string;
   onClearChat?: () => void;
   onSendPrompt?: (text: string) => void;
+  onSearch?: (query: string) => void;
 }) {
   const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
   const [query, setQuery] = useState("");
@@ -705,6 +707,7 @@ function SearchFormFromAst({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!docId) return;
     loadSearchIndex(docId)
       .then((index) => {
         indexRef.current = index;
@@ -714,8 +717,11 @@ function SearchFormFromAst({
 
   function handleChange(value: string) {
     setQuery(value);
+    if (onSearch) {
+      onSearch(value);
+    }
     const index = indexRef.current;
-    if (!index || value.trim().length === 0) {
+    if (!index || value.trim().length === 0 || !docId) {
       setResults([]);
       setOpen(false);
       return;
@@ -760,7 +766,7 @@ function SearchFormFromAst({
         value: query,
         onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
           handleChange(e.target.value),
-        onFocus: () => query && results.length > 0 && setOpen(true),
+        onFocus: () => docId && query && results.length > 0 && setOpen(true),
       };
       return renderNode(
         [childType, formControlProps, ...subChildren] as AstArray,
@@ -773,6 +779,7 @@ function SearchFormFromAst({
         title,
         onClearChat,
         onSendPrompt,
+        onSearch,
       );
     }
 
@@ -846,6 +853,7 @@ function renderNode(
   title?: string,
   onClearChat?: () => void,
   onSendPrompt?: (text: string) => void,
+  onSearch?: (query: string) => void,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -903,6 +911,9 @@ function renderNode(
         onToggleSidebar,
         activeTheme,
         title,
+        onClearChat,
+        onSendPrompt,
+        onSearch,
       ),
     );
     const Component = componentRegistry[type] ?? type;
@@ -944,6 +955,7 @@ function renderNode(
         title={title}
         onClearChat={onClearChat}
         onSendPrompt={onSendPrompt}
+        onSearch={onSearch}
       />
     );
   }
@@ -1135,6 +1147,7 @@ function renderNode(
       title,
       onClearChat,
       onSendPrompt,
+      onSearch,
     ),
   );
 
@@ -1150,6 +1163,7 @@ export default function AstRenderer({
   onToggleSidebar,
   onClearChat,
   onSendPrompt,
+  onSearch,
 }: {
   nodes: AstNode[];
   title?: string;
@@ -1159,6 +1173,7 @@ export default function AstRenderer({
   onToggleSidebar?: () => void;
   onClearChat?: () => void;
   onSendPrompt?: (text: string) => void;
+  onSearch?: (query: string) => void;
 }) {
   const activeTheme = useActiveTheme();
 
@@ -1176,6 +1191,7 @@ export default function AstRenderer({
           title,
           onClearChat,
           onSendPrompt,
+          onSearch,
         ),
       )}
     </ToggleProvider>

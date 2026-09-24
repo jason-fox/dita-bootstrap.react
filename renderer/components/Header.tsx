@@ -10,6 +10,7 @@ export default function Header({
   lang,
   onToggleSidebar,
   onClearChat,
+  onSearch,
 }: {
   headerAst?: AstArray;
   title: string;
@@ -17,6 +18,7 @@ export default function Header({
   lang?: string;
   onToggleSidebar?: () => void;
   onClearChat?: () => void;
+  onSearch?: (query: string) => void;
 }) {
   if (!headerAst) return null;
 
@@ -28,6 +30,7 @@ export default function Header({
       lang={lang}
       onToggleSidebar={onToggleSidebar}
       onClearChat={onClearChat}
+      onSearch={onSearch}
     />
   );
 }

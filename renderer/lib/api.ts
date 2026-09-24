@@ -17,6 +17,8 @@ export interface DocSetInfo {
   scrollspyToc?: string;
   menubar?: boolean;
   topicCount: number;
+  featured?: boolean;
+  priority?: number;
 }
 
 // [type, props?, ...children] - props is present only when item[1] is a plain object
