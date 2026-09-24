@@ -11,6 +11,7 @@ export default function Header({
   onToggleSidebar,
   onClearChat,
   onSearch,
+  noResultsText,
 }: {
   headerAst?: AstArray;
   title: string;
@@ -19,6 +20,7 @@ export default function Header({
   onToggleSidebar?: () => void;
   onClearChat?: () => void;
   onSearch?: (query: string) => void;
+  noResultsText?: string;
 }) {
   if (!headerAst) return null;
 
@@ -31,6 +33,7 @@ export default function Header({
       onToggleSidebar={onToggleSidebar}
       onClearChat={onClearChat}
       onSearch={onSearch}
+      noResultsText={noResultsText}
     />
   );
 }

@@ -125,6 +125,7 @@ export default function HomePageClient({ docs, chrome }: HomePageClientProps) {
       title={docsTitle}
       headerAst={headerAst}
       footerAst={footerAst}
+      texts={chrome?.texts}
       onSearch={setSearchQuery}
     >
       <div className="py-4 flex-grow-1 d-flex flex-column">

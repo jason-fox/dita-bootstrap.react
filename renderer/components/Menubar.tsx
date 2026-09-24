@@ -9,6 +9,7 @@ import {
   resolveHref,
   resolveStyle,
   type AstArray,
+  type ChromeConfig,
 } from "../lib/api";
 
 function splitEntry(entry: AstArray, docId?: string) {
@@ -53,9 +54,13 @@ function containsPath(entry: AstArray, pathname: string, docId?: string): boolea
 export default function Menubar({
   entries,
   docId,
+  accessibility,
+  texts,
 }: {
   entries: AstArray[];
   docId?: string;
+  accessibility?: { main?: string; nav?: string };
+  texts?: ChromeConfig["texts"];
 }) {
   const pathname = usePathname();
 
@@ -64,7 +69,7 @@ export default function Menubar({
   return (
     <div className="bg-body-tertiary border-bottom">
       <Container fluid="xxl" className="px-4">
-        <nav aria-label="Menubar navigation">
+        <nav aria-label={accessibility?.nav ?? texts?.menubarNavigation ?? "Menubar navigation"}>
           <ul className="nav nav-pills rounded-0" role="menubar">
             {entries.map((entry, index) => {
               const { title, href, icon, iconStyle } = splitEntry(entry, docId);

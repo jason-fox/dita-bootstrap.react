@@ -71,6 +71,13 @@ export interface ChromeConfig {
     form?: AstArray;
   };
   footer?: AstArray;
+  texts?: {
+    noResults?: string;
+    tableOfContents?: string;
+    menubarNavigation?: string;
+    expand?: string;
+    collapse?: string;
+  };
 }
 
 let chromeCache: ChromeConfig | null = null;
@@ -93,7 +100,12 @@ export async function fetchChrome(): Promise<ChromeConfig> {
     throw new Error("chrome.json not found");
   }
   try {
-    chromeCache = await res.json();
+    const raw = await res.json();
+    const texts = raw.texts ?? raw.text ?? raw.i18n;
+    chromeCache = {
+      ...raw,
+      texts,
+    };
     return chromeCache!;
   } catch (err: any) {
     if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {

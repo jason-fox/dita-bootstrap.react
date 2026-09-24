@@ -8,6 +8,7 @@ import {
   resolveHref,
   resolveStyle,
   type AstArray,
+  type ChromeConfig,
 } from "../lib/api";
 
 function splitEntry(entry: AstArray, docId?: string) {
@@ -65,10 +66,12 @@ function TocEntryItem({
   entry,
   pathname,
   docId,
+  texts,
 }: {
   entry: AstArray;
   pathname: string;
   docId?: string;
+  texts?: ChromeConfig["texts"];
 }) {
   const { title, href, icon, iconStyle, children } = splitEntry(entry, docId);
   const cleanHref = href ? href.split("#")[0] : undefined;
@@ -129,7 +132,7 @@ function TocEntryItem({
           className={`btn d-inline-flex align-items-center p-0 border-0${isCurrentSection ? " active" : ""}`}
           aria-expanded={expanded}
           aria-current={isCurrentSection ? "true" : undefined}
-          aria-label={expanded ? `Collapse ${title}` : `Expand ${title}`}
+          aria-label={`${expanded ? (texts?.collapse ?? "Collapse") : (texts?.expand ?? "Expand")} ${title}`}
           onClick={() => setUserExpanded(!expanded)}
         >
           <Chevron />
@@ -139,7 +142,7 @@ function TocEntryItem({
       <div className={`ps-2 collapse${expanded ? " show" : ""}`}>
         <ul className="list-unstyled fw-normal ps-4">
           {children.map((child, index) => (
-            <TocEntryItem key={index} entry={child} pathname={pathname} docId={docId} />
+            <TocEntryItem key={index} entry={child} pathname={pathname} docId={docId} texts={texts}/>
           ))}
         </ul>
       </div>
@@ -290,11 +293,15 @@ export default function Toc({
   navToc = "collapsible",
   menubar = false,
   docId,
+  accessibility,
+  texts,
 }: {
   entries: AstArray[];
   navToc?: string;
   menubar?: boolean;
   docId?: string;
+  accessibility?: { main?: string; nav?: string };
+  texts?: ChromeConfig["texts"];
 }) {
   const pathname = usePathname();
   const isListGroup = navToc.startsWith("list-group");
@@ -306,7 +313,7 @@ export default function Toc({
 
   return (
     <nav
-      aria-label="Table of contents"
+      aria-label={accessibility?.nav ?? texts?.tableOfContents ?? "Table of contents"}
       id="bs-sidebar-nav"
       tabIndex={-1}
       role="navigation"
@@ -323,7 +330,7 @@ export default function Toc({
           <div className="flex-column bd-links">
             <ul className="list-unstyled mb-0 py-3 pt-md-1">
               {displayEntries.map((entry, index) => (
-                <TocEntryItem key={index} entry={entry} pathname={pathname} docId={docId} />
+                <TocEntryItem key={index} entry={entry} pathname={pathname} docId={docId} texts={texts}/>
               ))}
             </ul>
           </div>

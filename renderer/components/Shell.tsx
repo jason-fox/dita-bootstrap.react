@@ -10,7 +10,7 @@ import Header from "./Header";
 import Menubar from "./Menubar";
 import Toc from "./Toc";
 import AstRenderer from "./AstRenderer";
-import type { AstArray } from "../lib/api";
+import type { AstArray, ChromeConfig } from "../lib/api";
 
 export default function Shell({
   tocEntries = [],
@@ -22,6 +22,7 @@ export default function Shell({
   headerAst,
   footerAst,
   accessibility,
+  texts,
   onClearChat,
   onSearch,
   children,
@@ -35,6 +36,7 @@ export default function Shell({
   headerAst?: AstArray;
   footerAst?: AstArray;
   accessibility?: { main?: string; nav?: string };
+  texts?: ChromeConfig["texts"];
   onClearChat?: () => void;
   onSearch?: (query: string) => void;
   children: ReactNode;
@@ -74,8 +76,9 @@ export default function Shell({
         onToggleSidebar={hasSidebar ? () => setShowSidebar((value) => !value) : undefined}
         onClearChat={onClearChat}
         onSearch={onSearch}
+        noResultsText={texts?.noResults}
       />
-      {menubar && <Menubar entries={tocEntries} docId={docId} />}
+      {menubar && <Menubar entries={tocEntries} docId={docId} accessibility={accessibility} texts={texts} />}
       <Container fluid="xxl" className="flex-grow-1 d-flex flex-column">
         {hasSidebar ? (
           <Row className="flex-grow-1">
@@ -90,7 +93,7 @@ export default function Shell({
                   <Offcanvas.Title>{title}</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body className="p-0">
-                  <Toc entries={tocEntries} navToc={navToc} menubar={menubar} docId={docId} />
+                  <Toc entries={tocEntries} navToc={navToc} menubar={menubar} docId={docId} accessibility={accessibility} texts={texts} />
                 </Offcanvas.Body>
               </Offcanvas>
             </div>
@@ -104,7 +107,7 @@ export default function Shell({
       </Container>
       {footerAst && (
         <footer className="footer mt-auto py-3 bg-primary-subtle border-top">
-          <AstRenderer nodes={[footerAst]} docId={docId} lang={lang} />
+          <AstRenderer nodes={[footerAst]} docId={docId} lang={lang} noResultsText={texts?.noResults} />
         </footer>
       )}
     </div>

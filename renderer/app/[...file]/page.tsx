@@ -141,6 +141,7 @@ export default async function ViewPage({
       headerAst={toc?.header}
       footerAst={footerAst}
       accessibility={toc?.accessibility}
+      texts={chrome?.texts}
     >
       {content}
     </Shell>

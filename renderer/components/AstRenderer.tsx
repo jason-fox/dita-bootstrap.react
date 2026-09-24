@@ -685,6 +685,7 @@ function SearchFormFromAst({
   onClearChat,
   onSendPrompt,
   onSearch,
+  noResultsText,
 }: {
   nodeKey: React.Key;
   resolvedProps: Record<string, unknown>;
@@ -698,6 +699,7 @@ function SearchFormFromAst({
   onClearChat?: () => void;
   onSendPrompt?: (text: string) => void;
   onSearch?: (query: string) => void;
+  noResultsText?: string;
 }) {
   const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
   const [query, setQuery] = useState("");
@@ -801,6 +803,12 @@ function SearchFormFromAst({
 
   const renderedChildren = children.map((c, i) => renderSearchChild(c, i));
 
+  const effectiveNoResultsText =
+    (resolvedProps["data-no-results"] as string) ||
+    (resolvedProps.noResults as string) ||
+    noResultsText ||
+    "No results";
+
   return (
     <Form
       key={nodeKey}
@@ -817,7 +825,7 @@ function SearchFormFromAst({
           style={{ maxHeight: "60vh", overflowY: "auto" }}
         >
           {results.length === 0 ? (
-            <li className="px-3 py-2 text-body-secondary">No results</li>
+            <li className="px-3 py-2 text-body-secondary">{effectiveNoResultsText}</li>
           ) : (
             results.map((result) => (
               <li key={result.id}>
@@ -854,6 +862,7 @@ function renderNode(
   onClearChat?: () => void,
   onSendPrompt?: (text: string) => void,
   onSearch?: (query: string) => void,
+  noResultsText?: string,
 ): React.ReactNode {
   if (typeof node === "string") {
     return node;
@@ -914,6 +923,7 @@ function renderNode(
         onClearChat,
         onSendPrompt,
         onSearch,
+        noResultsText,
       ),
     );
     const Component = componentRegistry[type] ?? type;
@@ -956,6 +966,7 @@ function renderNode(
         onClearChat={onClearChat}
         onSendPrompt={onSendPrompt}
         onSearch={onSearch}
+        noResultsText={noResultsText}
       />
     );
   }
@@ -1017,8 +1028,8 @@ function renderNode(
       rawHref.startsWith("//") ||
       rawHref.startsWith("mailto:");
 
-    if (!isHash && !isExternal && onNavigate) {
-      const escapedDocId = (docId || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (!isHash && !isExternal && onNavigate && docId) {
+      const escapedDocId = docId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const cleanTopic = rawHref
         .replace(/^(\.\.\/|\.\/|\/)+/, "")
         .replace(new RegExp(`^${escapedDocId}/`), "")
@@ -1026,7 +1037,7 @@ function renderNode(
 
       const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        onNavigate(docId || "dita-bootstrap-sample", cleanTopic);
+        onNavigate(docId, cleanTopic);
       };
 
       const renderedChildren = children.map((child, index) =>
@@ -1039,6 +1050,10 @@ function renderNode(
           onToggleSidebar,
           activeTheme,
           title,
+          onClearChat,
+          onSendPrompt,
+          onSearch,
+          noResultsText,
         ),
       );
       return React.createElement(
@@ -1084,6 +1099,8 @@ function renderNode(
         title,
         onClearChat,
         onSendPrompt,
+        onSearch,
+        noResultsText,
       ),
     );
     return (
@@ -1148,6 +1165,7 @@ function renderNode(
       onClearChat,
       onSendPrompt,
       onSearch,
+      noResultsText,
     ),
   );
 
@@ -1164,6 +1182,7 @@ export default function AstRenderer({
   onClearChat,
   onSendPrompt,
   onSearch,
+  noResultsText,
 }: {
   nodes: AstNode[];
   title?: string;
@@ -1174,6 +1193,7 @@ export default function AstRenderer({
   onClearChat?: () => void;
   onSendPrompt?: (text: string) => void;
   onSearch?: (query: string) => void;
+  noResultsText?: string;
 }) {
   const activeTheme = useActiveTheme();
 
@@ -1192,6 +1212,7 @@ export default function AstRenderer({
           onClearChat,
           onSendPrompt,
           onSearch,
+          noResultsText,
         ),
       )}
     </ToggleProvider>

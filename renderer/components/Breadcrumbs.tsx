@@ -21,14 +21,14 @@ export default function Breadcrumbs({
           const resolvedHref = item.href ? (resolveHref(item.href, docId) as string) : undefined;
 
           const handleClick = (e: React.MouseEvent) => {
-            if (onNavigate && item.href) {
+            if (onNavigate && item.href && docId) {
               e.preventDefault();
-              const escapedDocId = (docId || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+              const escapedDocId = docId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
               const cleanTopic = item.href
                 .replace(/^(\.\.\/|\.\/|\/)+/, "")
                 .replace(new RegExp(`^${escapedDocId}/`), "")
                 .replace(/\.(json|html)(#.*)?$/, "");
-              onNavigate(docId || "dita-bootstrap-sample", cleanTopic);
+              onNavigate(docId, cleanTopic);
             }
           };
 

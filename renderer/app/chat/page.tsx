@@ -244,6 +244,7 @@ export default function ChatPage() {
       title={chatTitle}
       headerAst={headerAst}
       footerAst={footerAst}
+      texts={chrome?.texts}
       onClearChat={() => setMessages([])}
     >
       <style>{`

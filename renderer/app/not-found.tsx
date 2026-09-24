@@ -10,6 +10,7 @@ export default async function NotFound() {
       title={chrome?.["docs-page"]?.title ?? "Documentation"}
       headerAst={chrome?.["docs-page"]?.header}
       footerAst={chrome?.footer}
+      texts={chrome?.texts}
     >
       <div className="text-center py-5 col-lg-6 mx-auto">
         <i className="bi bi-exclamation-circle display-4 text-secondary mb-3 d-block" />
