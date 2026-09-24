@@ -4,10 +4,15 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import Link from "next/link";
+import { loadSearchIndex, type SearchDoc } from "../lib/search";
+import type MiniSearch from "minisearch";
 import {
   Accordion,
   Alert,
@@ -33,12 +38,15 @@ import {
   Table,
   Tooltip as BsTooltip,
 } from "react-bootstrap";
-import Search from "./Search";
-import DarkModeToggle from "./DarkModeToggle";
 import dynamic from "next/dynamic";
 
 const InteractiveTable = dynamic(() => import("./InteractiveTable"), {
-  loading: () => <div className="spinner-border spinner-border-sm text-primary" role="status" />,
+  loading: () => (
+    <div
+      className="spinner-border spinner-border-sm text-primary"
+      role="status"
+    />
+  ),
   ssr: false,
 });
 import Prism from "prismjs";
@@ -389,6 +397,444 @@ function renderCodeBlock(
 
 import { useActiveTheme } from "../lib/theme";
 
+const STORAGE_KEY = "theme";
+type Mode = "light" | "dark" | "auto";
+
+function resolveTheme(mode: Mode): "light" | "dark" {
+  if (mode === "auto") {
+    return typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+  return mode;
+}
+
+function applyMode(mode: Mode) {
+  if (typeof document !== "undefined") {
+    document.documentElement.setAttribute("data-bs-theme", resolveTheme(mode));
+  }
+}
+
+function ThemeToggleDropdownFromAst({
+  nodeKey,
+  resolvedProps,
+  children,
+  docId,
+  lang,
+  onNavigate,
+  onToggleSidebar,
+  activeTheme,
+  title,
+  onClearChat,
+  onSendPrompt,
+}: {
+  nodeKey: React.Key;
+  resolvedProps: Record<string, unknown>;
+  children: AstNode[];
+  docId?: string;
+  lang?: string;
+  onNavigate?: (docId: string, topicPath: string) => void;
+  onToggleSidebar?: () => void;
+  activeTheme?: string;
+  title?: string;
+  onClearChat?: () => void;
+  onSendPrompt?: (text: string) => void;
+}) {
+  const [mode, setMode] = useState<Mode>("auto");
+
+  useEffect(() => {
+    const stored =
+      typeof localStorage !== "undefined"
+        ? (localStorage.getItem(STORAGE_KEY) as Mode | null)
+        : null;
+    const initial =
+      stored && ["light", "dark", "auto"].includes(stored) ? stored : "auto";
+    setMode(initial);
+    applyMode(initial);
+  }, []);
+
+  const handleSelect = (selected: Mode) => {
+    setMode(selected);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, selected);
+    }
+    applyMode(selected);
+  };
+
+  let activeIconNode: AstNode | undefined;
+  for (const child of children) {
+    if (Array.isArray(child) && child.length > 0) {
+      const childProps = isPropsObject(child[1])
+        ? (child[1] as Record<string, unknown>)
+        : {};
+      const val = childProps["data-bs-theme-value"] || childProps["value"];
+      if (val === mode) {
+        const subChildren = (
+          isPropsObject(child[1]) ? child.slice(2) : child.slice(1)
+        ) as AstNode[];
+        for (const sub of subChildren) {
+          if (Array.isArray(sub) && (sub[0] === "Icon" || sub[0] === "i")) {
+            activeIconNode = sub;
+            break;
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  const activeIconProps =
+    activeIconNode && isPropsObject(activeIconNode[1])
+      ? (activeIconNode[1] as Record<string, unknown>)
+      : {};
+  const activeIconName =
+    (activeIconProps.name as string) ||
+    (activeIconProps.className as string) ||
+    (mode === "light"
+      ? "brightness-high-fill"
+      : mode === "dark"
+        ? "moon-stars-fill"
+        : "circle-half");
+
+  const titleIcon = <IconFromAst name={activeIconName} className="fs-5" />;
+
+  const dropdownId = (resolvedProps.id as string) || "bd-theme";
+  const dropdownClassName = (resolvedProps.className as string) || "nav-item";
+  const dropdownAlign = (resolvedProps.align as any) || "end";
+  const ariaLabel = (resolvedProps["aria-label"] as string) || "Toggle theme";
+  const theme = (resolvedProps["data-bs-theme"] as string) || activeTheme;
+
+  return (
+    <NavDropdown
+      key={nodeKey}
+      id={dropdownId}
+      title={titleIcon}
+      align={dropdownAlign}
+      className={dropdownClassName}
+      aria-label={ariaLabel}
+      data-bs-theme={theme}
+    >
+      {children.map((child, index) => {
+        if (Array.isArray(child) && child.length > 0) {
+          const itemType = child[0];
+          if (itemType === "NavDropdownItem" || itemType === "DropdownItem") {
+            const hasProps = child.length > 1 && isPropsObject(child[1]);
+            const itemProps = hasProps
+              ? (child[1] as Record<string, unknown>)
+              : {};
+            const itemVal = (itemProps["data-bs-theme-value"] ||
+              itemProps["value"]) as Mode | undefined;
+            const isActive = itemVal === mode;
+            const subChildren = (
+              hasProps ? child.slice(2) : child.slice(1)
+            ) as AstNode[];
+
+            const renderedSubChildren = subChildren.map((sub, sIdx) =>
+              renderNode(
+                sub,
+                sIdx,
+                docId,
+                lang,
+                onNavigate,
+                onToggleSidebar,
+                activeTheme,
+                title,
+                onClearChat,
+                onSendPrompt,
+              ),
+            );
+
+            return (
+              <NavDropdown.Item
+                key={index}
+                active={isActive}
+                onClick={(e: React.MouseEvent) => {
+                  e.preventDefault();
+                  if (itemVal) handleSelect(itemVal);
+                }}
+                className={`d-flex align-items-center gap-2 ${itemProps.className || ""}`.trim()}
+                data-bs-theme-value={itemVal}
+              >
+                {renderedSubChildren}
+                {isActive && <i className="bi bi-check2 ms-auto" />}
+              </NavDropdown.Item>
+            );
+          }
+        }
+        return renderNode(
+          child,
+          index,
+          docId,
+          lang,
+          onNavigate,
+          onToggleSidebar,
+          activeTheme,
+          title,
+          onClearChat,
+          onSendPrompt,
+        );
+      })}
+    </NavDropdown>
+  );
+}
+
+function ThemeToggleButtonFromAst({
+  nodeKey,
+  nodeType,
+  resolvedProps,
+  children,
+  docId,
+  lang,
+  onNavigate,
+  onToggleSidebar,
+  activeTheme,
+  title,
+  onClearChat,
+  onSendPrompt,
+}: {
+  nodeKey: React.Key;
+  nodeType: string;
+  resolvedProps: Record<string, unknown>;
+  children: AstNode[];
+  docId?: string;
+  lang?: string;
+  onNavigate?: (docId: string, topicPath: string) => void;
+  onToggleSidebar?: () => void;
+  activeTheme?: string;
+  title?: string;
+  onClearChat?: () => void;
+  onSendPrompt?: (text: string) => void;
+}) {
+  const [mode, setMode] = useState<Mode>("auto");
+
+  useEffect(() => {
+    const stored =
+      typeof localStorage !== "undefined"
+        ? (localStorage.getItem(STORAGE_KEY) as Mode | null)
+        : null;
+    const initial =
+      stored && ["light", "dark", "auto"].includes(stored) ? stored : "auto";
+    setMode(initial);
+    applyMode(initial);
+  }, []);
+
+  const handleCycle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const modes: Mode[] = ["light", "dark", "auto"];
+    const next = modes[(modes.indexOf(mode) + 1) % modes.length];
+    setMode(next);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, next);
+    }
+    applyMode(next);
+  };
+
+  const activeIconName =
+    mode === "light"
+      ? "brightness-high-fill"
+      : mode === "dark"
+        ? "moon-stars-fill"
+        : "circle-half";
+
+  const renderedChildren = children.map((child, index) => {
+    if (Array.isArray(child) && (child[0] === "Icon" || child[0] === "i")) {
+      const childProps = isPropsObject(child[1])
+        ? (child[1] as Record<string, unknown>)
+        : {};
+      return (
+        <IconFromAst
+          key={index}
+          name={activeIconName}
+          className={(childProps.className as string) || "fs-5"}
+        />
+      );
+    }
+    return renderNode(
+      child,
+      index,
+      docId,
+      lang,
+      onNavigate,
+      onToggleSidebar,
+      activeTheme,
+      title,
+      onClearChat,
+      onSendPrompt,
+    );
+  });
+
+  const Component = componentRegistry[nodeType] ?? nodeType ?? Button;
+  return React.createElement(
+    Component,
+    { key: nodeKey, ...resolvedProps, onClick: handleCycle },
+    ...renderedChildren,
+  );
+}
+
+function SearchFormFromAst({
+  nodeKey,
+  resolvedProps,
+  children,
+  docId,
+  lang,
+  onNavigate,
+  onToggleSidebar,
+  activeTheme,
+  title,
+  onClearChat,
+  onSendPrompt,
+}: {
+  nodeKey: React.Key;
+  resolvedProps: Record<string, unknown>;
+  children: AstNode[];
+  docId?: string;
+  lang?: string;
+  onNavigate?: (docId: string, topicPath: string) => void;
+  onToggleSidebar?: () => void;
+  activeTheme?: string;
+  title?: string;
+  onClearChat?: () => void;
+  onSendPrompt?: (text: string) => void;
+}) {
+  const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<
+    Array<{ id: string; title: string; shortdesc: string }>
+  >([]);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    loadSearchIndex(docId)
+      .then((index) => {
+        indexRef.current = index;
+      })
+      .catch((error) => console.error("Failed to load search index", error));
+  }, [docId]);
+
+  function handleChange(value: string) {
+    setQuery(value);
+    const index = indexRef.current;
+    if (!index || value.trim().length === 0) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
+    const hits = index.search(value, {
+      fuzzy: 0.2,
+      prefix: true,
+      boost: { title: 3, keywords: 2, shortdesc: 1.5 },
+      filter: lang
+        ? (result) => {
+            if (!result.lang || !lang) return true;
+            return (
+              result.lang.split(/[-_]/)[0].toLowerCase() ===
+              lang.split(/[-_]/)[0].toLowerCase()
+            );
+          }
+        : undefined,
+    });
+    setResults(
+      hits.slice(0, 8).map((hit) => ({
+        id: hit.id,
+        title: (hit.title as string) || hit.id,
+        shortdesc: (hit.shortdesc as string) || "",
+      })),
+    );
+    setOpen(true);
+  }
+
+  const renderSearchChild = (
+    node: AstNode,
+    index: React.Key,
+  ): React.ReactNode => {
+    if (typeof node === "string") return node;
+    const [childType, ...rest] = node;
+    const hasProps = rest.length > 0 && isPropsObject(rest[0]);
+    const props = hasProps ? (rest[0] as Record<string, unknown>) : {};
+    const subChildren = (hasProps ? rest.slice(1) : rest) as AstNode[];
+
+    if (childType === "FormControl" || childType === "input") {
+      const formControlProps = {
+        ...props,
+        value: query,
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+          handleChange(e.target.value),
+        onFocus: () => query && results.length > 0 && setOpen(true),
+      };
+      return renderNode(
+        [childType, formControlProps, ...subChildren] as AstArray,
+        index,
+        docId,
+        lang,
+        onNavigate,
+        onToggleSidebar,
+        activeTheme,
+        title,
+        onClearChat,
+        onSendPrompt,
+      );
+    }
+
+    const renderedSubChildren = subChildren.map((c, i) =>
+      renderSearchChild(c, i),
+    );
+    const Component = componentRegistry[childType] ?? childType;
+    const resolved = {
+      ...props,
+      ...(props.href ? { href: resolveHref(props.href, docId) } : {}),
+      ...(props.style ? { style: resolveStyle(props.style) } : {}),
+    };
+    return React.createElement(
+      Component,
+      { key: index, ...resolved },
+      ...renderedSubChildren,
+    );
+  };
+
+  const renderedChildren = children.map((c, i) => renderSearchChild(c, i));
+
+  return (
+    <Form
+      key={nodeKey}
+      {...resolvedProps}
+      onSubmit={(e: React.FormEvent) => e.preventDefault()}
+      onBlur={(e: React.FocusEvent<HTMLFormElement>) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+    >
+      {renderedChildren}
+      {open && (
+        <ul
+          className="dropdown-menu show w-100 mt-1"
+          style={{ maxHeight: "60vh", overflowY: "auto" }}
+        >
+          {results.length === 0 ? (
+            <li className="px-3 py-2 text-body-secondary">No results</li>
+          ) : (
+            results.map((result) => (
+              <li key={result.id}>
+                <Link
+                  className="dropdown-item"
+                  href={resolveHref(result.id, docId) as string}
+                  onClick={() => setOpen(false)}
+                >
+                  <div className="fw-semibold">{result.title}</div>
+                  {result.shortdesc && (
+                    <div className="small text-body-secondary text-truncate">
+                      {result.shortdesc}
+                    </div>
+                  )}
+                </Link>
+              </li>
+            ))
+          )}
+        </ul>
+      )}
+    </Form>
+  );
+}
+
 function renderNode(
   node: AstNode,
   key: React.Key,
@@ -440,23 +886,39 @@ function renderNode(
       if (
         Array.isArray(child) &&
         child[0] === "span" &&
-        (child.length === 1 || (child.length === 2 && (child[1] === "" || child[1] === undefined)))
+        (child.length === 1 ||
+          (child.length === 2 && (child[1] === "" || child[1] === undefined)))
       ) {
         return ["span", brandTitle] as AstArray;
       }
       return child;
     });
     const renderedBrandChildren = brandChildren.map((child, index) =>
-      renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
+      renderNode(
+        child,
+        index,
+        docId,
+        lang,
+        onNavigate,
+        onToggleSidebar,
+        activeTheme,
+        title,
+      ),
     );
     const Component = componentRegistry[type] ?? type;
-    return React.createElement(Component, { key, ...resolvedProps }, ...renderedBrandChildren);
+    return React.createElement(
+      Component,
+      { key, ...resolvedProps },
+      ...renderedBrandChildren,
+    );
   }
 
   // Automatically apply activeTheme to NavDropdown and Dropdown popups if not explicitly set
   if (
     activeTheme &&
-    (type === "NavDropdown" || type === "Dropdown" || type === "DropdownButton") &&
+    (type === "NavDropdown" ||
+      type === "Dropdown" ||
+      type === "DropdownButton") &&
     !resolvedProps["data-bs-theme"]
   ) {
     resolvedProps["data-bs-theme"] = activeTheme;
@@ -468,15 +930,59 @@ function renderNode(
     (typeof resolvedProps.className === "string" &&
       resolvedProps.className.includes("search-box"))
   ) {
-    return <Search key={key} docId={docId} lang={lang} />;
+    return (
+      <SearchFormFromAst
+        key={key}
+        nodeKey={key}
+        resolvedProps={resolvedProps}
+        children={children}
+        docId={docId}
+        lang={lang}
+        onNavigate={onNavigate}
+        onToggleSidebar={onToggleSidebar}
+        activeTheme={activeTheme}
+        title={title}
+        onClearChat={onClearChat}
+        onSendPrompt={onSendPrompt}
+      />
+    );
   }
 
   // Intercept theme toggle button role
   if (resolvedProps.role === "theme-toggle") {
+    if (type === "NavDropdown" || type === "Dropdown") {
+      return (
+        <ThemeToggleDropdownFromAst
+          key={key}
+          nodeKey={key}
+          resolvedProps={resolvedProps}
+          children={children}
+          docId={docId}
+          lang={lang}
+          onNavigate={onNavigate}
+          onToggleSidebar={onToggleSidebar}
+          activeTheme={activeTheme}
+          title={title}
+          onClearChat={onClearChat}
+          onSendPrompt={onSendPrompt}
+        />
+      );
+    }
     return (
-      <DarkModeToggle
+      <ThemeToggleButtonFromAst
         key={key}
-        data-bs-theme={resolvedProps["data-bs-theme"] as string | undefined}
+        nodeKey={key}
+        nodeType={type}
+        resolvedProps={resolvedProps}
+        children={children}
+        docId={docId}
+        lang={lang}
+        onNavigate={onNavigate}
+        onToggleSidebar={onToggleSidebar}
+        activeTheme={activeTheme}
+        title={title}
+        onClearChat={onClearChat}
+        onSendPrompt={onSendPrompt}
       />
     );
   }
@@ -512,7 +1018,16 @@ function renderNode(
       };
 
       const renderedChildren = children.map((child, index) =>
-        renderNode(child, index, docId, lang, onNavigate, onToggleSidebar, activeTheme, title),
+        renderNode(
+          child,
+          index,
+          docId,
+          lang,
+          onNavigate,
+          onToggleSidebar,
+          activeTheme,
+          title,
+        ),
       );
       return React.createElement(
         "a",
@@ -542,7 +1057,9 @@ function renderNode(
     resolvedProps.className.includes("collapse") &&
     resolvedProps.id
   ) {
-    const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
+    const isHorizontal = resolvedProps.className.includes(
+      "collapse-horizontal",
+    );
     const renderedChildren = children.map((child, index) =>
       renderNode(
         child,
@@ -582,7 +1099,13 @@ function renderNode(
     resolvedProps.onClick = (e: React.MouseEvent) => {
       e.preventDefault();
       const text = children
-        .map((c) => (typeof c === "string" ? c : Array.isArray(c) ? String(c[c.length - 1]) : ""))
+        .map((c) =>
+          typeof c === "string"
+            ? c
+            : Array.isArray(c)
+              ? String(c[c.length - 1])
+              : "",
+        )
         .join("")
         .trim();
       if (text) onSendPrompt(text);
