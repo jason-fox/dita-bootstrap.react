@@ -58,6 +58,12 @@ jobs:
             description: LLM-agnostic chatbot client for DITA AST MCP Server
             context: ./mcp-client
             dockerfile: ./mcp-client/Dockerfile
+          - name: demo
+            image_name: ast-demo
+            title: AST All-in-One Demo
+            description: All-in-one demo container bundling data-store, mcp-server, and renderer for free-tier hosting
+            context: .
+            dockerfile: ./demo/Dockerfile
 
     steps:
       - name: Checkout repository
