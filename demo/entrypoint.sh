@@ -28,8 +28,12 @@ PORT=4000 DATA_DIR=/app/data node /app/data-store/dist/index.js &
 echo "[demo] Starting AST MCP Server on port 4001 (MiniSearch fallback)..."
 PORT=4001 DATA_DIR=/app/data node /app/mcp-server/dist/mcp-server/src/index.js --transport http --port 4001 --data-dir /app/data &
 
-# Wait 2 seconds for backend services to initialize
-sleep 2
+# Wait for data-store to be ready before starting Next.js renderer
+echo "[demo] Waiting for data-store to be ready..."
+until curl -sf http://127.0.0.1:4000/health > /dev/null 2>&1; do
+  sleep 1
+done
+echo "[demo] data-store is ready."
 
 echo "[demo] Starting Next.js Renderer Portal on primary port ${PORT:-3000} (Proxy Rewrites: ON)..."
 PORT=${PORT:-3000} HOSTNAME=0.0.0.0 node /app/renderer/server.js
