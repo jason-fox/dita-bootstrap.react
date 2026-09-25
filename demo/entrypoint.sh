@@ -21,11 +21,12 @@ fi
 echo "[demo] Starting AST Data Store on port 4000..."
 PORT=4000 DATA_DIR=/app/data node /app/data-store/dist/index.js &
 
-echo "[demo] Starting AST RAG Vector Search Service on port 4002..."
-PORT=4002 DATA_DIR=/app/data node /app/rag-service/dist/index.js &
+# Optional standalone RAG vector service commented out for demo build
+# echo "[demo] Starting AST RAG Vector Search Service on port 4002..."
+# PORT=4002 DATA_DIR=/app/data node /app/rag-service/dist/index.js &
 
-echo "[demo] Starting AST MCP Server on port 4001..."
-PORT=4001 DATA_DIR=/app/data RAG_SERVICE_URL=http://127.0.0.1:4002 node /app/mcp-server/dist/mcp-server/src/index.js --transport http --port 4001 --data-dir /app/data &
+echo "[demo] Starting AST MCP Server on port 4001 (MiniSearch fallback)..."
+PORT=4001 DATA_DIR=/app/data node /app/mcp-server/dist/mcp-server/src/index.js --transport http --port 4001 --data-dir /app/data &
 
 # Wait 2 seconds for backend services to initialize
 sleep 2

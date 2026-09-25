@@ -1,6 +1,5 @@
 # Multi-stage All-in-One Demo Container for DITA Bootstrap React Harness
-# Packs data-store, rag-service, mcp-server, renderer, and AST documentation files
-# into a single 512MB RAM container ideal for free hosting (Koyeb, Render, Fly.io).
+# Packs data-store, mcp-server and renderers into a single container.
 
 # -------------------------------------------------------------
 # Stage 1: Build All Node Applications
@@ -10,15 +9,12 @@ WORKDIR /app
 
 # Copy service source trees
 COPY data-store ./data-store
-COPY rag-service ./rag-service
+# COPY rag-service ./rag-service
 COPY mcp-server ./mcp-server
 COPY renderer ./renderer
 
 # Build data-store
 RUN cd data-store && npm ci && npm run build
-
-# Build rag-service
-RUN cd rag-service && npm ci && npm run build
 
 # Install renderer dependencies first (required by mcp-server esbuild bundle)
 RUN cd renderer && npm ci
@@ -42,18 +38,15 @@ ENV ENABLE_PROXY_REWRITES=true
 
 RUN apk add --no-cache curl unzip
 
-# 1. Bake AST Documentation Data into the Image
-COPY data-store/data /app/data
-
 # 2. Copy compiled dist & install production dependencies for data-store
 COPY --from=builder /app/data-store/package*.json ./data-store/
 COPY --from=builder /app/data-store/dist ./data-store/dist
 RUN cd data-store && npm ci --omit=dev
 
-# 3. Copy compiled dist & install production dependencies for rag-service
-COPY --from=builder /app/rag-service/package*.json ./rag-service/
-COPY --from=builder /app/rag-service/dist ./rag-service/dist
-RUN cd rag-service && npm ci --omit=dev
+# 3. Copy compiled dist & install production dependencies for rag-service (Optional - commented out for demo)
+# COPY --from=builder /app/rag-service/package*.json ./rag-service/
+# COPY --from=builder /app/rag-service/dist ./rag-service/dist
+# RUN cd rag-service && npm ci --omit=dev
 
 # 4. Copy compiled dist & install production dependencies for mcp-server
 COPY --from=builder /app/mcp-server/package*.json ./mcp-server/
