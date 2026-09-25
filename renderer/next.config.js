@@ -46,6 +46,10 @@ const nextConfig = {
         source: "/mcp/:path*",
         destination: `${mcpBackend}/:path*`,
       },
+      {
+        source: "/viewer",
+        destination: `${mcpBackend.replace(/\/mcp\/?$/, "")}/viewer`,
+      },
     ];
   },
 };

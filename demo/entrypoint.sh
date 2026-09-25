@@ -14,6 +14,7 @@ if [ -n "$DATA_ZIP_URL" ]; then
     curl -sSL "$DATA_ZIP_URL" -o /tmp/data.zip
   fi
   echo "[demo] Extracting data package into /app/data..."
+  rm -rf /app/data/*
   unzip -o /tmp/data.zip -d /app/data
   rm -f /tmp/data.zip
 fi

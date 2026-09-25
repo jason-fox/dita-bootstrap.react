@@ -22,8 +22,11 @@ RUN cd renderer && npm ci
 # Build mcp-server
 RUN cd mcp-server && npm ci && npm run build
 
-# Build renderer (Next.js Standalone)
+# Build renderer (Next.js Standalone with demo proxy relative paths)
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_DATA_URL=/data
+ENV NEXT_PUBLIC_API_URL=/api
+ENV NEXT_PUBLIC_MCP_SERVER_URL=/mcp
 RUN cd renderer && npm run build
 
 # -------------------------------------------------------------
