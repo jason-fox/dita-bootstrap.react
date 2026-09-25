@@ -38,6 +38,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV ENABLE_PROXY_REWRITES=true
+ENV INTERNAL_DATA_URL=http://127.0.0.1:4000/data
+ENV INTERNAL_API_URL=http://127.0.0.1:4000/api
+ENV MCP_SERVER_URL=http://127.0.0.1:4001/mcp
 
 RUN apk add --no-cache curl unzip
 

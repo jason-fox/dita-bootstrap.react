@@ -3,6 +3,9 @@ set -e
 
 # Explicitly enable single-container proxy rewrites in Next.js renderer for demo mode
 export ENABLE_PROXY_REWRITES=true
+export INTERNAL_DATA_URL=http://127.0.0.1:4000/data
+export INTERNAL_API_URL=http://127.0.0.1:4000/api
+export MCP_SERVER_URL=http://127.0.0.1:4001/mcp
 
 # If DATA_ZIP_URL is provided, download and extract data files at startup
 if [ -n "$DATA_ZIP_URL" ]; then
