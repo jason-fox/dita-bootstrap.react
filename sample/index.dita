@@ -31,7 +31,7 @@
           <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
      <parmname>--format</parmname>=<option>ast-bootstrap</option> \
      <parmname>--output</parmname>=react-harness/data-store/data/my-doc-set</codeblock>
-          See <filepath>generating-ast.dita</filepath> for detailed instructions on AST publishing and custom header/footer include templates.
+          See <xref href="generating-ast.dita">Generating AST</xref> for detailed instructions on AST publishing and custom header/footer include templates.
         </li>
         <li><b>Generating Chrome:</b> Generate global fallback chrome layouts using the <option>ast-chrome</option> format and sync <filepath>chrome.json</filepath>:
           <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
@@ -39,7 +39,7 @@
      <parmname>--output</parmname>=path/to/output
 
 <cmdname>rsync</cmdname> -a --delete path/to/output/chrome.json react-harness/data-store/data/chrome.json</codeblock>
-          See <filepath>generating-chrome.dita</filepath> for detailed instructions on overridable chrome elements.
+          See <xref href="generating-chrome.dita">Generating Chrome</xref> for detailed instructions on overridable chrome elements.
         </li>
       </ol>
       <p>The system automatically detects published document sets, builds search indices, and displays them in your documentation catalog.</p>

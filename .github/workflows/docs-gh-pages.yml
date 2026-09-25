@@ -6,8 +6,8 @@ on:
       - main
       - master
     paths:
-      - 'react-harness/sample/**'
-      - 'plugins/dita-bootstrap.ast/**'
+      - 'sample/**'
+      - '.github/dita-ot/**'
       - '.github/workflows/docs-gh-pages.yml'
   workflow_dispatch:
 
@@ -33,6 +33,7 @@ jobs:
           plugins: |
             fox.jason.extend.css
             org.dita-bootstrap.html
+            fox.jason.prismjs
             fox.jason.favicon
             fox.jason.open-graph
           project: .github/dita-ot/html.xml
