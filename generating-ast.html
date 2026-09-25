@@ -1,0 +1,182 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="copyright" content="(C) Copyright 2026"><meta name="generator" content="DITA-OT"><meta name="description" content="Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the ast-bootstrap transtype, configuring custom header and footer build parameters, and publishing into the document store."><meta property="og:type" content="website"><meta property="og:url" content="https://dita-bootstrap.github.io/generating-ast.html"><meta property="og:title" content="Generating AST"><meta property="og:description" content="Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the ast-bootstrap transtype, configuring custom hea"><meta property="og:image" content="https://dita-bootstrap.github.io/open-graph.svg"><meta name="twitter:title" content="Generating AST"><meta name="twitter:description" content="Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the ast-bootstrap transtype, configuring custom hea"><meta property="twitter:url" content="https://dita-bootstrap.github.io/generating-ast.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://dita-bootstrap.github.io/open-graph.svg"><title>Generating AST</title><link rel="shortcut icon" href="./favicon/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="css/commonltr.css">
+<link rel="stylesheet" type="text/css" href="./css/common-extended.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous"></head><body id="generating-ast" class="d-flex flex-column min-vh-100"><div class="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary"><div class="container-xl"><a class="d-inline-flex m-1 btn btn-outline-primary btn-sm" href="#ariaid-title1">Skip to main content</a><a href="#bs-sidebar-nav" class="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm">Skip to docs navigation</a></div></div><header role="banner" class="sticky-top"><nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Modify -xxl to change container size -->
+  <div class="container-xxl">
+    <!-- This shows the menu on mobile -->
+    <div class="d-none d-sm-block d-md-none">
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdSidebar" aria-controls="bdSidebar" aria-label="Toggle docs navigation">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <a class="navbar-brand" href="https://dita-bootstrap.github.io/dita-bootstrap.react">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
+      <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
+      <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
+    </svg>
+      DITA Bootstrap React
+    </a>
+    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-three-dots"></i>
+    </button>
+  </div>
+</nav></header><div class="bs-container container-xxl bd-gutter mt-3 my-md-4" id="content"><div class="overflow-y-auto bs-sidebar"><div class="offcanvas-lg offcanvas-start" tabindex="-1" id="bdSidebar" aria-labelledby="bdSidebarOffcanvasLabel" aria-modal="true" role="dialog"><div class="offcanvas-header border-bottom"><h5 class="offcanvas-title" id="bdSidebarOffcanvasLabel">React Harness &amp; DITA Bootstrap AST Documentation</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdSidebar"></button></div><div class="offcanvas-body flex-column h-100"><nav class="d-flex flex-align-start flex-column h-100 overflow-y-auto" role="navigation" id="bs-sidebar-nav"><div class="overflow-y-auto"><div class="flex-column bd-links"><ul class="list-unstyled mb-0 py-3 pt-md-1"><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d3030e11"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d3030e11">Getting Started</span></div><div id="menu-collapse-d3030e11" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="index.html">Introduction &amp; React Components</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d3030e23"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d3030e23">Architecture &amp; Components</span></div><div id="menu-collapse-d3030e23" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="data-store.html">Data Store Service (data-store)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="renderer.html">Web Renderer &amp; AI Chat Portal (renderer)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="mcp-server.html">MCP Server Service (mcp-server)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="rag-service.html">RAG Vector Search Service (rag-service)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="mcp-client.html">Standalone Reference MCP Client (mcp-client)</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0 active" data-bs-target="#menu-collapse-d3030e67" aria-expanded="true" aria-current="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2 active" data-bs-target="#menu-collapse-d3030e67" aria-expanded="true" aria-current="true">Plug-in &amp; Configuration</span></div><div id="menu-collapse-d3030e67" class="ps-2 collapse show"><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1  active" href="generating-ast.html">Generating AST</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="generating-chrome.html">Generating Chrome</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="search-and-chatbot.html">Search Bar &amp; AI Chat Bot User Guide</a></div></li></ul></div></li></ul></div></div></nav></div></div></div><main role="main" class="bs-main me-3"><article role="article" class="bs-content" aria-labelledby="ariaid-title1">
+  <h1 class="title" id="ariaid-title1">Generating AST</h1>
+  
+  
+  <div class="body"><p class="shortdesc text-body-secondary lead">Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the <span class="keyword option">ast-bootstrap</span> transtype, configuring custom header and footer build parameters, and publishing into the document store.</p>
+    <section class="section"><h2 class="title h4">Plug-in Overview &amp; Installation</h2>
+      
+      <p class="p">The <code class="ph codeph">org.dita-bootstrap.ast</code> plug-in transforms DITA XML source topics into JSON Abstract Syntax Trees (AST). Install the plug-in into your DITA Open Toolkit instance:</p>
+      
+      <pre class="pre codeblock alert alert-secondary language-bash"><code># Install plug-ins using the dita command:
+<span class="keyword cmdname">dita</span> <span class="keyword parmname">install</span> fox.jason.extend.css
+<span class="keyword cmdname">dita</span> <span class="keyword parmname">install</span> org.dita-bootstrap.ast</code></pre>
+    </section>
+
+    <section class="section"><h2 class="title h4">Publishing AST to the Document Store</h2>
+      
+      <p class="p">Publishing a DITA map to JSON AST requires a single DITA-OT execution command using the <span class="keyword option">ast-bootstrap</span> transformation type:</p>
+      
+      <pre class="pre codeblock alert alert-secondary language-bash"><code># Publish documentation directly into the data store directory:
+<span class="keyword cmdname">dita</span> <span class="keyword parmname">--input</span>=path/to/your.ditamap \
+     <span class="keyword parmname">--format</span>=<span class="keyword option">ast-bootstrap</span> \
+     <span class="keyword parmname">--output</span>=data-store/data/my-doc-set</code></pre>
+
+      <p class="p">The output directory contains <span class="ph filepath">toc.json</span> alongside AST JSON topic files. Once published, <span class="ph filepath">data-store</span> automatically discovers the document set and adds it to the catalog.</p>
+    </section>
+
+    <section class="section"><h2 class="title h4">Customizing Headers &amp; Footers via Build Parameters</h2>
+      
+      <p class="p">Custom navigation headers and footers can be attached at publish time using the <span class="keyword parmname">--args.hdr</span> and <span class="keyword parmname">--args.ftr</span> build parameters:</p>
+      
+      <pre class="pre codeblock alert alert-secondary language-bash"><code><span class="keyword cmdname">dita</span> <span class="keyword parmname">--input</span>=path/to/your.ditamap \
+     <span class="keyword parmname">--format</span>=<span class="keyword option">ast-bootstrap</span> \
+     <span class="keyword parmname">--args.hdr</span>=path/to/custom-header.xml \
+     <span class="keyword parmname">--args.ftr</span>=path/to/custom-footer.xml \
+     <span class="keyword parmname">--output</span>=data-store/data/my-doc-set</code></pre>
+
+      <p class="p">You can reference the following existing XML include files provided by the plug-in suite as functional examples:</p>
+      <ul class="ul">
+        <li class="li"><span class="ph filepath">hdr.navbar.example.xml</span> — Example top navigation bar layout template.</li>
+        <li class="li"><span class="ph filepath">hdr.sidebar.example.xml</span> — Example sidebar header layout template.</li>
+        <li class="li"><span class="ph filepath">hdr.topbar.example.xml</span> — Example top bar header layout template.</li>
+        <li class="li"><span class="ph filepath">ftr.content.example.xml</span> — Example multi-column social and copyright footer layout template.</li>
+      </ul>
+    </section>
+
+    <section class="section"><h2 class="title h4">Detailed Structure of Default Navigation Header (hdr.navbar.default.xml)</h2>
+      
+      <p class="p">The plug-in includes <span class="ph filepath">hdr.navbar.default.xml</span> as the default primary header template. Its XML structure demonstrates how Bootstrap components, placeholders, and interactive roles are compiled into AST nodes:</p>
+
+      <pre class="pre codeblock alert alert-secondary language-xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Navbar data-bs-theme="dark" expand="lg" sticky="top" bg="primary" variant="dark"&gt;
+  &lt;Container fluid="xxl" className="px-4"&gt;
+    &lt;NavbarToggle aria-controls="bdSidebar" aria-label="Toggle docs navigation" className="p-2 me-2"&gt;
+      &lt;Icon name="list"/&gt;
+    &lt;/NavbarToggle&gt;
+    &lt;NavbarBrand className="d-flex align-items-center fw-semibold" href="/"&gt;
+      &lt;favicon/&gt;
+      &lt;document-title/&gt;
+    &lt;/NavbarBrand&gt;
+    &lt;NavbarToggle aria-controls="navbarContent" aria-label="Toggle navigation"/&gt;
+    &lt;NavbarCollapse id="navbarContent"&gt;
+      &lt;Nav className="ms-auto align-items-lg-center"&gt;
+        &lt;Form className="position-relative mx-lg-2 search-box" role="search" data-bs-theme="light"&gt;
+          &lt;InputGroup&gt;
+            &lt;InputGroupText className="bg-primary-subtle"&gt;
+              &lt;Icon name="search"/&gt;
+            &lt;/InputGroupText&gt;
+            &lt;FormControl placeholder="Search…" aria-label="Search" dir="auto" type="search" value=""/&gt;
+          &lt;/InputGroup&gt;
+        &lt;/Form&gt;
+        &lt;NavDropdown id="bd-theme" className="nav-item" role="theme-toggle" data-bs-theme="light"&gt;
+          &lt;NavDropdownItem data-bs-theme-value="light"&gt;
+            &lt;Icon name="brightness-high-fill" className="me-2"/&gt;
+            &lt;span&gt;Light&lt;/span&gt;
+          &lt;/NavDropdownItem&gt;
+          &lt;NavDropdownItem data-bs-theme-value="dark"&gt;
+            &lt;Icon name="moon-stars-fill" className="me-2"/&gt;
+            &lt;span&gt;Dark&lt;/span&gt;
+          &lt;/NavDropdownItem&gt;
+          &lt;NavDropdownItem data-bs-theme-value="auto"&gt;
+            &lt;Icon name="circle-half" className="me-2"/&gt;
+            &lt;span&gt;Auto&lt;/span&gt;
+          &lt;/NavDropdownItem&gt;
+        &lt;/NavDropdown&gt;
+      &lt;/Nav&gt;
+    &lt;/NavbarCollapse&gt;
+  &lt;/Container&gt;
+&lt;/Navbar&gt;</code></pre>
+
+      <p class="p">Key structural elements of <span class="ph filepath">hdr.navbar.default.xml</span> include:</p>
+      <dl class="dl parml row">
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="keyword markupname xmlelement text-wrap">&lt;Navbar&gt;</code> Root Component</dt>
+          <dd class="dd pd col-lg-9">Defines a fixed top Bootstrap navigation bar with dark styling (<code class="keyword markupname xmlatt">@data-bs-theme="dark"</code>, <code class="keyword markupname xmlatt">@bg="primary"</code>, <code class="keyword markupname xmlatt">@sticky="top"</code>).</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm">XML Placeholders</dt>
+          <dd class="dd pd col-lg-9">
+            <ul class="ul">
+              <li class="li"><code class="keyword markupname xmlelement">&lt;document-title/&gt;</code> — XML placeholder element automatically substituted at publish time with the document map title.</li>
+              <li class="li"><code class="keyword markupname xmlelement">&lt;favicon/&gt;</code> — Placeholder element replaced by the branding favicon icon.</li>
+            </ul>
+          </dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm">Interactive Role Attributes</dt>
+          <dd class="dd pd col-lg-9">
+            <ul class="ul">
+              <li class="li"><code class="keyword markupname xmlatt">@role="search"</code> — Placed on the search <code class="keyword markupname xmlelement">&lt;Form&gt;</code>; compiled into AST and intercepted by the web renderer to mount the live client-side search box.</li>
+              <li class="li"><code class="keyword markupname xmlatt">@role="theme-toggle"</code> — Placed on the <code class="keyword markupname xmlelement">&lt;NavDropdown&gt;</code>; intercepted by the web renderer to mount the interactive Light/Dark theme switcher.</li>
+            </ul>
+          </dd>
+        
+      </dl>
+    </section>
+
+    <section class="section"><h2 class="title h4">AST Directory &amp; File Structure</h2>
+      
+      <p class="p">When publishing with <span class="keyword parmname">--format</span>=<span class="keyword option">ast-bootstrap</span>, DITA-OT creates the target directory containing:</p>
+      <ul class="ul">
+        <li class="li"><span class="ph filepath">toc.json</span> — Manifest file describing document title, navigation structure, language metadata, header AST layout, and topic hierarchy.</li>
+        <li class="li">Topic JSON files (e.g., <span class="ph filepath">index.json</span>, <span class="ph filepath">getting-started.json</span>) — Serialized tuple arrays representing React component trees (<code class="ph codeph">[type, props?, ...children]</code>).</li>
+      </ul>
+    </section>
+  </div>
+</article></main></div><script language="javascript" src="./js/popovers.js"></script><script language="javascript" src="./js/dark-mode-toggler.js"></script><footer role="contentinfo" class="mt-auto border-top bg-primary-subtle"><!-- Footer --><div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <!-- Social media -->
+      <p class="pt-3">
+        <!-- GitHub -->
+        <a class="btn m-1" href="https://github.com/dita-bootstrap/dita-bootstrap.html" role="button" style="background-color: #333333;">
+          <i class="bi bi-github text-white"></i>
+        </a>
+        <!-- LinkedIn -->
+        <a class="btn m-1" href="https://www.linkedin.com/in/infotexture/" role="button" style="background-color: #0082ca;">
+          <i class="bi bi-linkedin text-white"></i>
+        </a>
+        <!-- Mastodon -->
+        <a class="btn m-1" href="https://indieweb.social/@infotexture" role="button" style="background-color: #563acc;">
+          <i class="bi bi-mastodon text-white"></i>
+        </a>
+        <!-- Bluesky -->
+        <a class="btn m-1" href="https://bsky.app/profile/infotexture.net" role="button" style="background-color: #0085ff;">
+          <i class="bi bi-bluesky text-white"></i>
+        </a>
+      </p>
+      <p>
+        <small>
+          © 2017–2025
+          <a href="https://infotexture.net/">infotexture</a>
+        </small>
+      </p>
+    </div>
+  </div>
+</div><!-- Footer --></footer></body></html>
