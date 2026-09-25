@@ -9,62 +9,142 @@ This workspace supports discovering, rendering, and querying multiple Abstract S
 ## Table of Contents
 
 - [Background](#background)
-- [Install](#install)
+- [Install & Publishing](#install--publishing)
+  - [Generating AST](#1-generating-ast)
+  - [Generating Chrome](#2-generating-chrome)
 - [Usage](#usage)
 - [API](#api)
 - [License](#license)
 
 ## Background
 
-The DITA-OT toolkit normally transforms DITA XML files into static HTML, PDFs etc. The `org.dita-bootstrap.ast` plugin instead creates documents
-as JSON files in the form of an Abstract Syntax Tree (along with a
-`toc.json` describing the structure of the header and footer)
+The DITA-OT toolkit normally transforms DITA XML files into static HTML, PDFs etc. The `org.dita-bootstrap.ast` plugin instead creates documents as JSON files in the form of an Abstract Syntax Tree (along with a `toc.json` describing the structure of the header, footer, and navigation hierarchy).
 
-This repository provides an integrated suite of services to consume the AST output:
+This repository provides an integrated suite of services to consume and interact with AST output:
 
-- **`data-store/`**: Express static file server and API. Serves JSON AST files, discovers documentation sets recursively (`toc.json`), and builds MiniSearch indices for each document.
-- **`rag-service/`**: *(Optional)* Standalone RAG vector search service. Transforms incoming AST topics into Markdown chunks, computes SHA-256 hashes for incremental sync and current-data verification, and provides a semantic vector search API endpoint.
+- **`data-store/`**: Express static file server and API. Serves JSON AST files, discovers documentation sets recursively (`toc.json`), and builds MiniSearch indices for each document set.
+- **`rag-service/`**: *(Optional)* Standalone RAG vector search service listening on port `4002`. Transforms AST topics into clean Markdown chunks along `#` and `##` section boundaries, computes SHA-256 content hashes for incremental sync, verifies active `toc.json` manifests to purge deleted topics, and provides a semantic vector search API endpoint (`/api/search`).
 - **`renderer/`**: Next.js + react-bootstrap web application. Presents a card grid library landing page, renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars, and includes an integrated AI Assistant Chat (`/chat`).
-- **`mcp-server/`**: Model Context Protocol (MCP) Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces. Transparently delegates search to `rag-service` when configured, with automatic fallback to MiniSearch.
-- **`mcp-client/`**: Standalone legacy reference web chatbot client for the MCP Server.
+- **`mcp-server/`**: Model Context Protocol (MCP) Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces. Transparently delegates search to `rag-service` when configured via `RAG_SERVICE_URL`, with automatic fallback to MiniSearch.
+- **`mcp-client/`**: Standalone reference web chatbot client for the MCP Server.
 
-## Install
+## Install & Publishing
 
-### Prerequisites
+### 1. Generating AST
 
-1.  Generate JSON AST output using a DITA-OT toolkit with `org.dita-bootstrap.ast` installed:
+Generate JSON AST topic files and document navigation manifests using the `ast-bootstrap` transformation type:
 
 ```console
+# Publish documentation directly into the data-store directory:
 dita --input=path/to/your.ditamap \
-     --format=ast-chrome \
-     --output=path/to/output
+     --format=ast-bootstrap \
+     --output=data-store/data/my-doc-set
 ```
 
-2. Sync the generated `chrome.json` file into `data-store/data/`:
+Any subdirectory in `data-store/data/` containing a `toc.json` file will automatically be discovered by `data-store`.
 
-```console
-rsync -a --delete path/to/output/chrome.json data-store/data/chrome.json
-```
+#### Customizing Headers & Footers via Build Parameters
 
-
-
-3. For Each document:
-
-- Generate JSON AST output using a DITA-OT toolkit with `org.dita-bootstrap.ast` installed:
+Navigation headers and footers are specified at AST build time using DITA-OT parameters:
 
 ```console
 dita --input=path/to/your.ditamap \
      --format=ast-bootstrap \
-     --output=path/to/output
+     --args.hdr=path/to/custom-header.xml \
+     --args.ftr=path/to/custom-footer.xml \
+     --output=data-store/data/my-doc-set
 ```
 
-- Sync the generated output directory into `data-store/data/`:
+You can reference existing XML include files as examples:
+- `hdr.navbar.example.xml` — Example top navigation bar layout.
+- `hdr.sidebar.example.xml` — Example sidebar header layout.
+- `hdr.topbar.example.xml` — Example top bar header layout.
+- `ftr.content.example.xml` — Example multi-column social and copyright footer layout.
+
+#### Structure of Default Navigation Header (`hdr.navbar.default.xml`)
+
+The default header layout template (`hdr.navbar.default.xml`) demonstrates how Bootstrap components, placeholders, and interactive roles compile into AST:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Navbar data-bs-theme="dark" expand="lg" sticky="top" bg="primary" variant="dark">
+  <Container fluid="xxl" className="px-4">
+    <NavbarToggle aria-controls="bdSidebar" aria-label="Toggle docs navigation" className="p-2 me-2">
+      <Icon name="list"/>
+    </NavbarToggle>
+    <NavbarBrand className="d-flex align-items-center fw-semibold" href="/">
+      <favicon/>
+      <document-title/>
+    </NavbarBrand>
+    <NavbarToggle aria-controls="navbarContent" aria-label="Toggle navigation"/>
+    <NavbarCollapse id="navbarContent">
+      <Nav className="ms-auto align-items-lg-center">
+        <Form className="position-relative mx-lg-2 search-box" role="search" data-bs-theme="light">
+          <InputGroup>
+            <InputGroupText className="bg-primary-subtle">
+              <Icon name="search"/>
+            </InputGroupText>
+            <FormControl placeholder="Search…" aria-label="Search" dir="auto" type="search" value=""/>
+          </InputGroup>
+        </Form>
+        <NavDropdown id="bd-theme" className="nav-item" role="theme-toggle" data-bs-theme="light">
+          <NavDropdownItem data-bs-theme-value="light">
+            <Icon name="brightness-high-fill" className="me-2"/>
+            <span>Light</span>
+          </NavDropdownItem>
+          <NavDropdownItem data-bs-theme-value="dark">
+            <Icon name="moon-stars-fill" className="me-2"/>
+            <span>Dark</span>
+          </NavDropdownItem>
+          <NavDropdownItem data-bs-theme-value="auto">
+            <Icon name="circle-half" className="me-2"/>
+            <span>Auto</span>
+          </NavDropdownItem>
+        </NavDropdown>
+      </Nav>
+    </NavbarCollapse>
+  </Container>
+</Navbar>
+```
+
+- **Root `<Navbar>` Component**: Props (`data-bs-theme="dark"`, `expand="lg"`, `sticky="top"`, `bg="primary"`, `variant="dark"`) control responsive container collapse and theme styling.
+- **XML Placeholders**:
+  - `<document-title/>`: Substituted by DITA-OT during build time with the document map title.
+  - `<favicon/>`: Replaced with the branding favicon element.
+- **Interactive Roles**:
+  - `role="search"`: Intercepted by the React renderer to mount the live client-side search component.
+  - `role="theme-toggle"`: Intercepted by the React renderer to mount the interactive Light/Dark color mode switcher.
+
+---
+
+### 2. Generating Chrome
+
+Generate central catalog and chat portal fallback layouts using the `ast-chrome` transformation type:
 
 ```console
-rsync -a --delete path/to/output/ data-store/data/my-doc-set/
+# Generate central chrome layout:
+dita --input=path/to/your.ditamap \
+     --format=ast-chrome \
+     --output=path/to/output
+
+# Sync generated chrome.json into data-store:
+rsync -a --delete path/to/output/chrome.json data-store/data/chrome.json
 ```
 
-Any subdirectory in `data-store/data/` containing a `toc.json` file will automatically be discovered.
+#### Central Fallback Templates (`chrome.json`)
+
+When a document set is published without explicit `--args.hdr` or `--args.ftr` files, `toc.json` omits document-specific header/footer trees. The web app automatically falls back to `data-store/data/chrome.json`, which holds fallback layouts for:
+
+- **`docs-page`**: Documentation portal title (`title`), description (`description`), catalog landing header navbar (`docs-page.header`), and card grid template (`docs-page.card`).
+- **`chat-bot`**: AI Assistant page title (`title`), description (`description`), top header navbar (`chat-bot.header`), welcome card (`chat-bot.card`), and prompt submission form (`chat-bot.form`).
+- **`texts`**: Internationalization UI string fallbacks (`noResults`, `tableOfContents`, `menubarNavigation`, `expand`, `collapse`).
+
+#### Chrome Include Files as Examples
+
+You can reference the following existing XML include files as functional examples:
+- `chrome.content.docs-page.xml` — Defines catalog portal titles, descriptions, and document card grid templates (`<document-title/>`, `<document-description/>`).
+- `chrome.navbar.chat-bot.xml` — Defines AI Assistant header navbar layout containing the Clear Chat button (`role="clear-chat"`) and theme toggle (`role="theme-toggle"`).
+- `chrome.content.chat-bot.xml` — Defines AI Assistant welcome card (`#welcome-card`) with quick prompts and prompt submission form layout (`#chat-form`).
 
 ## Usage
 
@@ -86,13 +166,18 @@ cd ../mcp-server
 npm install
 npm run build
 npm start -- --transport stdio
+
+# 4. Optional: Start rag-service (port 4002)
+cd ../rag-service
+npm install
+npm run dev
 ```
 
 Open `http://localhost:3100` for the Next.js web application and integrated AI Assistant (`/chat`).
 
 ### 2. Docker Compose Startup
 
-A docker compose is available to run all services locally.
+Launch all documentation services (data-store, renderer, mcp-server, rag-service) locally:
 
 ```console
 docker compose up -d
@@ -116,35 +201,6 @@ Add `mcp-server` to your AI assistant configuration (Claude Desktop, Cursor, Ant
   }
 }
 ```
-
-### Customizing Headers & Footers via DITA-OT Publishing
-
-Navigation headers, footers, and layout branding are controlled at publish time using standard DITA-OT build parameters:
-
-```console
-dita --input=path/to/your.ditamap \
-     --format=ast-bootstrap \
-     --args.hdr=path/to/custom-header.xml \
-     --args.ftr=path/to/custom-footer.xml \
-     --output=data-store/data/my-doc-set
-```
-
-#### XML Template Placeholders & Interactive Roles
-
-Header XML files (`custom-header.xml`) support standard Bootstrap XML markup along with special placeholders and roles processed during publishing:
-
-- **`<document-title/>`**: XML placeholder element automatically replaced by DITA-OT with the published map/document set title.
-- **`role="search"`**: Placed on search `<form>` elements; compiled into AST and intercepted by the React renderer to mount the live client-side search box.
-- **`role="theme-toggle"`**: Placed on theme selector dropdowns; compiled into AST and intercepted by the React renderer to mount the Light/Dark mode selector.
-- **`role="clear-chat"`**: Placed on buttons in the AI Assistant Chat header to clear conversation history and reset context.
-
-#### Central Fallback Templates (`chrome.json`)
-
-When a document set is published without explicit `--args.hdr` or `--args.ftr` files, `toc.json` omits document-specific header/footer trees. The web app automatically falls back to `data-store/data/chrome.json` (compiled from default plugin templates), which holds fallback layouts for:
-
-- **`docs-page`**: Catalog landing page header navbar (`docs-page.header`) and card grid template (`docs-page.card`).
-- **`chat-bot`**: AI Assistant header navbar (`chat-bot.header`), welcome card (`chat-bot.card`), and prompt submission bar (`chat-bot.form`).
-- **`footer`**: Global fallback footer for all documentation pages.
 
 ## API
 

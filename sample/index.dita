@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="index">
-  <title>React Harness User Guide</title>
-  <shortdesc>User guide for viewing, rendering, and chatting with DITA documentation using the React Harness web application and AI Assistant.</shortdesc>
+  <title>DITA Harness User Guide</title>
+  <shortdesc>User guide for viewing, rendering, querying, and chatting with DITA documentation rendered by a React web application with a RAG Vector Search service, and AI Assistant.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -10,40 +10,53 @@
         <indexterm>Viewing Documentation</indexterm>
         <indexterm>Rendering Controls</indexterm>
         <indexterm>AI Chat</indexterm>
+        <indexterm>RAG Service</indexterm>
+        <indexterm>Generating AST</indexterm>
+        <indexterm>Generating Chrome</indexterm>
         <indexterm>Docker Compose</indexterm>
       </keywords>
     </metadata>
   </prolog>
   <body>
     <section>
-      <title>Welcome to React Harness</title>
-      <p>The <b>React Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
+      <title>Welcome to the DITA Harness</title>
+      <p>The <b>DITA Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, querying content via semantic vector search (RAG Service), and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
     </section>
 
     <section>
       <title>Publishing &amp; Adding Documentation</title>
-      <p>Adding documentation to the library requires only one simple publishing step:</p>
+      <p>Adding documentation to the library involves two primary publishing tasks:</p>
       <ol>
-        <li>Publish your DITA map using the <codeph>ast-bootstrap</codeph> format directly into the data store output folder:
-          <codeblock outputclass="language-bash">dita --input=path/to/your.ditamap \
-     --format=ast-bootstrap \
-     --output=react-harness/data-store/data/my-doc-set</codeblock>
+        <li><b>Generating AST:</b> Publish your DITA map using the <option>ast-bootstrap</option> format directly into the data store output folder:
+          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+     <parmname>--format</parmname>=<option>ast-bootstrap</option> \
+     <parmname>--output</parmname>=react-harness/data-store/data/my-doc-set</codeblock>
+          See <filepath>generating-ast.dita</filepath> for detailed instructions on AST publishing and custom header/footer include templates.
         </li>
-        <li>That's it! The system automatically detects the new documentation set, builds full-text search indices, and displays it in your documentation catalog.</li>
+        <li><b>Generating Chrome:</b> Generate global fallback chrome layouts using the <option>ast-chrome</option> format and sync <filepath>chrome.json</filepath>:
+          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+     <parmname>--format</parmname>=<option>ast-chrome</option> \
+     <parmname>--output</parmname>=path/to/output
+
+<cmdname>rsync</cmdname> -a --delete path/to/output/chrome.json react-harness/data-store/data/chrome.json</codeblock>
+          See <filepath>generating-chrome.dita</filepath> for detailed instructions on overridable chrome elements.
+        </li>
       </ol>
+      <p>The system automatically detects published document sets, builds search indices, and displays them in your documentation catalog.</p>
     </section>
 
     <section>
       <title>Quick Start with Docker Compose</title>
-      <p>Launch the complete React Harness documentation system using a single Docker Compose command:</p>
+      <p>Launch the complete React Harness documentation system (data-store, renderer, mcp-server, and optional rag-service) using Docker Compose:</p>
       
       <codeblock outputclass="language-bash"># Launch all documentation services in the background
-docker compose up -d</codeblock>
+<cmdname>docker</cmdname> compose up -d</codeblock>
 
-      <p>Once launched, access the system in your browser:</p>
+      <p>Once launched, access the system services in your browser:</p>
       <ul>
         <li><b>Documentation Portal:</b> <filepath>http://localhost:3100</filepath> — View and browse loaded documentation sets.</li>
         <li><b>AI Assistant Chat:</b> <filepath>http://localhost:3100/chat</filepath> — Chat with the AI documentation assistant.</li>
+        <li><b>RAG Vector Search Service:</b> <filepath>http://localhost:4002/health</filepath> — Check semantic vector search status.</li>
       </ul>
     </section>
 
@@ -65,8 +78,8 @@ docker compose up -d</codeblock>
           <pd>DITA elements (tables, accordions, alerts, badges, cards, code blocks, figures) render as live interactive Bootstrap components with column sorting, text filtering, and pagination.</pd>
         </plentry>
         <plentry>
-          <pt><b>Header Search Bar</b></pt>
-          <pd>Type keywords into the header search bar to view instant search results with section deep-links.</pd>
+          <pt><b>RAG Vector Search &amp; Header Search Bar</b></pt>
+          <pd>Type keywords into the header search bar or chat prompt to query topics. Requests leverage the standalone RAG Service for high-speed semantic vector ranking.</pd>
         </plentry>
         <plentry>
           <pt><b>Dark Mode Switcher</b></pt>

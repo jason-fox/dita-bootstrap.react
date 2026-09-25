@@ -10,16 +10,12 @@
   <chapter>
     <topicmeta>
       <navtitle>Getting Started</navtitle>
-      <othermeta name="icon" content="bi-rocket-takeoff-fill"/>
-      <othermeta name="icon-style" content="color: var(--bs-primary)"/>
     </topicmeta>
     <topicref navtitle="Introduction &amp; React Components" href="index.dita" locktitle="yes"/>
   </chapter>
   <chapter>
     <topicmeta>
       <navtitle>Architecture &amp; Components</navtitle>
-      <othermeta name="icon" content="bi-cpu-fill"/>
-      <othermeta name="icon-style" content="color: var(--bs-info)"/>
     </topicmeta>
     <topicref navtitle="Data Store Service (data-store)" href="data-store.dita" locktitle="yes"/>
     <topicref navtitle="Web Renderer &amp; AI Chat Portal (renderer)" href="renderer.dita" locktitle="yes"/>
@@ -30,10 +26,9 @@
   <chapter>
     <topicmeta>
       <navtitle>Plug-in &amp; Configuration</navtitle>
-      <othermeta name="icon" content="bi-plugin"/>
-      <othermeta name="icon-style" content="color: var(--bs-success)"/>
     </topicmeta>
-    <topicref navtitle="DITA Bootstrap AST Plug-in &amp; Layout Publishing" href="ast-plugin.dita" locktitle="yes"/>
+    <topicref navtitle="Generating AST" href="generating-ast.dita" locktitle="yes"/>
+    <topicref navtitle="Generating Chrome" href="generating-chrome.dita" locktitle="yes"/>
     <topicref navtitle="Search Bar &amp; AI Chat Bot User Guide" href="search-and-chatbot.dita" locktitle="yes"/>
   </chapter>
   <backmatter deliveryTarget="pdf">

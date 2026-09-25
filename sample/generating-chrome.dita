@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="generating-chrome">
+  <title>Generating Chrome</title>
+  <shortdesc>Generating central catalog and chat fallback layout configurations using the <option>ast-chrome</option> transtype and customizing overridable chrome elements.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm><option>ast-chrome</option></indexterm>
+        <indexterm><filepath>chrome.json</filepath></indexterm>
+        <indexterm>Generating Chrome</indexterm>
+        <indexterm>Overridable Chrome Elements</indexterm>
+        <indexterm><filepath>chrome.content.docs-page.xml</filepath></indexterm>
+        <indexterm><filepath>chrome.navbar.chat-bot.xml</filepath></indexterm>
+        <indexterm><filepath>chrome.content.chat-bot.xml</filepath></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Central Fallback Templates Overview (ast-chrome)</title>
+      <p>The <option>ast-chrome</option> transformation type generates the global <filepath>chrome.json</filepath> file. This file provides default fallback layouts for pages and components when individual document sets do not supply custom header or footer templates via <parmname>--args.hdr</parmname> or <parmname>--args.ftr</parmname>:</p>
+      
+      <codeblock outputclass="language-bash"># Generate global chrome configuration:
+<cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+     <parmname>--format</parmname>=<option>ast-chrome</option> \
+     <parmname>--output</parmname>=path/to/output
+
+# Sync generated chrome.json into the data store:
+<cmdname>rsync</cmdname> -a --delete path/to/output/chrome.json data-store/data/chrome.json</codeblock>
+    </section>
+
+    <section>
+      <title>Overridable Chrome Elements</title>
+      <p>The <filepath>chrome.json</filepath> configuration file organizes layout templates and UI strings into overridable component blocks:</p>
+
+      <parml>
+        <plentry>
+          <pt><codeph>docs-page</codeph> (Documentation Portal Catalog)</pt>
+          <pd>
+            <ul>
+              <li><codeph>title</codeph> — Main heading title for the documentation catalog portal (default: <option>"Documentation"</option>).</li>
+              <li><codeph>description</codeph> — Subtitle text for the catalog portal (default: <option>"Documentation Portal"</option>).</li>
+              <li><codeph>header</codeph> (<codeph>docs-page.header</codeph>) — Fallback top navigation bar AST layout for the catalog landing page.</li>
+              <li><codeph>card</codeph> (<codeph>docs-page.card</codeph>) — Template AST node structure for individual document set cards in the landing page grid.</li>
+            </ul>
+          </pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>chat-bot</codeph> (AI Assistant Portal)</pt>
+          <pd>
+            <ul>
+              <li><codeph>title</codeph> — Title heading for the AI Assistant chat interface (default: <option>"AI Assistant"</option>).</li>
+              <li><codeph>description</codeph> — Subtitle description for AI chat (default: <option>"AI Assisted Documentation Search"</option>).</li>
+              <li><codeph>header</codeph> (<codeph>chat-bot.header</codeph>) — Top navigation header layout for the AI Assistant view, including conversation controls.</li>
+              <li><codeph>card</codeph> (<codeph>chat-bot.card</codeph>) — Welcome card layout containing initial prompt suggestions.</li>
+              <li><codeph>form</codeph> (<codeph>chat-bot.form</codeph>) — Prompt submission bar layout containing the question input field and send button.</li>
+            </ul>
+          </pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>texts</codeph> (Internationalization &amp; UI Strings)</pt>
+          <pd>
+            <ul>
+              <li><codeph>noResults</codeph> — Text displayed when search queries yield zero results (default: <option>"No results"</option>).</li>
+              <li><codeph>tableOfContents</codeph> — Label for the topic navigation sidebar (default: <option>"Table of contents"</option>).</li>
+              <li><codeph>menubarNavigation</codeph> — Accessibility label for main navigation bar (default: <option>"Menubar navigation"</option>).</li>
+              <li><codeph>expand</codeph> / <codeph>collapse</codeph> — Labels for collapsible section controls.</li>
+            </ul>
+          </pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>Chrome Include Files as Examples</title>
+      <p>The plug-in includes reference XML templates that demonstrate how chrome layout components are defined before compilation into AST format:</p>
+
+      <parml>
+        <plentry>
+          <pt><filepath>chrome.content.docs-page.xml</filepath></pt>
+          <pd>Defines the documentation catalog portal title, description, and the document set card template (<codeph>docs-page.card</codeph>). Uses placeholders such as <xmlelement>document-title/</xmlelement> and <xmlelement>document-description/</xmlelement> to dynamically display metadata for discovered document sets.</pd>
+        </plentry>
+        <plentry>
+          <pt><filepath>chrome.navbar.chat-bot.xml</filepath></pt>
+          <pd>Defines the header navigation bar for the AI Assistant chat portal (<codeph>chat-bot.header</codeph>). Includes a Clear Chat button assigned <xmlatt>role="clear-chat"</xmlatt> to reset conversation context, and a theme switcher button assigned <xmlatt>role="theme-toggle"</xmlatt>.</pd>
+        </plentry>
+        <plentry>
+          <pt><filepath>chrome.content.chat-bot.xml</filepath></pt>
+          <pd>Defines the AI Assistant welcome card (<codeph>chat-bot.card</codeph>) with quick prompt action buttons, as well as the submission form layout (<codeph>chat-bot.form</codeph>) containing the prompt input field (<xmlatt>id="user-input"</xmlatt>) and send button (<xmlatt>id="send-btn"</xmlatt>).</pd>
+        </plentry>
+      </parml>
+    </section>
+  </body>
+</topic>

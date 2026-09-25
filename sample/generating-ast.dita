@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="generating-ast">
+  <title>Generating AST</title>
+  <shortdesc>Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the <option>ast-bootstrap</option> transtype, configuring custom header and footer build parameters, and publishing into the document store.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>org.dita-bootstrap.ast</indexterm>
+        <indexterm><option>ast-bootstrap</option></indexterm>
+        <indexterm>Generating AST</indexterm>
+        <indexterm>Publishing</indexterm>
+        <indexterm><parmname>--args.hdr</parmname></indexterm>
+        <indexterm><parmname>--args.ftr</parmname></indexterm>
+        <indexterm><filepath>hdr.navbar.default.xml</filepath></indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>Plug-in Overview &amp; Installation</title>
+      <p>The <codeph>org.dita-bootstrap.ast</codeph> plug-in transforms DITA XML source topics into JSON Abstract Syntax Trees (AST). Install the plug-in into your DITA Open Toolkit instance:</p>
+      
+      <codeblock outputclass="language-bash"># Install plug-ins using the dita command:
+<cmdname>dita</cmdname> <parmname>install</parmname> fox.jason.extend.css
+<cmdname>dita</cmdname> <parmname>install</parmname> org.dita-bootstrap.ast</codeblock>
+    </section>
+
+    <section>
+      <title>Publishing AST to the Document Store</title>
+      <p>Publishing a DITA map to JSON AST requires a single DITA-OT execution command using the <option>ast-bootstrap</option> transformation type:</p>
+      
+      <codeblock outputclass="language-bash"># Publish documentation directly into the data store directory:
+<cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+     <parmname>--format</parmname>=<option>ast-bootstrap</option> \
+     <parmname>--output</parmname>=data-store/data/my-doc-set</codeblock>
+
+      <p>The output directory contains <filepath>toc.json</filepath> alongside AST JSON topic files. Once published, <filepath>data-store</filepath> automatically discovers the document set and adds it to the catalog.</p>
+    </section>
+
+    <section>
+      <title>Customizing Headers &amp; Footers via Build Parameters</title>
+      <p>Custom navigation headers and footers can be attached at publish time using the <parmname>--args.hdr</parmname> and <parmname>--args.ftr</parmname> build parameters:</p>
+      
+      <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+     <parmname>--format</parmname>=<option>ast-bootstrap</option> \
+     <parmname>--args.hdr</parmname>=path/to/custom-header.xml \
+     <parmname>--args.ftr</parmname>=path/to/custom-footer.xml \
+     <parmname>--output</parmname>=data-store/data/my-doc-set</codeblock>
+
+      <p>You can reference the following existing XML include files provided by the plug-in suite as functional examples:</p>
+      <ul>
+        <li><filepath>hdr.navbar.example.xml</filepath> — Example top navigation bar layout template.</li>
+        <li><filepath>hdr.sidebar.example.xml</filepath> — Example sidebar header layout template.</li>
+        <li><filepath>hdr.topbar.example.xml</filepath> — Example top bar header layout template.</li>
+        <li><filepath>ftr.content.example.xml</filepath> — Example multi-column social and copyright footer layout template.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Detailed Structure of Default Navigation Header (hdr.navbar.default.xml)</title>
+      <p>The plug-in includes <filepath>hdr.navbar.default.xml</filepath> as the default primary header template. Its XML structure demonstrates how Bootstrap components, placeholders, and interactive roles are compiled into AST nodes:</p>
+
+      <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Navbar data-bs-theme="dark" expand="lg" sticky="top" bg="primary" variant="dark"&gt;
+  &lt;Container fluid="xxl" className="px-4"&gt;
+    &lt;NavbarToggle aria-controls="bdSidebar" aria-label="Toggle docs navigation" className="p-2 me-2"&gt;
+      &lt;Icon name="list"/&gt;
+    &lt;/NavbarToggle&gt;
+    &lt;NavbarBrand className="d-flex align-items-center fw-semibold" href="/"&gt;
+      &lt;favicon/&gt;
+      &lt;document-title/&gt;
+    &lt;/NavbarBrand&gt;
+    &lt;NavbarToggle aria-controls="navbarContent" aria-label="Toggle navigation"/&gt;
+    &lt;NavbarCollapse id="navbarContent"&gt;
+      &lt;Nav className="ms-auto align-items-lg-center"&gt;
+        &lt;Form className="position-relative mx-lg-2 search-box" role="search" data-bs-theme="light"&gt;
+          &lt;InputGroup&gt;
+            &lt;InputGroupText className="bg-primary-subtle"&gt;
+              &lt;Icon name="search"/&gt;
+            &lt;/InputGroupText&gt;
+            &lt;FormControl placeholder="Search…" aria-label="Search" dir="auto" type="search" value=""/&gt;
+          &lt;/InputGroup&gt;
+        &lt;/Form&gt;
+        &lt;NavDropdown id="bd-theme" className="nav-item" role="theme-toggle" data-bs-theme="light"&gt;
+          &lt;NavDropdownItem data-bs-theme-value="light"&gt;
+            &lt;Icon name="brightness-high-fill" className="me-2"/&gt;
+            &lt;span&gt;Light&lt;/span&gt;
+          &lt;/NavDropdownItem&gt;
+          &lt;NavDropdownItem data-bs-theme-value="dark"&gt;
+            &lt;Icon name="moon-stars-fill" className="me-2"/&gt;
+            &lt;span&gt;Dark&lt;/span&gt;
+          &lt;/NavDropdownItem&gt;
+          &lt;NavDropdownItem data-bs-theme-value="auto"&gt;
+            &lt;Icon name="circle-half" className="me-2"/&gt;
+            &lt;span&gt;Auto&lt;/span&gt;
+          &lt;/NavDropdownItem&gt;
+        &lt;/NavDropdown&gt;
+      &lt;/Nav&gt;
+    &lt;/NavbarCollapse&gt;
+  &lt;/Container&gt;
+&lt;/Navbar&gt;</codeblock>
+
+      <p>Key structural elements of <filepath>hdr.navbar.default.xml</filepath> include:</p>
+      <parml>
+        <plentry>
+          <pt><xmlelement>Navbar</xmlelement> Root Component</pt>
+          <pd>Defines a fixed top Bootstrap navigation bar with dark styling (<xmlatt>data-bs-theme="dark"</xmlatt>, <xmlatt>bg="primary"</xmlatt>, <xmlatt>sticky="top"</xmlatt>).</pd>
+        </plentry>
+        <plentry>
+          <pt>XML Placeholders</pt>
+          <pd>
+            <ul>
+              <li><xmlelement>document-title/</xmlelement> — XML placeholder element automatically substituted at publish time with the document map title.</li>
+              <li><xmlelement>favicon/</xmlelement> — Placeholder element replaced by the branding favicon icon.</li>
+            </ul>
+          </pd>
+        </plentry>
+        <plentry>
+          <pt>Interactive Role Attributes</pt>
+          <pd>
+            <ul>
+              <li><xmlatt>role="search"</xmlatt> — Placed on the search <xmlelement>Form</xmlelement>; compiled into AST and intercepted by the web renderer to mount the live client-side search box.</li>
+              <li><xmlatt>role="theme-toggle"</xmlatt> — Placed on the <xmlelement>NavDropdown</xmlelement>; intercepted by the web renderer to mount the interactive Light/Dark theme switcher.</li>
+            </ul>
+          </pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>AST Directory &amp; File Structure</title>
+      <p>When publishing with <parmname>--format</parmname>=<option>ast-bootstrap</option>, DITA-OT creates the target directory containing:</p>
+      <ul>
+        <li><filepath>toc.json</filepath> — Manifest file describing document title, navigation structure, language metadata, header AST layout, and topic hierarchy.</li>
+        <li>Topic JSON files (e.g., <filepath>index.json</filepath>, <filepath>getting-started.json</filepath>) — Serialized tuple arrays representing React component trees (<codeph>[type, props?, ...children]</codeph>).</li>
+      </ul>
+    </section>
+  </body>
+</topic>
