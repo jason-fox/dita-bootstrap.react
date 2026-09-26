@@ -44,8 +44,8 @@
 
       <p class="p">Once launched, access the system services in your browser:</p>
       <ul class="ul">
-        <li class="li"><strong class="ph b">Documentation Portal:</strong> <span class="ph filepath">http://localhost:3100</span> — View and browse loaded documentation sets.</li>
-        <li class="li"><strong class="ph b">AI Assistant Chat:</strong> <span class="ph filepath">http://localhost:3100/chat</span> — Chat with the AI documentation assistant.</li>
+        <li class="li"><strong class="ph b">Documentation Portal:</strong> <span class="ph filepath">http://localhost:3000</span> — View and browse loaded documentation sets.</li>
+        <li class="li"><strong class="ph b">AI Assistant Chat:</strong> <span class="ph filepath">http://localhost:3000/chat</span> — Chat with the AI documentation assistant.</li>
         <li class="li"><strong class="ph b">RAG Vector Search Service:</strong> <span class="ph filepath">http://localhost:4002/health</span> — Check semantic vector search status.</li>
       </ul>
     </section>
@@ -120,26 +120,52 @@
 
     <section class="section"><h2 class="title h4">User Configuration (.env)</h2>
       
-      <p class="p">Customize site theme and AI Assistant credentials using environment variables in your <span class="ph filepath">.env</span> file:</p>
+      
+      
+      
+      
+      <p class="p">Environment variables in your <span class="ph filepath">.env</span> file select the site theme, the AI Assistant's LLM
+        provider and credentials, and service authorization:</p>
 
       <dl class="dl parml row">
         
-          <dt class="dt pt col-lg-4 text-truncate dlterm"><span class="keyword parmname text-wrap">BOOTSTRAP_THEME</span></dt>
-          <dd class="dd pd col-lg-8">Selects the visual theme (e.g. <span class="keyword option">default</span>, <span class="keyword option">journal</span>, <span class="keyword option">darkly</span>, <span class="keyword option">flatly</span>, <span class="keyword option">cyborg</span>).</dd>
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">BOOTSTRAP_THEME</code></dt>
+          <dd class="dd pd col-lg-8">Site Bootswatch theme (e.g. <span class="keyword option">default</span>, <span class="keyword option">darkly</span>, <span class="keyword option">journal</span>).</dd>
         
         
-          <dt class="dt pt col-lg-4 text-truncate dlterm"><span class="keyword parmname text-wrap">CHAT_BOT_PROVIDER</span></dt>
-          <dd class="dd pd col-lg-8">Active AI provider: <span class="keyword option">gemini</span>, <span class="keyword option">anthropic</span>, <span class="keyword option">openai</span>, or <span class="keyword option">ollama</span>.</dd>
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">CHAT_BOT_PROVIDER</code></dt>
+          <dd class="dd pd col-lg-8">Active LLM provider: <span class="keyword option">gemini</span>, <span class="keyword option">anthropic</span>, <span class="keyword option">openai</span>, or <span class="keyword option">ollama</span>.</dd>
         
         
-          <dt class="dt pt col-lg-4 text-truncate dlterm"><span class="keyword parmname text-wrap">GEMINI_API_KEY</span></dt>
-          <dd class="dd pd col-lg-8">API authentication key for Google Gemini AI Chat capabilities.</dd>
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">ANTHROPIC_API_KEY</code> / <code class="ph codeph text-wrap">_BASE_URL</code> / <code class="ph codeph text-wrap">_MODEL</code></dt>
+          <dd class="dd pd col-lg-8">Anthropic Claude credentials and model.</dd>
         
         
-          <dt class="dt pt col-lg-4 text-truncate dlterm"><span class="keyword parmname text-wrap">SHOW_TOOL_INVOCATIONS</span></dt>
-          <dd class="dd pd col-lg-8">Set to <span class="keyword option">true</span> to display expandable details for AI tool execution in chat threads.</dd>
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">OPENAI_API_KEY</code> / <code class="ph codeph text-wrap">_BASE_URL</code> / <code class="ph codeph text-wrap">_MODEL</code></dt>
+          <dd class="dd pd col-lg-8">OpenAI credentials and model.</dd>
+        
+        
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">OLLAMA_BASE_URL</code> / <code class="ph codeph text-wrap">_MODEL</code> / <code class="ph codeph text-wrap">_VERSION</code></dt>
+          <dd class="dd pd col-lg-8">Local Ollama endpoint, model, and container version.</dd>
+        
+        
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">GEMINI_API_KEY</code> / <code class="ph codeph text-wrap">_BASE_URL</code> / <code class="ph codeph text-wrap">_MODEL</code></dt>
+          <dd class="dd pd col-lg-8">Google Gemini credentials and model.</dd>
+        
+        
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">MCP_SERVER_URL</code></dt>
+          <dd class="dd pd col-lg-8">Streamable HTTP endpoint of <code class="ph codeph">mcp-server</code> used by <span class="ph filepath">/chat</span>.</dd>
+        
+        
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">SHOW_TOOL_INVOCATIONS</code></dt>
+          <dd class="dd pd col-lg-8">Set to <span class="keyword option">true</span> to show debug badges for AI tool calls in chat.</dd>
+        
+        
+          <dt class="dt pt col-lg-4 text-truncate dlterm"><code class="ph codeph text-wrap">AUTH_TOKEN</code></dt>
+          <dd class="dd pd col-lg-8">Bearer token guarding data-store's write API. Unset by default.</dd>
         
       </dl>
+      <p class="p">See <a class="xref" href="renderer.html" title="User-facing web portal for browsing documentation sets, reading AST topics, and interacting with the integrated AI Assistant chat.">Web Renderer</a>, <a class="xref" href="search-and-chatbot.html" title="User guide for searching documentation using the header search bar and running the AI Chat Assistant interfaces.">Search Bar &amp; AI Chat Bot</a>, and <a class="xref" href="data-store.html" title="Containerized file server and REST API for document set discovery, static AST JSON serving, and search index generation.">Data Store Service</a> for setup details.</p>
     </section>
   </div>
 </article></main></div><script language="javascript" src="./js/popovers.js"></script><script language="javascript" src="./js/dark-mode-toggler.js"></script><footer role="contentinfo" class="mt-auto border-top bg-primary-subtle"><!-- Footer --><div class="container text-center">
