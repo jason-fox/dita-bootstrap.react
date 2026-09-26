@@ -33,8 +33,8 @@
 
       <p>Once launched, access the system services in your browser:</p>
       <ul>
-        <li><b>Documentation Portal:</b> <filepath>http://localhost:3100</filepath> — View and browse loaded documentation sets.</li>
-        <li><b>AI Assistant Chat:</b> <filepath>http://localhost:3100/chat</filepath> — Chat with the AI documentation assistant.</li>
+        <li><b>Documentation Portal:</b> <filepath>http://localhost:3000</filepath> — View and browse loaded documentation sets.</li>
+        <li><b>AI Assistant Chat:</b> <filepath>http://localhost:3000/chat</filepath> — Chat with the AI documentation assistant.</li>
         <li><b>RAG Vector Search Service:</b> <filepath>http://localhost:4002/health</filepath> — Check semantic vector search status.</li>
       </ul>
     </section>
@@ -109,26 +109,52 @@
 
     <section>
       <title>User Configuration (.env)</title>
-      <p>Customize site theme and AI Assistant credentials using environment variables in your <filepath>.env</filepath> file:</p>
+      <indexterm>.env</indexterm>
+      <indexterm><codeph>CHAT_BOT_PROVIDER</codeph></indexterm>
+      <indexterm><codeph>BOOTSTRAP_THEME</codeph></indexterm>
+      <indexterm><codeph>AUTH_TOKEN</codeph></indexterm>
+      <p>Environment variables in your <filepath>.env</filepath> file select the site theme, the AI Assistant's LLM
+        provider and credentials, and service authorization:</p>
 
       <parml otherprops="cols(4)">
         <plentry>
-          <pt><parmname>BOOTSTRAP_THEME</parmname></pt>
-          <pd>Selects the visual theme (e.g. <option>default</option>, <option>journal</option>, <option>darkly</option>, <option>flatly</option>, <option>cyborg</option>).</pd>
+          <pt><codeph>BOOTSTRAP_THEME</codeph></pt>
+          <pd>Site Bootswatch theme (e.g. <option>default</option>, <option>darkly</option>, <option>journal</option>).</pd>
         </plentry>
         <plentry>
-          <pt><parmname>CHAT_BOT_PROVIDER</parmname></pt>
-          <pd>Active AI provider: <option>gemini</option>, <option>anthropic</option>, <option>openai</option>, or <option>ollama</option>.</pd>
+          <pt><codeph>CHAT_BOT_PROVIDER</codeph></pt>
+          <pd>Active LLM provider: <option>gemini</option>, <option>anthropic</option>, <option>openai</option>, or <option>ollama</option>.</pd>
         </plentry>
         <plentry>
-          <pt><parmname>GEMINI_API_KEY</parmname></pt>
-          <pd>API authentication key for Google Gemini AI Chat capabilities.</pd>
+          <pt><codeph>ANTHROPIC_API_KEY</codeph> / <codeph>_BASE_URL</codeph> / <codeph>_MODEL</codeph></pt>
+          <pd>Anthropic Claude credentials and model.</pd>
         </plentry>
         <plentry>
-          <pt><parmname>SHOW_TOOL_INVOCATIONS</parmname></pt>
-          <pd>Set to <option>true</option> to display expandable details for AI tool execution in chat threads.</pd>
+          <pt><codeph>OPENAI_API_KEY</codeph> / <codeph>_BASE_URL</codeph> / <codeph>_MODEL</codeph></pt>
+          <pd>OpenAI credentials and model.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>OLLAMA_BASE_URL</codeph> / <codeph>_MODEL</codeph> / <codeph>_VERSION</codeph></pt>
+          <pd>Local Ollama endpoint, model, and container version.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>GEMINI_API_KEY</codeph> / <codeph>_BASE_URL</codeph> / <codeph>_MODEL</codeph></pt>
+          <pd>Google Gemini credentials and model.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>MCP_SERVER_URL</codeph></pt>
+          <pd>Streamable HTTP endpoint of <codeph>mcp-server</codeph> used by <filepath>/chat</filepath>.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>SHOW_TOOL_INVOCATIONS</codeph></pt>
+          <pd>Set to <option>true</option> to show debug badges for AI tool calls in chat.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>AUTH_TOKEN</codeph></pt>
+          <pd>Bearer token guarding data-store's write API. Unset by default.</pd>
         </plentry>
       </parml>
+      <p>See <xref href="renderer.dita" format="dita">Web Renderer</xref>, <xref href="search-and-chatbot.dita" format="dita">Search Bar &amp; AI Chat Bot</xref>, and <xref href="data-store.dita" format="dita">Data Store Service</xref> for setup details.</p>
     </section>
   </body>
 </topic>

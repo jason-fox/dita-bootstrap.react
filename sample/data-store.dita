@@ -63,6 +63,22 @@ docker run -d -p 4000:4000 \
           <pt><codeph>AUTH_TOKEN</codeph></pt>
           <pd>Optional bearer token guarding the <codeph>/api/docs/&lt;id&gt;</codeph> and <codeph>/api/chrome</codeph> write routes. Unset by default, which disables auth entirely.</pd>
         </plentry>
+        <plentry>
+          <pt><codeph>CHROME_CACHE_TTL_MS</codeph></pt>
+          <pd>How long <codeph>GET /api/chrome</codeph> serves <filepath>chrome.json</filepath> from an in-memory cache before re-reading from disk (default: <codeph>5000</codeph>). <codeph>PUT /api/chrome</codeph> invalidates the cache immediately on write.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>FEATURED_DOCS</codeph></pt>
+          <pd>Comma-separated doc-set ids to pin first (before priority/alphabetical) in <codeph>/api/docs</codeph> ordering. Unset by default.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>WEB_CONCURRENCY</codeph> / <codeph>WORKERS</codeph></pt>
+          <pd>Explicit worker process count. Takes precedence over <codeph>CLUSTER_MODE</codeph>. Unset by default.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>CLUSTER_MODE</codeph></pt>
+          <pd>Set to <codeph>true</codeph> to run one worker per CPU core when <codeph>WEB_CONCURRENCY</codeph>/<codeph>WORKERS</codeph> aren't set (default: <codeph>false</codeph>).</pd>
+        </plentry>
       </parml>
     </section>
 

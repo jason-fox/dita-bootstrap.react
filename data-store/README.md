@@ -80,6 +80,10 @@ curl -X POST --data-binary @docset.zip \
 | `DEFAULT_LANGUAGE` | `"en"` | Default language code for document discovery. |
 | `MAX_UPLOAD_SIZE` | `"100mb"` | Max body size accepted by `POST`/`PUT /api/docs/<id>` zip uploads. |
 | `AUTH_TOKEN` | *(unset)* | Bearer token required on `/api/docs/<id>` writes. Auth is disabled when unset. |
+| `CHROME_CACHE_TTL_MS` | `5000` | How long `GET /api/chrome` serves `chrome.json` from an in-memory cache before re-reading from disk. `PUT /api/chrome` invalidates the cache immediately on write. |
+| `FEATURED_DOCS` | *(unset)* | Comma-separated doc-set ids to pin first (before priority/alphabetical) in `/api/docs` ordering. |
+| `WEB_CONCURRENCY` / `WORKERS` | *(unset)* | Explicit worker process count. Takes precedence over `CLUSTER_MODE`. |
+| `CLUSTER_MODE` | `false` | Set to `true` to run one worker per CPU core when `WEB_CONCURRENCY`/`WORKERS` aren't set. |
 
 ## Contributing
 

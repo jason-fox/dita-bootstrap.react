@@ -7,10 +7,15 @@ export INTERNAL_DATA_URL=http://127.0.0.1:4000/data
 export INTERNAL_API_URL=http://127.0.0.1:4000/api
 export MCP_SERVER_URL=http://127.0.0.1:4001/mcp
 
+# Ensure /app/data exists and contains baked-in fallback chrome.json
+mkdir -p /app/data
+if [ ! -f /app/data/chrome.json ] && [ -f /tmp/chrome.json ]; then
+  cp /tmp/chrome.json /app/data/chrome.json
+fi
+
 # If DATA_ZIP_URL is provided, download and extract data files at startup
 if [ -n "$DATA_ZIP_URL" ]; then
   echo "[demo] DATA_ZIP_URL specified. Downloading data package from ${DATA_ZIP_URL}..."
-  mkdir -p /app/data
   if command -v wget >/dev/null 2>&1; then
     wget -qO /tmp/data.zip "$DATA_ZIP_URL"
   else
@@ -30,6 +35,13 @@ if [ -n "$DATA_ZIP_URL" ]; then
       rm -rf "$nested_dir"
     fi
   fi
+
+  # Restore fallback baked-in chrome.json if extracted ZIP did not contain one
+  if [ ! -f /app/data/chrome.json ] && [ -f /tmp/chrome.json ]; then
+    echo "[demo] Restoring fallback baked-in chrome.json into /app/data/..."
+    cp /tmp/chrome.json /app/data/chrome.json
+  fi
+
   echo "[demo] ZIP extraction complete. Data directory status:"
   ls -la /app/data
 fi

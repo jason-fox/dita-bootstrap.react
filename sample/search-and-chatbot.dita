@@ -41,7 +41,7 @@ GEMINI_API_KEY=your_api_key
 
 # Launch with Docker Compose
 docker compose up -d</codeblock>
-      <p>Open your browser to <filepath>http://localhost:3100/chat</filepath> to start using the assistant.</p>
+      <p>Open your browser to <filepath>http://localhost:3000/chat</filepath> to start using the assistant.</p>
 
       <p><b>Option 2: Standalone Web Chatbot Container (<codeph>mcp-client</codeph>)</b></p>
       <p>Launch the standalone chatbot container on port <codeph>3200</codeph> using a single Docker command:</p>

@@ -293,14 +293,29 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
   next();
 }
 
-// reads and parses chrome.json fresh from disk on every call (no in-memory cache)
+let chromeCacheData: unknown = null;
+let chromeCacheTimestamp = 0;
+const CHROME_CACHE_TTL_MS = parseInt(process.env.CHROME_CACHE_TTL_MS || "5000", 10);
+
+function invalidateChromeCache(): void {
+  chromeCacheData = null;
+  chromeCacheTimestamp = 0;
+}
+
+// reads and parses chrome.json from disk with a configurable TTL cache (default 5 seconds)
 function readChromeData(dataDir: string): unknown {
+  const now = Date.now();
+  if (chromeCacheData !== null && now - chromeCacheTimestamp < CHROME_CACHE_TTL_MS) {
+    return chromeCacheData;
+  }
   const chromePath = path.join(dataDir, "chrome.json");
   if (!fs.existsSync(chromePath)) {
     return { texts: {} };
   }
   try {
-    return JSON.parse(fs.readFileSync(chromePath, "utf-8"));
+    chromeCacheData = JSON.parse(fs.readFileSync(chromePath, "utf-8"));
+    chromeCacheTimestamp = now;
+    return chromeCacheData;
   } catch (err) {
     console.warn(`[Warn] Could not parse ${chromePath}:`, err);
     return { texts: {} };
@@ -339,19 +354,23 @@ if (numWorkers > 1 && cluster.isPrimary) {
     }
   });
 
-  app.put("/api/chrome", requireAuth, express.json({ limit: MAX_UPLOAD_SIZE }), (req, res) => {
+  const handleChromeUpdate = (req: express.Request, res: express.Response) => {
     if (!req.is("application/json")) {
       sendProblem(res, 415, "Unsupported Media Type", "Content-Type must be application/json");
       return;
     }
     try {
       fs.writeFileSync(path.join(DATA_DIR, "chrome.json"), JSON.stringify(req.body, null, 2));
+      invalidateChromeCache();
     } catch (e: any) {
       sendProblem(res, 400, "Bad Request", `Failed to write chrome.json: ${e.message || e}`);
       return;
     }
-    res.status(200).json(req.body);
-  });
+    res.status(202).json(req.body);
+  };
+
+  app.put("/api/chrome", requireAuth, express.json({ limit: MAX_UPLOAD_SIZE }), handleChromeUpdate);
+  app.post("/api/chrome", requireAuth, express.json({ limit: MAX_UPLOAD_SIZE }), handleChromeUpdate);
 
   app.get("/api/docs", (_req, res) => {
     const docSets = findDocSets(DATA_DIR);

@@ -48,6 +48,9 @@ ENV MCP_SERVER_URL=http://127.0.0.1:4001/mcp
 
 RUN apk add --no-cache curl unzip
 
+# 1. Bake default chrome.json into image as startup fallback
+COPY --from=builder /app/data-store/data/chrome.json /tmp/chrome.json
+
 # 2. Copy compiled dist & install production dependencies for data-store
 COPY --from=builder /app/data-store/package*.json ./data-store/
 COPY --from=builder /app/data-store/dist ./data-store/dist

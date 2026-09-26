@@ -18,7 +18,7 @@
   <body>
     <section>
       <title>Service Overview</title>
-      <p>The <b>renderer</b> service provides the primary web interface on port <codeph>3100</codeph>. It fetches JSON AST topic trees produced by DITA-OT and renders them dynamically into real Bootstrap components (accordions, tabs, alerts, cards, code blocks).</p>
+      <p>The <b>renderer</b> service provides the primary web interface on port <codeph>3000</codeph>. It fetches JSON AST topic trees produced by DITA-OT and renders them dynamically into real Bootstrap components (accordions, tabs, alerts, cards, code blocks).</p>
     </section>
 
     <section>
@@ -51,7 +51,7 @@
 docker compose up -d renderer
 
 # Or run as a standalone Docker container:
-docker run -d -p 3100:3100 \
+docker run -d -p 3000:3000 \
   -e INTERNAL_DATA_URL=http://data-store:4000/data \
   -e INTERNAL_API_URL=http://data-store:4000/api \
   -e MCP_SERVER_URL=http://mcp-server:4001/mcp \
@@ -63,7 +63,7 @@ docker run -d -p 3100:3100 \
       <parml>
         <plentry>
           <pt><codeph>PORT</codeph></pt>
-          <pd>HTTP port for the web application (default: <codeph>3100</codeph>).</pd>
+          <pd>HTTP port for the web application (default: <codeph>3000</codeph>).</pd>
         </plentry>
         <plentry>
           <pt><codeph>BOOTSTRAP_THEME</codeph></pt>
