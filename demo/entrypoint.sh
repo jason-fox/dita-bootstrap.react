@@ -20,6 +20,18 @@ if [ -n "$DATA_ZIP_URL" ]; then
   rm -rf /app/data/*
   unzip -o /tmp/data.zip -d /app/data
   rm -f /tmp/data.zip
+
+  # If extracted into a single nested directory (e.g. /app/data/dita-demo-data/), flatten contents to /app/data/
+  if [ ! -f /app/data/chrome.json ]; then
+    nested_dir=$(find /app/data -mindepth 1 -maxdepth 1 -type d | head -n 1)
+    if [ -n "$nested_dir" ]; then
+      echo "[demo] Flattening nested directory $nested_dir into /app/data..."
+      cp -r "$nested_dir"/* /app/data/ 2>/dev/null || true
+      rm -rf "$nested_dir"
+    fi
+  fi
+  echo "[demo] ZIP extraction complete. Data directory status:"
+  ls -la /app/data
 fi
 
 echo "[demo] Starting AST Data Store on port 4000..."

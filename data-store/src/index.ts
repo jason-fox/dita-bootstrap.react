@@ -293,28 +293,19 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
   next();
 }
 
-// reads and parses chrome.json fresh from disk on every call (no in-memory cache), so
-// a PUT /api/chrome handled by one cluster worker is immediately visible to the others
+// reads and parses chrome.json fresh from disk on every call (no in-memory cache)
 function readChromeData(dataDir: string): unknown {
-  return JSON.parse(fs.readFileSync(path.join(dataDir, "chrome.json"), "utf-8"));
-}
-
-// fails fast at startup if chrome.json is missing or invalid
-function assertChromeData(dataDir: string): void {
   const chromePath = path.join(dataDir, "chrome.json");
   if (!fs.existsSync(chromePath)) {
-    console.error(`[Error] Fatal: chrome.json not found at ${chromePath}`);
-    process.exit(1);
+    return { texts: {} };
   }
   try {
-    readChromeData(dataDir);
+    return JSON.parse(fs.readFileSync(chromePath, "utf-8"));
   } catch (err) {
-    console.error(`[Error] Fatal: Failed to read or parse ${chromePath}:`, err);
-    process.exit(1);
+    console.warn(`[Warn] Could not parse ${chromePath}:`, err);
+    return { texts: {} };
   }
 }
-
-assertChromeData(DATA_DIR);
 
 if (numWorkers > 1 && cluster.isPrimary) {
   console.log(`Primary process ${process.pid} running. Building search indices once...`);

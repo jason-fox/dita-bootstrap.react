@@ -96,11 +96,11 @@ export async function fetchChrome(): Promise<ChromeConfig> {
     if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
       throw err;
     }
-    console.error("[Error] Fatal: Failed to fetch chrome.json from data store:", err);
+    console.warn("[Info] chrome.json not found or unavailable, using default configuration.");
+    return { texts: {} };
   }
   if (!res || !res.ok) {
-    console.error(`[Error] chrome.json not found or failed to load (status ${res?.status})`);
-    throw new Error("chrome.json not found");
+    return { texts: {} };
   }
   try {
     const raw = await res.json();
@@ -114,8 +114,8 @@ export async function fetchChrome(): Promise<ChromeConfig> {
     if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
       throw err;
     }
-    console.error("[Error] Failed to parse chrome.json:", err);
-    throw err;
+    console.warn("[Info] Failed to parse chrome.json, using default configuration.");
+    return { texts: {} };
   }
 }
 

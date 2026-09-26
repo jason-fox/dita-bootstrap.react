@@ -29,8 +29,7 @@
       <title>Quick Start with Docker Compose</title>
       <p>Launch the complete React Harness documentation system (data-store, renderer, mcp-server, and optional rag-service) using Docker Compose:</p>
       
-      <codeblock outputclass="language-bash"># Launch all documentation services in the background
-<cmdname>docker</cmdname> compose up -d</codeblock>
+      <codeblock outputclass="language-bash"><cmdname>docker</cmdname> compose up -d</codeblock>
 
       <p>Once launched, access the system services in your browser:</p>
       <ul>
@@ -62,8 +61,7 @@
     <section>
       <title>Publishing Documentation</title>
       <p>Upload the generated document output to the data-store via its REST API:</p>
-      <codeblock outputclass="language-bash">
-<cmdname>curl</cmdname> -X POST --data-binary <filepath>@path/to/output/document.zip</filepath> \
+      <codeblock outputclass="language-bash"><cmdname>curl</cmdname> -X POST --data-binary <filepath>@path/to/output/document.zip</filepath> \
      -H "Content-Type: application/zip" \
      http://<b>&lt;data-store&gt;</b>/api/docs/&lt;document-id&gt;</codeblock>
 
