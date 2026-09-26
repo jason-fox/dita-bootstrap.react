@@ -1,5 +1,5 @@
 import MiniSearch from "minisearch";
-import { DATA_URL } from "./api";
+import { PUBLIC_DATA_URL } from "./api";
 
 export interface SearchDoc {
   id: string;
@@ -22,7 +22,7 @@ export async function loadSearchIndex(
 ): Promise<MiniSearch<SearchDoc>> {
   const relativePath =
     docId && docId !== "default" ? `${docId}/search-index.json` : "search-index.json";
-  const res = await fetch(`${DATA_URL}/${relativePath}`, {
+  const res = await fetch(`${PUBLIC_DATA_URL}/${relativePath}`, {
     cache: "no-store",
   }).catch(() => null);
 

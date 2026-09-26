@@ -58,6 +58,7 @@ import "prismjs/components/prism-cpp";
 import "prismjs/components/prism-bash";
 import {
   DATA_URL,
+  PUBLIC_DATA_URL,
   isPropsObject,
   resolveHref,
   resolveStyle,
@@ -342,7 +343,7 @@ function resolveSrc(src: unknown, docId?: string): unknown {
   }
   const cleanSrc = src.replace(/^(\.\.\/|\.\/)+/, "");
   const prefix =
-    docId && docId !== "default" ? `${DATA_URL}/${docId}` : DATA_URL;
+    docId && docId !== "default" ? `${PUBLIC_DATA_URL}/${docId}` : PUBLIC_DATA_URL;
   return `${prefix}/${cleanSrc}`;
 }
 
