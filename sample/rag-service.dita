@@ -18,7 +18,7 @@
   <body>
     <section>
       <title>Service Overview</title>
-      <p>The <b>rag-service</b> operates as an optional background service on port <parmname>4002</parmname>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<codeph>#</codeph>, <codeph>##</codeph>), computes normalized TF-IDF vector embeddings, and exposes a high-speed semantic search API endpoint.</p>
+      <p>The <b>rag-service</b> operates as an optional background service on port <codeph>4002</codeph>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<codeph>#</codeph>, <codeph>##</codeph>), computes normalized TF-IDF vector embeddings, and exposes a high-speed semantic search API endpoint.</p>
     </section>
 
     <section>
@@ -44,14 +44,14 @@
         </plentry>
         <plentry>
           <pt><codeph>POST /api/reindex</codeph></pt>
-          <pd>Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <parmname>DATA_DIR</parmname>.</pd>
+          <pd>Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <codeph>DATA_DIR</codeph>.</pd>
         </plentry>
       </parml>
     </section>
 
     <section>
       <title>Integration with MCP Server</title>
-      <p>When the <parmname>RAG_SERVICE_URL</parmname> environment variable is set on <codeph>mcp-server</codeph> (e.g. <codeph>http://localhost:4002</codeph>), search requests made via the <codeph>search_documentation</codeph> tool are transparently delegated to <codeph>rag-service</codeph> for vector similarity scoring. If the RAG service is unreachable or unconfigured, <codeph>mcp-server</codeph> automatically falls back to local MiniSearch full-text indexing.</p>
+      <p>When the <codeph>RAG_SERVICE_URL</codeph> environment variable is set on <codeph>mcp-server</codeph> (e.g. <codeph>http://localhost:4002</codeph>), search requests made via the <codeph>search_documentation</codeph> tool are transparently delegated to <codeph>rag-service</codeph> for vector similarity scoring. If the RAG service is unreachable or unconfigured, <codeph>mcp-server</codeph> automatically falls back to local MiniSearch full-text indexing.</p>
     </section>
 
     <section>
@@ -77,11 +77,11 @@
       <p>Configuration Environment Variables:</p>
       <parml>
         <plentry>
-          <pt><parmname>PORT</parmname></pt>
+          <pt><codeph>PORT</codeph></pt>
           <pd>HTTP port for the Express vector search server (default: <option>4002</option>).</pd>
         </plentry>
         <plentry>
-          <pt><parmname>DATA_DIR</parmname></pt>
+          <pt><codeph>DATA_DIR</codeph></pt>
           <pd>Directory path containing published documentation sets (default: <filepath>/app/data</filepath>).</pd>
         </plentry>
       </parml>
