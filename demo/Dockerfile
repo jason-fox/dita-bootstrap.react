@@ -22,7 +22,10 @@ RUN cd renderer && npm ci
 # Build mcp-server
 RUN cd mcp-server && npm ci && npm run build
 
-# Build renderer (Next.js Standalone with demo proxy relative paths)
+# Build renderer as a Next.js Standalone with demo proxy relative paths
+# NOTE: ENABLE_PROXY_REWRITES=true MUST be set during this builder step 
+# due to next build/transpilation. Next.js statically bakes next.config.js 
+# rewrites into route manifests at build time.
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV ENABLE_PROXY_REWRITES=true
 ENV NEXT_PUBLIC_DATA_URL=/data
@@ -50,7 +53,8 @@ COPY --from=builder /app/data-store/package*.json ./data-store/
 COPY --from=builder /app/data-store/dist ./data-store/dist
 RUN cd data-store && npm ci --omit=dev
 
-# 3. Copy compiled dist & install production dependencies for rag-service (Optional - commented out for demo)
+# 3. Copy compiled dist & install production dependencies for rag-service 
+# (Optional - commented out for demo)
 # COPY --from=builder /app/rag-service/package*.json ./rag-service/
 # COPY --from=builder /app/rag-service/dist ./rag-service/dist
 # RUN cd rag-service && npm ci --omit=dev
