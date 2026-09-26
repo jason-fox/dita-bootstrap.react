@@ -31,7 +31,7 @@
   <div class="body"><p class="shortdesc text-body-secondary lead">Optional standalone vector search service providing semantic topic chunking, term-frequency vector embeddings, content hashing verification, and MCP server integration.</p>
     <section class="section"><h2 class="title h4">Service Overview</h2>
       
-      <p class="p">The <strong class="ph b">rag-service</strong> operates as an optional background service on port <span class="keyword parmname">4002</span>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<code class="ph codeph">#</code>, <code class="ph codeph">##</code>), computes normalized TF-IDF vector embeddings, and exposes a high-speed semantic search API endpoint.</p>
+      <p class="p">The <strong class="ph b">rag-service</strong> operates as an optional background service on port <code class="ph codeph">4002</code>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<code class="ph codeph">#</code>, <code class="ph codeph">##</code>), computes normalized TF-IDF vector embeddings, and exposes a high-speed semantic search API endpoint.</p>
     </section>
 
     <section class="section"><h2 class="title h4">Data Ingestion &amp; Currency Pipeline</h2>
@@ -57,14 +57,14 @@
         
         
           <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">POST /api/reindex</code></dt>
-          <dd class="dd pd col-lg-9">Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <span class="keyword parmname">DATA_DIR</span>.</dd>
+          <dd class="dd pd col-lg-9">Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <code class="ph codeph">DATA_DIR</code>.</dd>
         
       </dl>
     </section>
 
     <section class="section"><h2 class="title h4">Integration with MCP Server</h2>
       
-      <p class="p">When the <span class="keyword parmname">RAG_SERVICE_URL</span> environment variable is set on <code class="ph codeph">mcp-server</code> (e.g. <code class="ph codeph">http://localhost:4002</code>), search requests made via the <code class="ph codeph">search_documentation</code> tool are transparently delegated to <code class="ph codeph">rag-service</code> for vector similarity scoring. If the RAG service is unreachable or unconfigured, <code class="ph codeph">mcp-server</code> automatically falls back to local MiniSearch full-text indexing.</p>
+      <p class="p">When the <code class="ph codeph">RAG_SERVICE_URL</code> environment variable is set on <code class="ph codeph">mcp-server</code> (e.g. <code class="ph codeph">http://localhost:4002</code>), search requests made via the <code class="ph codeph">search_documentation</code> tool are transparently delegated to <code class="ph codeph">rag-service</code> for vector similarity scoring. If the RAG service is unreachable or unconfigured, <code class="ph codeph">mcp-server</code> automatically falls back to local MiniSearch full-text indexing.</p>
     </section>
 
     <section class="section"><h2 class="title h4">Triggering RAG Index Updates</h2>
@@ -90,11 +90,11 @@
       <p class="p">Configuration Environment Variables:</p>
       <dl class="dl parml row">
         
-          <dt class="dt pt col-lg-3 text-truncate dlterm"><span class="keyword parmname text-wrap">PORT</span></dt>
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">PORT</code></dt>
           <dd class="dd pd col-lg-9">HTTP port for the Express vector search server (default: <span class="keyword option">4002</span>).</dd>
         
         
-          <dt class="dt pt col-lg-3 text-truncate dlterm"><span class="keyword parmname text-wrap">DATA_DIR</span></dt>
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">DATA_DIR</code></dt>
           <dd class="dd pd col-lg-9">Directory path containing published documentation sets (default: <span class="ph filepath">/app/data</span>).</dd>
         
       </dl>
