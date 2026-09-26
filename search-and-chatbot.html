@@ -73,8 +73,8 @@ docker compose up -d</code></pre>
       <p class="p">The AI Assistant chatbot handles user queries by dynamically selecting between two primary interaction models based on the intent of the prompt: <strong class="ph b">Text Q&amp;A Reasoning</strong> and <strong class="ph b">Interactive Topic UI Rendering</strong>.</p>
 
       <p class="p"><strong class="ph b">Example 1: Text Q&amp;A Reasoning Interaction</strong></p>
-      <p class="p">Sample User Question: <code class="ph codeph">"Is holly a good summer flower?"</code></p>
-      <p class="p">When you ask factual domain questions, the AI Assistant searches the documentation set and reads topic content (<span class="ph filepath">flowers/concepts/winterFlowers.json</span>). It responds with clear text reasoning:</p>
+      <p class="p">Sample User Question: <code class="ph codeph">"Is holly a good summer flower?"</code> (or documentation-focused request: <code class="ph codeph">"Which documentation set could tell me 'is holly a good summer flower'?"</code>)</p>
+      <p class="p">When you ask factual domain questions, the AI Assistant evaluates the query against loaded documentation sets, searches the corpus, and reads topic content (<span class="ph filepath">flowers/concepts/winterFlowers.json</span>). It responds with clear text reasoning:</p>
       <ul class="ul">
         <li class="li"><strong class="ph b">Direct Answer:</strong> Clarifies that Holly (Holly berry) is a winter flower, not a summer flower.</li>
         <li class="li"><strong class="ph b">Contextual Details:</strong> Notes that Holly blooms during winter (December–February in the Northern hemisphere).</li>
