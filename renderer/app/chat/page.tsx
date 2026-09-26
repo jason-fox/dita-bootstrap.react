@@ -62,6 +62,8 @@ function TopicIframe({
     if (iframeRef.current && iframeRef.current.contentWindow) {
       const clonedPayload = JSON.parse(JSON.stringify(payload));
       clonedPayload.previewMode = previewMode;
+      const hostTheme = document.documentElement.getAttribute("data-bs-theme") || "light";
+      clonedPayload.theme = hostTheme;
       iframeRef.current.contentWindow.postMessage(
         { type: "SET_PAYLOAD", payload: clonedPayload },
         "*"
@@ -78,11 +80,22 @@ function TopicIframe({
       }
     };
     window.addEventListener("message", handleAck);
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-bs-theme") {
+          sendPayload();
+        }
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-bs-theme"] });
+
     return () => {
       window.removeEventListener("message", handleAck);
+      observer.disconnect();
       clearRetries();
     };
-  }, []);
+  }, [payload]);
 
   return (
     <iframe
