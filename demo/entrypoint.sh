@@ -26,15 +26,19 @@ if [ -n "$DATA_ZIP_URL" ]; then
   unzip -o /tmp/data.zip -d /app/data
   rm -f /tmp/data.zip
 
-  # If extracted into a single nested directory (e.g. /app/data/dita-demo-data/), flatten contents to /app/data/
+  # Clean up macOS metadata folder if extracted
+  rm -rf /app/data/__MACOSX /app/data/._* 2>/dev/null || true
+
+  # If extracted into a nested directory (e.g. /app/data/dita-demo-data/), flatten contents to /app/data/
   if [ ! -f /app/data/chrome.json ]; then
-    nested_dir=$(find /app/data -mindepth 1 -maxdepth 1 -type d | head -n 1)
+    nested_dir=$(find /app/data -mindepth 1 -maxdepth 1 -type d ! -name "__MACOSX" | head -n 1)
     if [ -n "$nested_dir" ]; then
       echo "[demo] Flattening nested directory $nested_dir into /app/data..."
       cp -r "$nested_dir"/* /app/data/ 2>/dev/null || true
       rm -rf "$nested_dir"
     fi
   fi
+  rm -rf /app/data/__MACOSX /app/data/._* 2>/dev/null || true
 
   # Restore fallback baked-in chrome.json if extracted ZIP did not contain one
   if [ ! -f /app/data/chrome.json ] && [ -f /tmp/chrome.json ]; then
