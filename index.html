@@ -40,8 +40,7 @@
       
       <p class="p">Launch the complete React Harness documentation system (data-store, renderer, mcp-server, and optional rag-service) using Docker Compose:</p>
       
-      <pre class="pre codeblock alert alert-secondary language-bash"><code><span class="ph token comment"># Launch all documentation services in the background</span>
-<span class="keyword cmdname">docker</span> compose up -d</code></pre>
+      <pre class="pre codeblock alert alert-secondary language-bash"><code><span class="keyword cmdname">docker</span> compose up -d</code></pre>
 
       <p class="p">Once launched, access the system services in your browser:</p>
       <ul class="ul">
@@ -73,8 +72,7 @@
     <section class="section"><h2 class="title h4">Publishing Documentation</h2>
       
       <p class="p">Upload the generated document output to the data-store via its REST API:</p>
-      <pre class="pre codeblock alert alert-secondary language-bash"><code>
-<span class="keyword cmdname"><span class="ph token function">curl</span></span> -X POST --data-binary <span class="ph filepath">@path/to/output/document.zip</span> <span class="ph token punctuation">\</span>
+      <pre class="pre codeblock alert alert-secondary language-bash"><code><span class="keyword cmdname"><span class="ph token function">curl</span></span> -X POST --data-binary <span class="ph filepath">@path/to/output/document.zip</span> <span class="ph token punctuation">\</span>
      -H <span class="ph token string">"Content-Type: application/zip"</span> <span class="ph token punctuation">\</span>
      http://<strong class="ph b"><span class="ph token operator">&lt;</span>data-store<span class="ph token operator">&gt;</span></strong>/api/docs/<span class="ph token operator">&lt;</span>document-id<span class="ph token operator">&gt;</span></code></pre>
 
