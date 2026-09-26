@@ -13,6 +13,8 @@ services:
     environment:
       - PORT=4000
       - DATA_DIR=/app/data
+      # optional bearer token guarding POST/PUT/DELETE /api/docs/<id>; unset = auth disabled
+      - AUTH_TOKEN=${AUTH_TOKEN:-}
     volumes:
       - ./data-store/data:/app/data
     restart: unless-stopped
@@ -61,11 +63,11 @@ services:
       dockerfile: Dockerfile
     container_name: renderer
     ports:
-      - "3100:3100"
+      - "3000:3000"
     env_file:
       - .env
     environment:
-      - PORT=3100
+      - PORT=3000
       - INTERNAL_DATA_URL=http://data-store:4000/data
       - INTERNAL_API_URL=http://data-store:4000/api
       - NEXT_PUBLIC_DATA_URL=http://localhost:4000/data
@@ -74,7 +76,7 @@ services:
       - BOOTSTRAP_THEME=default
       - NAVBAR_THEME=dark
       - NAVBAR_TEXT=dark
-      - OPEN_GRAPH_URL=http://localhost:3100
+      - OPEN_GRAPH_URL=http://localhost:3000
     depends_on:
       - data-store
       - mcp-server

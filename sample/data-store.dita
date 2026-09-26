@@ -55,6 +55,14 @@ docker run -d -p 4000:4000 \
           <pt><codeph>DEFAULT_LANGUAGE</codeph></pt>
           <pd>Fallback IETF BCP 47 language code for document set discovery (default: <codeph>en</codeph>).</pd>
         </plentry>
+        <plentry>
+          <pt><codeph>MAX_UPLOAD_SIZE</codeph></pt>
+          <pd>Max body size accepted by the <codeph>POST</codeph>/<codeph>PUT /api/docs/&lt;id&gt;</codeph> zip uploads (default: <codeph>100mb</codeph>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>AUTH_TOKEN</codeph></pt>
+          <pd>Optional bearer token guarding the <codeph>/api/docs/&lt;id&gt;</codeph> and <codeph>/api/chrome</codeph> write routes. Unset by default, which disables auth entirely.</pd>
+        </plentry>
       </parml>
     </section>
 
@@ -62,9 +70,41 @@ docker run -d -p 4000:4000 \
       <title>REST Endpoints</title>
       <ul>
         <li><codeph>GET /api/docs</codeph> — Returns a JSON array of all discovered documentation sets with OASIS metadata.</li>
+        <li><codeph>GET /api/docs/&lt;id&gt;</codeph> — Returns the summary for one doc set. <codeph>404</codeph> if <codeph>&lt;id&gt;</codeph> doesn't exist.</li>
+        <li><codeph>HEAD /api/docs/&lt;id&gt;</codeph> — <codeph>200</codeph> if <codeph>&lt;id&gt;</codeph> exists, <codeph>404</codeph> otherwise. No body.</li>
+        <li><codeph>POST /api/docs/&lt;id&gt;</codeph> (body: <codeph>application/zip</codeph>) — Extracts the zip into a new <codeph>&lt;id&gt;</codeph> folder. <codeph>201</codeph> on success, <codeph>409</codeph> if <codeph>&lt;id&gt;</codeph> already exists.</li>
+        <li><codeph>PUT /api/docs/&lt;id&gt;</codeph> (body: <codeph>application/zip</codeph>) — Replaces the existing <codeph>&lt;id&gt;</codeph> folder's contents with the zip. <codeph>200</codeph> on success, <codeph>404</codeph> if <codeph>&lt;id&gt;</codeph> doesn't exist.</li>
+        <li><codeph>DELETE /api/docs/&lt;id&gt;</codeph> — Removes the <codeph>&lt;id&gt;</codeph> folder. <codeph>204</codeph> on success, <codeph>404</codeph> if it doesn't exist.</li>
+        <li><codeph>GET /api/chrome</codeph> — Returns the shared layout/nav data (<filepath>chrome.json</filepath>).</li>
+        <li><codeph>PUT /api/chrome</codeph> (body: <codeph>application/json</codeph>) — Overwrites <filepath>chrome.json</filepath> with the request body. <codeph>200</codeph> on success.</li>
         <li><codeph>GET /health</codeph> — Health check endpoint returning server status and active data directory path.</li>
         <li><codeph>GET /data/...</codeph> — Static file mount for <filepath>toc.json</filepath>, topic files, and search indices.</li>
       </ul>
+      <p><codeph>&lt;id&gt;</codeph> may contain <codeph>/</codeph> for nested doc-set groups (e.g. <codeph>group/subdoc</codeph>). Error responses from the write endpoints use <xref href="https://www.rfc-editor.org/rfc/rfc9457.html" format="html" scope="external">RFC 9457</xref> <codeph>application/problem+json</codeph> bodies (<codeph>type</codeph>, <codeph>title</codeph>, <codeph>status</codeph>, <codeph>detail</codeph>).</p>
+      <p><codeph>POST</codeph>/<codeph>PUT /api/docs/&lt;id&gt;</codeph> bodies must be <codeph>Content-Type: application/zip</codeph> and a real zip, checked by its local-file-header magic bytes rather than trusting the header — <codeph>415</codeph> otherwise. <codeph>PUT /api/chrome</codeph> bodies must be <codeph>Content-Type: application/json</codeph> and parse as JSON — <codeph>415</codeph> otherwise. Bodies over <codeph>MAX_UPLOAD_SIZE</codeph> get <codeph>413</codeph> on either route.</p>
+    </section>
+
+    <section>
+      <title>Authorization</title>
+      <p><codeph>POST</codeph>/<codeph>PUT</codeph>/<codeph>DELETE /api/docs/&lt;id&gt;</codeph> and <codeph>PUT /api/chrome</codeph> are guarded by an optional bearer token, set via <codeph>AUTH_TOKEN</codeph>. Auth is off by default so the harness stays zero-config for local dev — if <codeph>AUTH_TOKEN</codeph> is unset, every request to these routes is allowed. If it's set, requests must send <codeph>Authorization: Bearer &lt;AUTH_TOKEN&gt;</codeph> or get <codeph>401</codeph> (with a <codeph>WWW-Authenticate: Bearer</codeph> header). <codeph>GET</codeph>/<codeph>HEAD</codeph>/<codeph>/data</codeph> stay open either way — this only guards writes.</p>
+      <codeblock outputclass="language-bash">curl -X POST --data-binary @docset.zip \
+  -H "Content-Type: application/zip" \
+  -H "Authorization: Bearer $AUTH_TOKEN" \
+  http://localhost:4000/api/docs/my-doc-set</codeblock>
+    </section>
+
+    <section id="chrome-upload">
+      <title>Publishing chrome.json</title>
+      <p>The <option>ast-chrome</option> transtype (see <xref href="generating-chrome.dita">Generating Chrome</xref>) writes <filepath>chrome.json</filepath> to a local output directory. Publish it with <codeph>PUT /api/chrome</codeph> rather than copying the file directly — the request is validated the same way regardless of whether data-store is running on the same host or behind a network or container boundary, and nothing on disk changes unless the body passes validation.</p>
+      <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+     <parmname>--format</parmname>=<option>ast-chrome</option> \
+     <parmname>--output</parmname>=path/to/output
+
+<cmdname>curl</cmdname> -X PUT --data-binary @path/to/output/chrome.json \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer $AUTH_TOKEN" \
+     http://localhost:4000/api/chrome</codeblock>
+      <p>Omit the <codeph>Authorization</codeph> header entirely if <codeph>AUTH_TOKEN</codeph> is unset on the server. A successful request returns <codeph>200</codeph> with the new <filepath>chrome.json</filepath> content; see <b>REST Endpoints</b> above for the <codeph>415</codeph> (bad content type or invalid JSON), <codeph>413</codeph> (over <codeph>MAX_UPLOAD_SIZE</codeph>), and <codeph>401</codeph> failure cases.</p>
     </section>
   </body>
 </topic>

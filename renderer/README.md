@@ -29,7 +29,7 @@ npm install
 ### Development Mode
 
 ```console
-npm run dev -- -p 3100
+npm run dev
 ```
 
 ### Production Build & Startup
@@ -74,7 +74,7 @@ When no custom `--args.hdr` or `--args.ftr` parameters are specified, `renderer`
 
 | Variable | Default | Description |
 |---|---|---|
-| `PORT` | `3100` | HTTP port for Next.js web application. |
+| `PORT` | `3000` | HTTP port for Next.js web application. |
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). |
 | `OPEN_GRAPH_URL` | *(empty)* | Base URL used to generate `og:url` and `twitter:url` metadata tags. |
 | `CUSTOM_CSS_PATH` | *(null)* | Path or URL to an additional custom stylesheet. |

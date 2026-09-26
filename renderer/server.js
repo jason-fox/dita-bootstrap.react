@@ -6,7 +6,7 @@ const os = require("os");
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "0.0.0.0";
-const port = parseInt(process.env.PORT || "3100", 10);
+const port = parseInt(process.env.PORT || "3000", 10);
 
 const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
 const numWorkers = envWorkers

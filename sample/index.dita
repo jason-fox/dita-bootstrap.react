@@ -23,27 +23,7 @@
       <p>The <b>DITA Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, querying content via semantic vector search (RAG Service), and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
     </section>
 
-    <section>
-      <title>Publishing &amp; Adding Documentation</title>
-      <p>Adding documentation to the library involves two primary publishing tasks:</p>
-      <ol>
-        <li><b>Generating AST:</b> Publish your DITA map using the <option>ast-bootstrap</option> format directly into the data store output folder:
-          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
-     <parmname>--format</parmname>=<option>ast-bootstrap</option> \
-     <parmname>--output</parmname>=react-harness/data-store/data/my-doc-set</codeblock>
-          See <xref href="generating-ast.dita">Generating AST</xref> for detailed instructions on AST publishing and custom header/footer include templates.
-        </li>
-        <li><b>Generating Chrome:</b> Generate global fallback chrome layouts using the <option>ast-chrome</option> format and sync <filepath>chrome.json</filepath>:
-          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
-     <parmname>--format</parmname>=<option>ast-chrome</option> \
-     <parmname>--output</parmname>=path/to/output
 
-<cmdname>rsync</cmdname> -a --delete path/to/output/chrome.json react-harness/data-store/data/chrome.json</codeblock>
-          See <xref href="generating-chrome.dita">Generating Chrome</xref> for detailed instructions on overridable chrome elements.
-        </li>
-      </ol>
-      <p>The system automatically detects published document sets, builds search indices, and displays them in your documentation catalog.</p>
-    </section>
 
     <section>
       <title>Quick Start with Docker Compose</title>
@@ -59,6 +39,43 @@
         <li><b>RAG Vector Search Service:</b> <filepath>http://localhost:4002/health</filepath> — Check semantic vector search status.</li>
       </ul>
     </section>
+
+
+        <section>
+      <title>Creating Documentation</title>
+      <p>Generate a document set's AST content using DITA-OT:</p>
+      <ol>
+        <li><b>Generating AST:</b> Publish your DITA map using the <option>ast-bootstrap</option> format:
+          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
+     <parmname>--format</parmname>=<option>ast-bootstrap</option></codeblock>
+          See <xref href="generating-ast.dita">Generating AST</xref> for detailed instructions on AST publishing and custom header/footer templates.
+        </li>
+        <li><b>Generating Chrome:</b> Generate global chrome layouts for the React web application using the <option>ast-chrome</option> format:
+          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
+     <parmname>--format</parmname>=<option>ast-chrome</option> \
+     <parmname>--output</parmname>=path/to/output</codeblock>
+          See <xref href="generating-chrome.dita">Generating Chrome</xref> for overridable chrome elements.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <title>Publishing Documentation</title>
+      <p>Upload the generated document output to the data-store via its REST API:</p>
+      <codeblock outputclass="language-bash">
+<cmdname>curl</cmdname> -X POST --data-binary <filepath>@path/to/output/document.zip</filepath> \
+     -H "Content-Type: application/zip" \
+     http://<b>&lt;data-store&gt;</b>/api/docs/&lt;document-id&gt;</codeblock>
+
+     <p>The system automatically detects published document sets, builds search indices, and displays them in your documentation catalog. See <xref href="data-store.dita">Data Store Service</xref> for the full upload API, including authorization and validation rules.</p>
+
+    <p>Publish updates to the global chrome layout:</p>
+    <codeblock outputclass="language-bash"><cmdname>curl</cmdname> -X PUT --data-binary <filepath>@path/to/output/chrome.json</filepath> \
+     -H "Content-Type: application/json" \
+     http://<b>&lt;data-store&gt;</b>/api/chrome</codeblock>
+      
+    </section>
+    <p>Chrome updates are published immediately</p>
 
     <section>
       <title>Viewing, Rendering &amp; Navigation Features</title>

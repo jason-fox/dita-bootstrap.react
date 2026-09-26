@@ -46,8 +46,30 @@ Listens on `PORT` (default `4000`) and serves `DATA_DIR` (default `./data`).
 ### HTTP Endpoints
 
 - **`GET /api/docs`**: Returns JSON array of all discovered documentation sets (`{ id, title, group, topicCount, navToc, scrollspyToc }`).
+- **`GET /api/docs/<id>`**: Returns the summary for one doc set (same shape as an `/api/docs` array entry). 404 if `<id>` doesn't exist.
+- **`HEAD /api/docs/<id>`**: 200 if `<id>` exists, 404 otherwise. No body.
+- **`POST /api/docs/<id>`** (body: `application/zip`): Extracts the zip into a new `<id>` folder. 201 on success, 409 if `<id>` already exists.
+- **`PUT /api/docs/<id>`** (body: `application/zip`): Replaces the existing `<id>` folder's contents with the zip. 200 on success, 404 if `<id>` doesn't exist.
+- **`DELETE /api/docs/<id>`**: Removes the `<id>` folder. 204 on success, 404 if it doesn't exist.
+- **`GET /api/chrome`**: Returns the shared layout/nav data (`chrome.json`).
+- **`PUT /api/chrome`** (body: `application/json`): Overwrites `chrome.json` with the request body. 200 on success.
 - **`GET /health`**: Health check returning server status and resolved `DATA_DIR`.
 - **`GET /data/...`**: Static mount for `toc.json`, topic files, and `search-index.json`.
+
+`<id>` may contain `/` for nested doc-set groups (e.g. `group/subdoc`). Error responses for the write endpoints use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) `application/problem+json` bodies (`type`, `title`, `status`, `detail`).
+
+`POST`/`PUT /api/docs/<id>` bodies must be `Content-Type: application/zip` and a real zip (checked by its local-file-header magic bytes, not just the header) - 415 otherwise. `PUT /api/chrome` bodies must be `Content-Type: application/json` and parse as JSON - 415 otherwise. Bodies over `MAX_UPLOAD_SIZE` are rejected with 413 on either route.
+
+### Authorization
+
+`POST`/`PUT`/`DELETE /api/docs/<id>` and `PUT /api/chrome` are guarded by an optional bearer token, set via `AUTH_TOKEN`. Auth is off by default (zero-config for local dev) - if `AUTH_TOKEN` is unset, every request to these routes is allowed. If it's set, requests must send `Authorization: Bearer <AUTH_TOKEN>` or get `401` (with a `WWW-Authenticate: Bearer` header). `GET`/`HEAD`/`/data` stay open either way - this only guards writes.
+
+```console
+curl -X POST --data-binary @docset.zip \
+  -H "Content-Type: application/zip" \
+  -H "Authorization: Bearer $AUTH_TOKEN" \
+  http://localhost:4000/api/docs/my-doc-set
+```
 
 ### Environment Variables
 
@@ -56,6 +78,8 @@ Listens on `PORT` (default `4000`) and serves `DATA_DIR` (default `./data`).
 | `PORT` | `4000` | Port for the Express server to listen on. |
 | `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
 | `DEFAULT_LANGUAGE` | `"en"` | Default language code for document discovery. |
+| `MAX_UPLOAD_SIZE` | `"100mb"` | Max body size accepted by `POST`/`PUT /api/docs/<id>` zip uploads. |
+| `AUTH_TOKEN` | *(unset)* | Bearer token required on `/api/docs/<id>` writes. Auth is disabled when unset. |
 
 ## Contributing
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
 <bookmap>
-  <title>React Harness &amp; DITA Bootstrap AST Documentation</title>
+  <title>DITA Bootstrap Harness &amp; AST Documentation</title>
   <frontmatter deliveryTarget="pdf">
     <booklists>
       <toc/>
@@ -9,23 +9,23 @@
   </frontmatter>
   <chapter>
     <topicmeta>
-      <navtitle>Getting Started</navtitle>
+      <navtitle>DITA Bootstrap Harness</navtitle>
     </topicmeta>
-    <topicref navtitle="Introduction &amp; React Components" href="index.dita" locktitle="yes"/>
+    <topicref navtitle="Getting Started" href="index.dita" locktitle="yes"/>
   </chapter>
   <chapter>
     <topicmeta>
-      <navtitle>Architecture &amp; Components</navtitle>
+      <navtitle>Components</navtitle>
     </topicmeta>
-    <topicref navtitle="Data Store Service (data-store)" href="data-store.dita" locktitle="yes"/>
-    <topicref navtitle="Web Renderer &amp; AI Chat Portal (renderer)" href="renderer.dita" locktitle="yes"/>
-    <topicref navtitle="MCP Server Service (mcp-server)" href="mcp-server.dita" locktitle="yes"/>
-    <topicref navtitle="RAG Vector Search Service (rag-service)" href="rag-service.dita" locktitle="yes"/>
-    <topicref navtitle="Standalone Reference MCP Client (mcp-client)" href="mcp-client.dita" locktitle="yes"/>
+    <topicref navtitle="Data Store" href="data-store.dita" locktitle="yes"/>
+    <topicref navtitle="Web Renderer &amp; AI Chat Portal" href="renderer.dita" locktitle="yes"/>
+    <topicref navtitle="MCP Server" href="mcp-server.dita" locktitle="yes"/>
+    <topicref navtitle="RAG Vector Search Service" href="rag-service.dita" locktitle="yes"/>
+    <topicref navtitle="MCP Client (Standalone)" href="mcp-client.dita" locktitle="yes"/>
   </chapter>
   <chapter>
     <topicmeta>
-      <navtitle>Plug-in &amp; Configuration</navtitle>
+      <navtitle>Document Publication</navtitle>
     </topicmeta>
     <topicref navtitle="Generating AST" href="generating-ast.dita" locktitle="yes"/>
     <topicref navtitle="Generating Chrome" href="generating-chrome.dita" locktitle="yes"/>

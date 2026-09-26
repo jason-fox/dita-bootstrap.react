@@ -2,7 +2,7 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="generating-chrome">
   <title>Generating Chrome</title>
-  <shortdesc>Generating central catalog and chat fallback layout configurations using the <option>ast-chrome</option> transtype and customizing overridable chrome elements.</shortdesc>
+  <shortdesc>Generating central catalog and chat layout configurations using the <option>ast-chrome</option> transtype and customizing overridable chrome elements.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -18,16 +18,21 @@
   </prolog>
   <body>
     <section>
-      <title>Central Fallback Templates Overview (ast-chrome)</title>
-      <p>The <option>ast-chrome</option> transformation type generates the global <filepath>chrome.json</filepath> file. This file provides default fallback layouts for pages and components when individual document sets do not supply custom header or footer templates via <parmname>--args.hdr</parmname> or <parmname>--args.ftr</parmname>:</p>
+      <title>Templates Overview</title>
+      <p>The <option>ast-chrome</option> transformation type generates the global <filepath>chrome.json</filepath> file. This file provides default layouts for pages and components when individual document sets do not supply custom header or footer templates via <parmname>--args.hdr</parmname> or <parmname>--args.ftr</parmname>:</p>
       
-      <codeblock outputclass="language-bash"># Generate global chrome configuration:
-<cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+      <codeblock outputclass="language-bash">
+<cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
      <parmname>--format</parmname>=<option>ast-chrome</option> \
      <parmname>--output</parmname>=path/to/output
+   </codeblock>
 
-# Sync generated chrome.json into the data store:
-<cmdname>rsync</cmdname> -a --delete path/to/output/chrome.json data-store/data/chrome.json</codeblock>
+<p>Publish the generated <filepath>chrome.json</filepath> to data-store via its REST API:</p>
+<codeblock outputclass="language-bash">
+<cmdname>curl</cmdname> -X PUT --data-binary <filepath>@path/to/output/chrome.json</filepath> \
+     -H "Content-Type: application/json" \
+     http://<b>&lt;data-store&gt;</b>/api/chrome</codeblock>
+      <p>See <xref href="data-store.dita#data-store-service/chrome-upload">Publishing chrome.json</xref> in the data-store guide for authorization and validation details (<codeph>AUTH_TOKEN</codeph>, size limits, and error responses).</p>
     </section>
 
     <section>

@@ -156,10 +156,10 @@ cd data-store
 npm install
 npm run dev
 
-# 2. Start renderer (port 3100)
+# 2. Start renderer (port 3000)
 cd ../renderer
 npm install
-npm run dev -- -p 3100
+npm run dev
 
 # 3. Start mcp-server (stdio or Streamable HTTP port 4001)
 cd ../mcp-server
@@ -173,7 +173,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3100` for the Next.js web application and integrated AI Assistant (`/chat`).
+Open `http://localhost:3000` for the Next.js web application and integrated AI Assistant (`/chat`).
 
 ### 2. Docker Compose Startup
 
@@ -218,7 +218,7 @@ Add `mcp-server` to your AI assistant configuration (Claude Desktop, Cursor, Ant
 
 | Variable | Default | Description |
 |---|---|---|
-| `PORT` | `3100` | Port for the Next.js web application to listen on. |
+| `PORT` | `3000` | Port for the Next.js web application to listen on. |
 | `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). |
 | `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language code for root `<html lang="...">`. |
 | `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags. |

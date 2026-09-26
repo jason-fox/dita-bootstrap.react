@@ -31,22 +31,20 @@
       <p>Publishing a DITA map to JSON AST requires a single DITA-OT execution command using the <option>ast-bootstrap</option> transformation type:</p>
       
       <codeblock outputclass="language-bash"># Publish documentation directly into the data store directory:
-<cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
-     <parmname>--format</parmname>=<option>ast-bootstrap</option> \
-     <parmname>--output</parmname>=data-store/data/my-doc-set</codeblock>
+<cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
+     <parmname>--format</parmname>=<option>ast-bootstrap</option></codeblock>
 
-      <p>The output directory contains <filepath>toc.json</filepath> alongside AST JSON topic files. Once published, <filepath>data-store</filepath> automatically discovers the document set and adds it to the catalog.</p>
+      <p>The output directory contains a zip file holding the <filepath>toc.json</filepath> alongside AST JSON topic files. Once published, <filepath>data-store</filepath> automatically discovers the document set and adds it to the catalog.</p>
     </section>
 
     <section>
       <title>Customizing Headers &amp; Footers via Build Parameters</title>
       <p>Custom navigation headers and footers can be attached at publish time using the <parmname>--args.hdr</parmname> and <parmname>--args.ftr</parmname> build parameters:</p>
       
-      <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=path/to/your.ditamap \
+      <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
      <parmname>--format</parmname>=<option>ast-bootstrap</option> \
-     <parmname>--args.hdr</parmname>=path/to/custom-header.xml \
-     <parmname>--args.ftr</parmname>=path/to/custom-footer.xml \
-     <parmname>--output</parmname>=data-store/data/my-doc-set</codeblock>
+     <parmname>--args.hdr</parmname>=<filepath>path/to/custom-header.xml</filepath> \
+     <parmname>--args.ftr</parmname>=<filepath>path/to/custom-footer.xml</filepath></codeblock>
 
       <p>You can reference the following existing XML include files provided by the plug-in suite as functional examples:</p>
       <ul>
@@ -126,15 +124,6 @@
           </pd>
         </plentry>
       </parml>
-    </section>
-
-    <section>
-      <title>AST Directory &amp; File Structure</title>
-      <p>When publishing with <parmname>--format</parmname>=<option>ast-bootstrap</option>, DITA-OT creates the target directory containing:</p>
-      <ul>
-        <li><filepath>toc.json</filepath> — Manifest file describing document title, navigation structure, language metadata, header AST layout, and topic hierarchy.</li>
-        <li>Topic JSON files (e.g., <filepath>index.json</filepath>, <filepath>getting-started.json</filepath>) — Serialized tuple arrays representing React component trees (<codeph>[type, props?, ...children]</codeph>).</li>
-      </ul>
     </section>
   </body>
 </topic>
