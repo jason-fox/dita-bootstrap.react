@@ -62,19 +62,16 @@ Write operations (<code class="ph codeph">POST</code>, <code class="ph codeph">P
 </section>
 </div>
 </article>
-<article class="topic nested1" aria-labelledby="ariaid-title3" id="paths">
-<h2 class="title" id="ariaid-title3">Paths</h2>
-<div class="body"></div>
-<article class="topic nested2" aria-labelledby="ariaid-title4" id="system">
-<h3 class="title" id="ariaid-title4">System</h3>
+<article class="topic nested1" aria-labelledby="ariaid-title3" id="system">
+<h2 class="title" id="ariaid-title3">System</h2>
 <div class="body">
 <p class="p">Server health and diagnostics</p>
 </div>
-<article class="topic nested3 swagger-get" aria-labelledby="ariaid-title5" id="gethealth">
-<h4 class="title" id="ariaid-title5">Health check</h4>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title4" id="gethealth">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title4"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/health</code></pre>
-<section class="section" id="gethealth__responses"><h5 class="title h4">Responses</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/health</code> <b>Health check</b></pre>
+<section class="section" id="gethealth__responses"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="gethealth__responses__entry__1">HTTP Code</th><th class="entry" id="gethealth__responses__entry__2">Description</th><th class="entry" id="gethealth__responses__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -84,36 +81,30 @@ Write operations (<code class="ph codeph">POST</code>, <code class="ph codeph">P
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="gethealth__produces"><h5 class="title h4">Produces</h5>
+<section class="section" id="gethealth__produces"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 </ul>
 </section>
-<section class="section" id="gethealth__tags-1"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">System</li>
-</ul>
-</section>
 </div>
 </article>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title6" id="document-sets">
-<h3 class="title" id="ariaid-title6">Document Sets</h3>
+<article class="topic nested1" aria-labelledby="ariaid-title5" id="document-sets">
+<h2 class="title" id="ariaid-title5">Document Sets</h2>
 <div class="body">
 <p class="p">Manage collections of AST-rendered DITA topics</p>
 </div>
-<article class="topic nested3 swagger-get" aria-labelledby="ariaid-title7" id="listdocsets">
-<h4 class="title" id="ariaid-title7">List all document sets</h4>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title6" id="listdocsets">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title6"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/docs</code></pre>
-<section class="section" id="listdocsets__description"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/docs</code> <b>List all document sets</b></pre>
+<section class="section" id="listdocsets__description"><h4 class="title h4">Description</h4>
 
 <p class="p">Returns all discovered document sets (directories with <code class="ph codeph">toc.json</code>).
 Ordered by featured/priority/title.</p>
 </section>
-<section class="section" id="listdocsets__responses-1"><h5 class="title h4">Responses</h5>
+<section class="section" id="listdocsets__responses-1"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="listdocsets__responses-1__entry__1">HTTP Code</th><th class="entry" id="listdocsets__responses-1__entry__2">Description</th><th class="entry" id="listdocsets__responses-1__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -123,29 +114,23 @@ Ordered by featured/priority/title.</p>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="listdocsets__produces-1"><h5 class="title h4">Produces</h5>
+<section class="section" id="listdocsets__produces-1"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 </ul>
 </section>
-<section class="section" id="listdocsets__tags-2"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-get" aria-labelledby="ariaid-title8" id="listbooks">
-<h4 class="title" id="ariaid-title8">List all document sets (legacy alias)</h4>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title7" id="listbooks">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title7"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/books</code></pre>
-<section class="section" id="listbooks__description-1"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/books</code> <b>List all document sets (legacy alias)</b></pre>
+<section class="section" id="listbooks__description-1"><h4 class="title h4">Description</h4>
 
 <p class="p">Backward compatibility alias for <code class="ph codeph">/api/docs</code></p>
 </section>
-<section class="section" id="listbooks__responses-2"><h5 class="title h4">Responses</h5>
+<section class="section" id="listbooks__responses-2"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="listbooks__responses-2__entry__1">HTTP Code</th><th class="entry" id="listbooks__responses-2__entry__2">Description</th><th class="entry" id="listbooks__responses-2__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -155,25 +140,19 @@ Ordered by featured/priority/title.</p>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="listbooks__produces-2"><h5 class="title h4">Produces</h5>
+<section class="section" id="listbooks__produces-2"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 </ul>
 </section>
-<section class="section" id="listbooks__tags-3"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-get" aria-labelledby="ariaid-title9" id="getdocset">
-<h4 class="title" id="ariaid-title9">Get document set metadata</h4>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title8" id="getdocset">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title8"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/docs/{docSetId}</code></pre>
-<section class="section" id="getdocset__parameters"><h5 class="title h4">Parameters</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/docs/{docSetId}</code> <b>Get document set metadata</b></pre>
+<section class="section" id="getdocset__parameters"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getdocset__parameters__entry__1">Type</th><th class="entry" id="getdocset__parameters__entry__2">Name</th><th class="entry" id="getdocset__parameters__entry__3">Description</th><th class="entry" id="getdocset__parameters__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -186,7 +165,7 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="getdocset__responses-3"><h5 class="title h4">Responses</h5>
+<section class="section" id="getdocset__responses-3"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getdocset__responses-3__entry__1">HTTP Code</th><th class="entry" id="getdocset__responses-3__entry__2">Description</th><th class="entry" id="getdocset__responses-3__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -201,32 +180,26 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="getdocset__produces-3"><h5 class="title h4">Produces</h5>
+<section class="section" id="getdocset__produces-3"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 <li class="li"><code class="ph codeph">application/problem+json</code></li>
 </ul>
 </section>
-<section class="section" id="getdocset__tags-4"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-put" aria-labelledby="ariaid-title10" id="updatedocset">
-<h4 class="title" id="ariaid-title10">Update an existing document set</h4>
+<article class="topic nested2 swagger-put" aria-labelledby="ariaid-title9" id="updatedocset">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title9"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-put"><code><span class="swagger-verb">PUT</span>/api/docs/{docSetId}</code></pre>
-<section class="section" id="updatedocset__description-2"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-put"><code><span class="swagger-verb">PUT</span>/api/docs/{docSetId}</code> <b>Update an existing document set</b></pre>
+<section class="section" id="updatedocset__description-2"><h4 class="title h4">Description</h4>
 
 <p class="p">Replaces all content in an existing document set with a new zip archive.
 Fails with 404 if the doc set doesn't exist.
 Automatically rebuilds search index after extraction.</p>
 </section>
-<section class="section" id="updatedocset__parameters-1"><h5 class="title h4">Parameters</h5>
+<section class="section" id="updatedocset__parameters-1"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatedocset__parameters-1__entry__1">Type</th><th class="entry" id="updatedocset__parameters-1__entry__2">Name</th><th class="entry" id="updatedocset__parameters-1__entry__3">Description</th><th class="entry" id="updatedocset__parameters-1__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -245,7 +218,7 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="updatedocset__responses-4"><h5 class="title h4">Responses</h5>
+<section class="section" id="updatedocset__responses-4"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatedocset__responses-4__entry__1">HTTP Code</th><th class="entry" id="updatedocset__responses-4__entry__2">Description</th><th class="entry" id="updatedocset__responses-4__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -280,32 +253,26 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="updatedocset__produces-4"><h5 class="title h4">Produces</h5>
+<section class="section" id="updatedocset__produces-4"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 <li class="li"><code class="ph codeph">application/problem+json</code></li>
 </ul>
 </section>
-<section class="section" id="updatedocset__tags-5"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-post" aria-labelledby="ariaid-title11" id="createdocset">
-<h4 class="title" id="ariaid-title11">Create a new document set</h4>
+<article class="topic nested2 swagger-post" aria-labelledby="ariaid-title10" id="createdocset">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title10"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-post"><code><span class="swagger-verb">POST</span>/api/docs/{docSetId}</code></pre>
-<section class="section" id="createdocset__description-3"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-post"><code><span class="swagger-verb">POST</span>/api/docs/{docSetId}</code> <b>Create a new document set</b></pre>
+<section class="section" id="createdocset__description-3"><h4 class="title h4">Description</h4>
 
 <p class="p">Uploads a zip archive containing AST-rendered DITA content.
 Fails with 409 if the doc set already exists.
 Automatically builds search index after extraction.</p>
 </section>
-<section class="section" id="createdocset__parameters-2"><h5 class="title h4">Parameters</h5>
+<section class="section" id="createdocset__parameters-2"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="createdocset__parameters-2__entry__1">Type</th><th class="entry" id="createdocset__parameters-2__entry__2">Name</th><th class="entry" id="createdocset__parameters-2__entry__3">Description</th><th class="entry" id="createdocset__parameters-2__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -324,7 +291,7 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="createdocset__responses-5"><h5 class="title h4">Responses</h5>
+<section class="section" id="createdocset__responses-5"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="createdocset__responses-5__entry__1">HTTP Code</th><th class="entry" id="createdocset__responses-5__entry__2">Description</th><th class="entry" id="createdocset__responses-5__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -359,30 +326,24 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="createdocset__produces-5"><h5 class="title h4">Produces</h5>
+<section class="section" id="createdocset__produces-5"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 <li class="li"><code class="ph codeph">application/problem+json</code></li>
 </ul>
 </section>
-<section class="section" id="createdocset__tags-6"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-delete" aria-labelledby="ariaid-title12" id="deletedocset">
-<h4 class="title" id="ariaid-title12">Delete a document set</h4>
+<article class="topic nested2 swagger-delete" aria-labelledby="ariaid-title11" id="deletedocset">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title11"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-delete"><code><span class="swagger-verb">DELETE</span>/api/docs/{docSetId}</code></pre>
-<section class="section" id="deletedocset__description-4"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-delete"><code><span class="swagger-verb">DELETE</span>/api/docs/{docSetId}</code> <b>Delete a document set</b></pre>
+<section class="section" id="deletedocset__description-4"><h4 class="title h4">Description</h4>
 
 <p class="p">Removes the entire document set directory and all its contents.</p>
 </section>
-<section class="section" id="deletedocset__parameters-3"><h5 class="title h4">Parameters</h5>
+<section class="section" id="deletedocset__parameters-3"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="deletedocset__parameters-3__entry__1">Type</th><th class="entry" id="deletedocset__parameters-3__entry__2">Name</th><th class="entry" id="deletedocset__parameters-3__entry__3">Description</th><th class="entry" id="deletedocset__parameters-3__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -395,7 +356,7 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="deletedocset__responses-6"><h5 class="title h4">Responses</h5>
+<section class="section" id="deletedocset__responses-6"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="deletedocset__responses-6__entry__1">HTTP Code</th><th class="entry" id="deletedocset__responses-6__entry__2">Description</th><th class="entry" id="deletedocset__responses-6__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -415,25 +376,19 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="deletedocset__produces-6"><h5 class="title h4">Produces</h5>
+<section class="section" id="deletedocset__produces-6"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/problem+json</code></li>
 </ul>
 </section>
-<section class="section" id="deletedocset__tags-7"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-head" aria-labelledby="ariaid-title13" id="checkdocsetexists">
-<h4 class="title" id="ariaid-title13">Check if document set exists</h4>
+<article class="topic nested2 swagger-head" aria-labelledby="ariaid-title12" id="checkdocsetexists">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title12"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-head"><code><span class="swagger-verb">HEAD</span>/api/docs/{docSetId}</code></pre>
-<section class="section" id="checkdocsetexists__parameters-4"><h5 class="title h4">Parameters</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-head"><code><span class="swagger-verb">HEAD</span>/api/docs/{docSetId}</code> <b>Check if document set exists</b></pre>
+<section class="section" id="checkdocsetexists__parameters-4"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="checkdocsetexists__parameters-4__entry__1">Type</th><th class="entry" id="checkdocsetexists__parameters-4__entry__2">Name</th><th class="entry" id="checkdocsetexists__parameters-4__entry__3">Description</th><th class="entry" id="checkdocsetexists__parameters-4__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -446,7 +401,7 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="checkdocsetexists__responses-7"><h5 class="title h4">Responses</h5>
+<section class="section" id="checkdocsetexists__responses-7"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="checkdocsetexists__responses-7__entry__1">HTTP Code</th><th class="entry" id="checkdocsetexists__responses-7__entry__2">Description</th><th class="entry" id="checkdocsetexists__responses-7__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -461,30 +416,24 @@ Cannot contain ".." or start with "/" (path traversal blocked).</td>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="checkdocsetexists__tags-8"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Document Sets</li>
-</ul>
-</section>
 </div>
 </article>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title14" id="configuration">
-<h3 class="title" id="ariaid-title14">Configuration</h3>
+<article class="topic nested1" aria-labelledby="ariaid-title13" id="configuration">
+<h2 class="title" id="ariaid-title13">Configuration</h2>
 <div class="body">
 <p class="p">Shared UI chrome configuration</p>
 </div>
-<article class="topic nested3 swagger-get" aria-labelledby="ariaid-title15" id="getchrome">
-<h4 class="title" id="ariaid-title15">Get chrome (UI chrome) configuration</h4>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title14" id="getchrome">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title14"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/chrome</code></pre>
-<section class="section" id="getchrome__description-5"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/chrome</code> <b>Get chrome (UI chrome) configuration</b></pre>
+<section class="section" id="getchrome__description-5"><h4 class="title h4">Description</h4>
 
 <p class="p">Retrieves the shared UI chrome configuration from <code class="ph codeph">chrome.json</code>.
 Contains strings and state used across all document sets (headers, footers, etc).</p>
 </section>
-<section class="section" id="getchrome__responses-8"><h5 class="title h4">Responses</h5>
+<section class="section" id="getchrome__responses-8"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getchrome__responses-8__entry__1">HTTP Code</th><th class="entry" id="getchrome__responses-8__entry__2">Description</th><th class="entry" id="getchrome__responses-8__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -494,29 +443,23 @@ Contains strings and state used across all document sets (headers, footers, etc)
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="getchrome__produces-7"><h5 class="title h4">Produces</h5>
+<section class="section" id="getchrome__produces-7"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 </ul>
 </section>
-<section class="section" id="getchrome__tags-9"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Configuration</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-put" aria-labelledby="ariaid-title16" id="updatechromeput">
-<h4 class="title" id="ariaid-title16">Update chrome configuration (PUT)</h4>
+<article class="topic nested2 swagger-put" aria-labelledby="ariaid-title15" id="updatechromeput">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title15"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-put"><code><span class="swagger-verb">PUT</span>/api/chrome</code></pre>
-<section class="section" id="updatechromeput__description-6"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-put"><code><span class="swagger-verb">PUT</span>/api/chrome</code> <b>Update chrome configuration (PUT)</b></pre>
+<section class="section" id="updatechromeput__description-6"><h4 class="title h4">Description</h4>
 
 <p class="p">Replaces the entire <code class="ph codeph">chrome.json</code> configuration.</p>
 </section>
-<section class="section" id="updatechromeput__parameters-5"><h5 class="title h4">Parameters</h5>
+<section class="section" id="updatechromeput__parameters-5"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromeput__parameters-5__entry__1">Type</th><th class="entry" id="updatechromeput__parameters-5__entry__2">Name</th><th class="entry" id="updatechromeput__parameters-5__entry__3">Description</th><th class="entry" id="updatechromeput__parameters-5__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -527,7 +470,7 @@ Contains strings and state used across all document sets (headers, footers, etc)
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="updatechromeput__responses-9"><h5 class="title h4">Responses</h5>
+<section class="section" id="updatechromeput__responses-9"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromeput__responses-9__entry__1">HTTP Code</th><th class="entry" id="updatechromeput__responses-9__entry__2">Description</th><th class="entry" id="updatechromeput__responses-9__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -552,30 +495,24 @@ Contains strings and state used across all document sets (headers, footers, etc)
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="updatechromeput__produces-8"><h5 class="title h4">Produces</h5>
+<section class="section" id="updatechromeput__produces-8"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 <li class="li"><code class="ph codeph">application/problem+json</code></li>
 </ul>
 </section>
-<section class="section" id="updatechromeput__tags-10"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Configuration</li>
-</ul>
-</section>
 </div>
 </article>
-<article class="topic nested3 swagger-post" aria-labelledby="ariaid-title17" id="updatechromepost">
-<h4 class="title" id="ariaid-title17">Update chrome configuration (POST)</h4>
+<article class="topic nested2 swagger-post" aria-labelledby="ariaid-title16" id="updatechromepost">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title16"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-post"><code><span class="swagger-verb">POST</span>/api/chrome</code></pre>
-<section class="section" id="updatechromepost__description-7"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-post"><code><span class="swagger-verb">POST</span>/api/chrome</code> <b>Update chrome configuration (POST)</b></pre>
+<section class="section" id="updatechromepost__description-7"><h4 class="title h4">Description</h4>
 
 <p class="p">Replaces the entire <code class="ph codeph">chrome.json</code> configuration. (Alias for PUT)</p>
 </section>
-<section class="section" id="updatechromepost__parameters-6"><h5 class="title h4">Parameters</h5>
+<section class="section" id="updatechromepost__parameters-6"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromepost__parameters-6__entry__1">Type</th><th class="entry" id="updatechromepost__parameters-6__entry__2">Name</th><th class="entry" id="updatechromepost__parameters-6__entry__3">Description</th><th class="entry" id="updatechromepost__parameters-6__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -586,7 +523,7 @@ Contains strings and state used across all document sets (headers, footers, etc)
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="updatechromepost__responses-10"><h5 class="title h4">Responses</h5>
+<section class="section" id="updatechromepost__responses-10"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromepost__responses-10__entry__1">HTTP Code</th><th class="entry" id="updatechromepost__responses-10__entry__2">Description</th><th class="entry" id="updatechromepost__responses-10__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -611,38 +548,32 @@ Contains strings and state used across all document sets (headers, footers, etc)
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="updatechromepost__produces-9"><h5 class="title h4">Produces</h5>
+<section class="section" id="updatechromepost__produces-9"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 <li class="li"><code class="ph codeph">application/problem+json</code></li>
 </ul>
 </section>
-<section class="section" id="updatechromepost__tags-11"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Configuration</li>
-</ul>
-</section>
 </div>
 </article>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title18" id="content">
-<h3 class="title" id="ariaid-title18">Content</h3>
+<article class="topic nested1" aria-labelledby="ariaid-title17" id="content">
+<h2 class="title" id="ariaid-title17">Content</h2>
 <div class="body">
 <p class="p">Serve topic JSON and static files</p>
 </div>
-<article class="topic nested3 swagger-get" aria-labelledby="ariaid-title19" id="gettopiccontent">
-<h4 class="title" id="ariaid-title19">Serve topic JSON or static files</h4>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title18" id="gettopiccontent">
+<a xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="ariaid-title18"></a>
 <div class="body">
-<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/data/{topicPath}</code></pre>
-<section class="section" id="gettopiccontent__description-8"><h5 class="title h4">Description</h5>
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/data/{topicPath}</code> <b>Serve topic JSON or static files</b></pre>
+<section class="section" id="gettopiccontent__description-8"><h4 class="title h4">Description</h4>
 
 <p class="p">Serves AST-rendered topic JSON files and static assets from the data directory.
 File extensions are resolved automatically (<code class="ph codeph">.json</code> added if not present).
 Cache-Control header set to "no-cache" to reflect updates.</p>
 </section>
-<section class="section" id="gettopiccontent__parameters-7"><h5 class="title h4">Parameters</h5>
+<section class="section" id="gettopiccontent__parameters-7"><h4 class="title h4">Parameters</h4>
 
 <div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="gettopiccontent__parameters-7__entry__1">Type</th><th class="entry" id="gettopiccontent__parameters-7__entry__2">Name</th><th class="entry" id="gettopiccontent__parameters-7__entry__3">Description</th><th class="entry" id="gettopiccontent__parameters-7__entry__4">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -659,7 +590,7 @@ Cache-Control header set to "no-cache" to reflect updates.</p>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="gettopiccontent__responses-11"><h5 class="title h4">Responses</h5>
+<section class="section" id="gettopiccontent__responses-11"><h4 class="title h4">Responses</h4>
 
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="gettopiccontent__responses-11__entry__1">HTTP Code</th><th class="entry" id="gettopiccontent__responses-11__entry__2">Description</th><th class="entry" id="gettopiccontent__responses-11__entry__3">Schema</th></tr></thead><tbody class="tbody">
 <tr>
@@ -674,27 +605,20 @@ Cache-Control header set to "no-cache" to reflect updates.</p>
 </tr>
 </tbody></table></div>
 </section>
-<section class="section" id="gettopiccontent__produces-10"><h5 class="title h4">Produces</h5>
+<section class="section" id="gettopiccontent__produces-10"><h4 class="title h4">Produces</h4>
 
 <ul class="ul">
 <li class="li"><code class="ph codeph">application/json</code></li>
 </ul>
 </section>
-<section class="section" id="gettopiccontent__tags-12"><h5 class="title h4">Tags</h5>
-
-<ul class="ul">
-<li class="li">Content</li>
-</ul>
-</section>
 </div>
 </article>
 </article>
-</article>
-<article class="topic nested1" aria-labelledby="ariaid-title20" id="definitions">
-<h2 class="title" id="ariaid-title20">Definitions</h2>
+<article class="topic nested1" aria-labelledby="ariaid-title19" id="definitions">
+<h2 class="title" id="ariaid-title19">Definitions</h2>
 <div class="body"></div>
-<article class="topic nested2" aria-labelledby="ariaid-title21" id="docsetinfo">
-<h3 class="title" id="ariaid-title21">DocSetInfo</h3>
+<article class="topic nested2" aria-labelledby="ariaid-title20" id="docsetinfo">
+<h3 class="title" id="ariaid-title20">DocSetInfo</h3>
 <div class="body">
 <p class="p">Metadata about a document set</p>
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="docsetinfo__entry__1">Name</th><th class="entry" id="docsetinfo__entry__2">Description</th><th class="entry" id="docsetinfo__entry__3">Schema</th></tr></thead><tbody class="tbody">
@@ -751,8 +675,8 @@ Cache-Control header set to "no-cache" to reflect updates.</p>
 </tbody></table></div>
 </div>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title22" id="topic">
-<h3 class="title" id="ariaid-title22">Topic</h3>
+<article class="topic nested2" aria-labelledby="ariaid-title21" id="topic">
+<h3 class="title" id="ariaid-title21">Topic</h3>
 <div class="body">
 <p class="p">A single AST-rendered DITA topic</p>
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="topic__entry__1">Name</th><th class="entry" id="topic__entry__2">Description</th><th class="entry" id="topic__entry__3">Schema</th></tr></thead><tbody class="tbody">
@@ -769,8 +693,8 @@ Cache-Control header set to "no-cache" to reflect updates.</p>
 </tbody></table></div>
 </div>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title23" id="toc">
-<h3 class="title" id="ariaid-title23">TOC</h3>
+<article class="topic nested2" aria-labelledby="ariaid-title22" id="toc">
+<h3 class="title" id="ariaid-title22">TOC</h3>
 <div class="body">
 <p class="p">Merged table of contents for all topics in a doc set</p>
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="toc__entry__1">Name</th><th class="entry" id="toc__entry__2">Description</th><th class="entry" id="toc__entry__3">Schema</th></tr></thead><tbody class="tbody">
@@ -812,13 +736,13 @@ Cache-Control header set to "no-cache" to reflect updates.</p>
 </tbody></table></div>
 </div>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title24" id="astnode">
-<h3 class="title" id="ariaid-title24">AstNode</h3>
+<article class="topic nested2" aria-labelledby="ariaid-title23" id="astnode">
+<h3 class="title" id="ariaid-title23">AstNode</h3>
 <div class="body">
 </div>
 </article>
-<article class="topic nested2" aria-labelledby="ariaid-title25" id="problemdetail">
-<h3 class="title" id="ariaid-title25">ProblemDetail</h3>
+<article class="topic nested2" aria-labelledby="ariaid-title24" id="problemdetail">
+<h3 class="title" id="ariaid-title24">ProblemDetail</h3>
 <div class="body">
 <p class="p">RFC 9457 Problem Details response</p>
 <div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="problemdetail__entry__1">Name</th><th class="entry" id="problemdetail__entry__2">Description</th><th class="entry" id="problemdetail__entry__3">Schema</th></tr></thead><tbody class="tbody">
@@ -846,8 +770,8 @@ Cache-Control header set to "no-cache" to reflect updates.</p>
 </div>
 </article>
 </article>
-<article class="topic nested1" aria-labelledby="ariaid-title26" id="security">
-<h2 class="title" id="ariaid-title26">Security</h2>
+<article class="topic nested1" aria-labelledby="ariaid-title25" id="security">
+<h2 class="title" id="ariaid-title25">Security</h2>
 <div class="body">
 <ul class="ul">
 <li class="li"><strong class="ph b">bearerAuth</strong> (http) : Optional RFC 6750 bearer token (only required if AUTH_TOKEN env var is set).
