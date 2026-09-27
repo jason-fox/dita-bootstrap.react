@@ -1,0 +1,858 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="copyright" content="(C) Copyright 2026"><meta name="generator" content="DITA-OT"><meta property="og:type" content="website"><meta property="og:url" content="https://dita-bootstrap.github.io/src/openapi.html"><meta property="og:title" content="React Harness Documentation - Data Store API"><meta property="og:description" content=""><meta property="og:image" content="https://dita-bootstrap.github.io/open-graph.svg"><meta name="twitter:title" content="React Harness Documentation - Data Store API"><meta name="twitter:description" content=""><meta property="twitter:url" content="https://dita-bootstrap.github.io/src/openapi.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://dita-bootstrap.github.io/open-graph.svg"><title>Data Store API</title><link rel="shortcut icon" href="../favicon/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="../css/commonltr.css">
+<link rel="stylesheet" type="text/css" href="../css/common-extended.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous"></head><body class="d-flex flex-column min-vh-100" id="data-store-api"><div class="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary"><div class="container-xl"><a class="d-inline-flex m-1 btn btn-outline-primary btn-sm" href="#ariaid-title1">Skip to main content</a><a href="#bs-sidebar-nav" class="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm">Skip to docs navigation</a></div></div><header role="banner" class="sticky-top"><nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Modify -xxl to change container size -->
+  <div class="container-xxl">
+    <!-- This shows the menu on mobile -->
+    <div class="d-none d-sm-block d-md-none">
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdSidebar" aria-controls="bdSidebar" aria-label="Toggle docs navigation">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <a class="navbar-brand" href="https://dita-bootstrap.github.io/dita-bootstrap.react">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
+      <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
+      <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
+    </svg>
+      DITA Bootstrap React
+    </a>
+    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-three-dots"></i>
+    </button>
+  </div>
+</nav></header><div class="bs-container container-xxl bd-gutter mt-3 my-md-4" id="content"><div class="overflow-y-auto bs-sidebar"><div class="offcanvas-lg offcanvas-start" tabindex="-1" id="bdSidebar" aria-labelledby="bdSidebarOffcanvasLabel" aria-modal="true" role="dialog"><div class="offcanvas-header border-bottom"><h5 class="offcanvas-title" id="bdSidebarOffcanvasLabel">React Harness Documentation</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdSidebar"></button></div><div class="offcanvas-body flex-column h-100"><nav class="d-flex flex-align-start flex-column h-100 overflow-y-auto" role="navigation" id="bs-sidebar-nav"><div class="overflow-y-auto"><div class="flex-column bd-links"><ul class="list-unstyled mb-0 py-3 pt-md-1"><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d2975e15"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d2975e15">Introduction</span></div><div id="menu-collapse-d2975e15" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../index.html">DITA Harness User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d2975e26"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d2975e26">Components</span></div><div id="menu-collapse-d2975e26" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../mcp-server.html">MCP Server Service (mcp-server)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../mcp-client.html">Standalone Reference MCP Web Client (mcp-client)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../data-store.html">Data Store Service (data-store)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../rag-service.html">RAG Vector Search Service (rag-service)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../renderer.html">Web Renderer &amp; AI Chat Portal Service (renderer)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../search-and-chatbot.html">Search Bar &amp; AI Chat Bot User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d2975e87"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d2975e87">Rendering</span></div><div id="menu-collapse-d2975e87" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../generating-ast.html">Generating AST</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../generating-chrome.html">Generating Chrome</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0 active" data-bs-target="#menu-collapse-d2975e114" aria-expanded="true" aria-current="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2 active" data-bs-target="#menu-collapse-d2975e114" aria-expanded="true" aria-current="true">API Specification</span></div><div id="menu-collapse-d2975e114" class="ps-2 collapse show"><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1  active" href="../src/openapi.html">Data Store API</a></div></li></ul></div></li></ul></div></div></nav></div></div></div><main role="main" class="bs-main me-3"><article role="article" class="bs-content" aria-labelledby="ariaid-title1">
+<h1 class="title" id="ariaid-title1">Data Store API</h1>
+<div class="body">
+<object data="openapi.ast.yaml" type="application/yaml">
+
+</object>
+</div>
+<article class="topic nested1" aria-labelledby="ariaid-title2" id="overview">
+<h2 class="title" id="ariaid-title2">Overview</h2>
+<div class="body">
+<p class="p">Static file server and document set manager for AST-rendered DITA content. Serves both topic data (JSON) and manages document collections via zip uploads. **Authentication**: Optional bearer token (set `AUTH_TOKEN` env var). Write operations (`POST`, `PUT`, `DELETE` on `/api/docs/*`) require auth when enabled. **Search Index**: Built automatically on startup and after each doc set upload.</p>
+<section class="section" id="overview__version-information"><h3 class="title h4">Version information</h3>
+
+<p class="p"><em class="ph i">Version</em>: 1.0.0</p>
+</section>
+<section class="section" id="overview__contact-information"><h3 class="title h4">Contact information</h3>
+
+<p class="p"><em class="ph i">Contact</em>: Jason Fox </p>
+</section>
+<section class="section" id="overview__uri-scheme"><h3 class="title h4">URI scheme</h3>
+
+<p class="p"><em class="ph i">Host</em>: localhost <em class="ph i">Schemes</em>: HTTP</p>
+</section>
+<section class="section" id="overview__tags"><h3 class="title h4">Tags</h3>
+
+<ul class="ul">
+<li class="li">System : Server health and diagnostics</li>
+<li class="li">Document Sets : Manage collections of AST-rendered DITA topics</li>
+<li class="li">Configuration : Shared UI chrome configuration</li>
+<li class="li">Content : Serve topic JSON and static files</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title3" id="paths">
+<h2 class="title" id="ariaid-title3">Paths</h2>
+<div class="body"></div>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title4" id="gethealth">
+<h3 class="title" id="ariaid-title4">Health check</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/health</code></pre>
+<section class="section" id="gethealth__responses"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="gethealth__responses__entry__1">HTTP Code</th><th class="entry" id="gethealth__responses__entry__2">Description</th><th class="entry" id="gethealth__responses__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="gethealth__responses__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="gethealth__responses__entry__2">Server is running</td>
+<td class="entry" headers="gethealth__responses__entry__3">object</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="gethealth__produces"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section>
+<section class="section" id="gethealth__tags-1"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">System</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title5" id="listdocsets">
+<h3 class="title" id="ariaid-title5">List all document sets</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/docs</code></pre>
+<section class="section" id="listdocsets__description"><h4 class="title h4">Description</h4>
+
+<p class="p">Returns all discovered document sets (directories with `toc.json`). Ordered by featured/priority/title.</p>
+</section>
+<section class="section" id="listdocsets__responses-1"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="listdocsets__responses-1__entry__1">HTTP Code</th><th class="entry" id="listdocsets__responses-1__entry__2">Description</th><th class="entry" id="listdocsets__responses-1__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="listdocsets__responses-1__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="listdocsets__responses-1__entry__2">List of document sets</td>
+<td class="entry" headers="listdocsets__responses-1__entry__3">Array of <a class="xref" href="#docsetinfo">DocSetInfo</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="listdocsets__produces-1"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section>
+<section class="section" id="listdocsets__tags-2"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title6" id="listbooks">
+<h3 class="title" id="ariaid-title6">List all document sets (legacy alias)</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/books</code></pre>
+<section class="section" id="listbooks__description-1"><h4 class="title h4">Description</h4>
+
+<p class="p">Backward compatibility alias for `/api/docs`</p>
+</section>
+<section class="section" id="listbooks__responses-2"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="listbooks__responses-2__entry__1">HTTP Code</th><th class="entry" id="listbooks__responses-2__entry__2">Description</th><th class="entry" id="listbooks__responses-2__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="listbooks__responses-2__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="listbooks__responses-2__entry__2">List of document sets</td>
+<td class="entry" headers="listbooks__responses-2__entry__3">Array of <a class="xref" href="#docsetinfo">DocSetInfo</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="listbooks__produces-2"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section>
+<section class="section" id="listbooks__tags-3"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title7" id="getdocset">
+<h3 class="title" id="ariaid-title7">Get document set metadata</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/docs/{docSetId}</code></pre>
+<section class="section" id="getdocset__parameters"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getdocset__parameters__entry__1">Type</th><th class="entry" id="getdocset__parameters__entry__2">Name</th><th class="entry" id="getdocset__parameters__entry__3">Description</th><th class="entry" id="getdocset__parameters__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="getdocset__parameters__entry__1">Path</td>
+<td class="entry" headers="getdocset__parameters__entry__2"><p class="lines"><strong class="ph b">docSetId</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="getdocset__parameters__entry__3">Document set identifier (forward-slash separated path).
+Root set is "default", nested sets use "parent/child" format.
+Cannot contain ".." or start with "/" (path traversal blocked).
+</td>
+<td class="entry" headers="getdocset__parameters__entry__4">string</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="getdocset__responses-3"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getdocset__responses-3__entry__1">HTTP Code</th><th class="entry" id="getdocset__responses-3__entry__2">Description</th><th class="entry" id="getdocset__responses-3__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="getdocset__responses-3__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="getdocset__responses-3__entry__2">Document set info</td>
+<td class="entry" headers="getdocset__responses-3__entry__3"><a class="xref" href="#docsetinfo">DocSetInfo</a></td>
+</tr>
+<tr>
+<td class="entry" headers="getdocset__responses-3__entry__1"><strong class="ph b">404</strong></td>
+<td class="entry" headers="getdocset__responses-3__entry__2">Document set not found</td>
+<td class="entry" headers="getdocset__responses-3__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="getdocset__produces-3"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+<li class="li"><code class="ph codeph">application/problem+json</code></li>
+</ul>
+</section>
+<section class="section" id="getdocset__tags-4"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-put" aria-labelledby="ariaid-title8" id="updatedocset">
+<h3 class="title" id="ariaid-title8">Update an existing document set</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-put"><code><span class="swagger-verb">PUT</span>/api/docs/{docSetId}</code></pre>
+<section class="section" id="updatedocset__description-2"><h4 class="title h4">Description</h4>
+
+<p class="p">Replaces all content in an existing document set with a new zip archive. Fails with 404 if the doc set doesn't exist. Automatically rebuilds search index after extraction.</p>
+</section>
+<section class="section" id="updatedocset__parameters-1"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatedocset__parameters-1__entry__1">Type</th><th class="entry" id="updatedocset__parameters-1__entry__2">Name</th><th class="entry" id="updatedocset__parameters-1__entry__3">Description</th><th class="entry" id="updatedocset__parameters-1__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="updatedocset__parameters-1__entry__1">Path</td>
+<td class="entry" headers="updatedocset__parameters-1__entry__2"><p class="lines"><strong class="ph b">docSetId</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="updatedocset__parameters-1__entry__3">Document set identifier (forward-slash separated path).
+Root set is "default", nested sets use "parent/child" format.
+Cannot contain ".." or start with "/" (path traversal blocked).
+</td>
+<td class="entry" headers="updatedocset__parameters-1__entry__4">string</td>
+</tr>
+<tr>
+<td class="entry" headers="updatedocset__parameters-1__entry__1">Body</td>
+<td class="entry" headers="updatedocset__parameters-1__entry__2"><p class="lines"><strong class="ph b">body</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="updatedocset__parameters-1__entry__3"></td>
+<td class="entry" headers="updatedocset__parameters-1__entry__4">string (binary)</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="updatedocset__responses-4"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatedocset__responses-4__entry__1">HTTP Code</th><th class="entry" id="updatedocset__responses-4__entry__2">Description</th><th class="entry" id="updatedocset__responses-4__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="updatedocset__responses-4__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="updatedocset__responses-4__entry__2">Document set updated successfully</td>
+<td class="entry" headers="updatedocset__responses-4__entry__3"><a class="xref" href="#docsetinfo">DocSetInfo</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatedocset__responses-4__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="updatedocset__responses-4__entry__2">Invalid ID or malformed zip</td>
+<td class="entry" headers="updatedocset__responses-4__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatedocset__responses-4__entry__1"><strong class="ph b">401</strong></td>
+<td class="entry" headers="updatedocset__responses-4__entry__2">Missing or invalid Authorization header</td>
+<td class="entry" headers="updatedocset__responses-4__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatedocset__responses-4__entry__1"><strong class="ph b">404</strong></td>
+<td class="entry" headers="updatedocset__responses-4__entry__2">Document set not found</td>
+<td class="entry" headers="updatedocset__responses-4__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatedocset__responses-4__entry__1"><strong class="ph b">413</strong></td>
+<td class="entry" headers="updatedocset__responses-4__entry__2">Upload exceeds MAX_UPLOAD_SIZE</td>
+<td class="entry" headers="updatedocset__responses-4__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatedocset__responses-4__entry__1"><strong class="ph b">415</strong></td>
+<td class="entry" headers="updatedocset__responses-4__entry__2">Missing or invalid Content-Type</td>
+<td class="entry" headers="updatedocset__responses-4__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="updatedocset__produces-4"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+<li class="li"><code class="ph codeph">application/problem+json</code></li>
+</ul>
+</section>
+<section class="section" id="updatedocset__tags-5"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-post" aria-labelledby="ariaid-title9" id="createdocset">
+<h3 class="title" id="ariaid-title9">Create a new document set</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-post"><code><span class="swagger-verb">POST</span>/api/docs/{docSetId}</code></pre>
+<section class="section" id="createdocset__description-3"><h4 class="title h4">Description</h4>
+
+<p class="p">Uploads a zip archive containing AST-rendered DITA content. Fails with 409 if the doc set already exists. Automatically builds search index after extraction.</p>
+</section>
+<section class="section" id="createdocset__parameters-2"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="createdocset__parameters-2__entry__1">Type</th><th class="entry" id="createdocset__parameters-2__entry__2">Name</th><th class="entry" id="createdocset__parameters-2__entry__3">Description</th><th class="entry" id="createdocset__parameters-2__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="createdocset__parameters-2__entry__1">Path</td>
+<td class="entry" headers="createdocset__parameters-2__entry__2"><p class="lines"><strong class="ph b">docSetId</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="createdocset__parameters-2__entry__3">Document set identifier (forward-slash separated path).
+Root set is "default", nested sets use "parent/child" format.
+Cannot contain ".." or start with "/" (path traversal blocked).
+</td>
+<td class="entry" headers="createdocset__parameters-2__entry__4">string</td>
+</tr>
+<tr>
+<td class="entry" headers="createdocset__parameters-2__entry__1">Body</td>
+<td class="entry" headers="createdocset__parameters-2__entry__2"><p class="lines"><strong class="ph b">body</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="createdocset__parameters-2__entry__3"></td>
+<td class="entry" headers="createdocset__parameters-2__entry__4">string (binary)</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="createdocset__responses-5"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="createdocset__responses-5__entry__1">HTTP Code</th><th class="entry" id="createdocset__responses-5__entry__2">Description</th><th class="entry" id="createdocset__responses-5__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="createdocset__responses-5__entry__1"><strong class="ph b">201</strong></td>
+<td class="entry" headers="createdocset__responses-5__entry__2"><p class="lines">Document set created successfully<br><strong class="ph b">Headers</strong>: <code class="ph codeph">Location</code> (string)</p></td>
+<td class="entry" headers="createdocset__responses-5__entry__3"><a class="xref" href="#docsetinfo">DocSetInfo</a></td>
+</tr>
+<tr>
+<td class="entry" headers="createdocset__responses-5__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="createdocset__responses-5__entry__2">Invalid ID or malformed zip</td>
+<td class="entry" headers="createdocset__responses-5__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="createdocset__responses-5__entry__1"><strong class="ph b">401</strong></td>
+<td class="entry" headers="createdocset__responses-5__entry__2">Missing or invalid Authorization header</td>
+<td class="entry" headers="createdocset__responses-5__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="createdocset__responses-5__entry__1"><strong class="ph b">409</strong></td>
+<td class="entry" headers="createdocset__responses-5__entry__2">Document set already exists</td>
+<td class="entry" headers="createdocset__responses-5__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="createdocset__responses-5__entry__1"><strong class="ph b">413</strong></td>
+<td class="entry" headers="createdocset__responses-5__entry__2">Upload exceeds MAX_UPLOAD_SIZE</td>
+<td class="entry" headers="createdocset__responses-5__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="createdocset__responses-5__entry__1"><strong class="ph b">415</strong></td>
+<td class="entry" headers="createdocset__responses-5__entry__2">Missing or invalid Content-Type</td>
+<td class="entry" headers="createdocset__responses-5__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="createdocset__produces-5"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+<li class="li"><code class="ph codeph">application/problem+json</code></li>
+</ul>
+</section>
+<section class="section" id="createdocset__tags-6"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-delete" aria-labelledby="ariaid-title10" id="deletedocset">
+<h3 class="title" id="ariaid-title10">Delete a document set</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-delete"><code><span class="swagger-verb">DELETE</span>/api/docs/{docSetId}</code></pre>
+<section class="section" id="deletedocset__description-4"><h4 class="title h4">Description</h4>
+
+<p class="p">Removes the entire document set directory and all its contents.</p>
+</section>
+<section class="section" id="deletedocset__parameters-3"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="deletedocset__parameters-3__entry__1">Type</th><th class="entry" id="deletedocset__parameters-3__entry__2">Name</th><th class="entry" id="deletedocset__parameters-3__entry__3">Description</th><th class="entry" id="deletedocset__parameters-3__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="deletedocset__parameters-3__entry__1">Path</td>
+<td class="entry" headers="deletedocset__parameters-3__entry__2"><p class="lines"><strong class="ph b">docSetId</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="deletedocset__parameters-3__entry__3">Document set identifier (forward-slash separated path).
+Root set is "default", nested sets use "parent/child" format.
+Cannot contain ".." or start with "/" (path traversal blocked).
+</td>
+<td class="entry" headers="deletedocset__parameters-3__entry__4">string</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="deletedocset__responses-6"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="deletedocset__responses-6__entry__1">HTTP Code</th><th class="entry" id="deletedocset__responses-6__entry__2">Description</th><th class="entry" id="deletedocset__responses-6__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="deletedocset__responses-6__entry__1"><strong class="ph b">204</strong></td>
+<td class="entry" headers="deletedocset__responses-6__entry__2">Document set deleted successfully</td>
+<td class="entry" headers="deletedocset__responses-6__entry__3">No Content</td>
+</tr>
+<tr>
+<td class="entry" headers="deletedocset__responses-6__entry__1"><strong class="ph b">401</strong></td>
+<td class="entry" headers="deletedocset__responses-6__entry__2">Missing or invalid Authorization header</td>
+<td class="entry" headers="deletedocset__responses-6__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="deletedocset__responses-6__entry__1"><strong class="ph b">404</strong></td>
+<td class="entry" headers="deletedocset__responses-6__entry__2">Document set not found</td>
+<td class="entry" headers="deletedocset__responses-6__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="deletedocset__produces-6"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/problem+json</code></li>
+</ul>
+</section>
+<section class="section" id="deletedocset__tags-7"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-head" aria-labelledby="ariaid-title11" id="checkdocsetexists">
+<h3 class="title" id="ariaid-title11">Check if document set exists</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-head"><code><span class="swagger-verb">HEAD</span>/api/docs/{docSetId}</code></pre>
+<section class="section" id="checkdocsetexists__parameters-4"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="checkdocsetexists__parameters-4__entry__1">Type</th><th class="entry" id="checkdocsetexists__parameters-4__entry__2">Name</th><th class="entry" id="checkdocsetexists__parameters-4__entry__3">Description</th><th class="entry" id="checkdocsetexists__parameters-4__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="checkdocsetexists__parameters-4__entry__1">Path</td>
+<td class="entry" headers="checkdocsetexists__parameters-4__entry__2"><p class="lines"><strong class="ph b">docSetId</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="checkdocsetexists__parameters-4__entry__3">Document set identifier (forward-slash separated path).
+Root set is "default", nested sets use "parent/child" format.
+Cannot contain ".." or start with "/" (path traversal blocked).
+</td>
+<td class="entry" headers="checkdocsetexists__parameters-4__entry__4">string</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="checkdocsetexists__responses-7"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="checkdocsetexists__responses-7__entry__1">HTTP Code</th><th class="entry" id="checkdocsetexists__responses-7__entry__2">Description</th><th class="entry" id="checkdocsetexists__responses-7__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="checkdocsetexists__responses-7__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="checkdocsetexists__responses-7__entry__2">Document set exists</td>
+<td class="entry" headers="checkdocsetexists__responses-7__entry__3">No Content</td>
+</tr>
+<tr>
+<td class="entry" headers="checkdocsetexists__responses-7__entry__1"><strong class="ph b">404</strong></td>
+<td class="entry" headers="checkdocsetexists__responses-7__entry__2">Document set not found</td>
+<td class="entry" headers="checkdocsetexists__responses-7__entry__3">No Content</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="checkdocsetexists__tags-8"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Document Sets</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title12" id="getchrome">
+<h3 class="title" id="ariaid-title12">Get chrome (UI chrome) configuration</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/api/chrome</code></pre>
+<section class="section" id="getchrome__description-5"><h4 class="title h4">Description</h4>
+
+<p class="p">Retrieves the shared UI chrome configuration from `chrome.json`. Contains strings and state used across all document sets (headers, footers, etc).</p>
+</section>
+<section class="section" id="getchrome__responses-8"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getchrome__responses-8__entry__1">HTTP Code</th><th class="entry" id="getchrome__responses-8__entry__2">Description</th><th class="entry" id="getchrome__responses-8__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="getchrome__responses-8__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="getchrome__responses-8__entry__2">Chrome configuration</td>
+<td class="entry" headers="getchrome__responses-8__entry__3">object</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="getchrome__produces-7"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section>
+<section class="section" id="getchrome__tags-9"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Configuration</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-put" aria-labelledby="ariaid-title13" id="updatechromeput">
+<h3 class="title" id="ariaid-title13">Update chrome configuration (PUT)</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-put"><code><span class="swagger-verb">PUT</span>/api/chrome</code></pre>
+<section class="section" id="updatechromeput__description-6"><h4 class="title h4">Description</h4>
+
+<p class="p">Replaces the entire `chrome.json` configuration.</p>
+</section>
+<section class="section" id="updatechromeput__parameters-5"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromeput__parameters-5__entry__1">Type</th><th class="entry" id="updatechromeput__parameters-5__entry__2">Name</th><th class="entry" id="updatechromeput__parameters-5__entry__3">Description</th><th class="entry" id="updatechromeput__parameters-5__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="updatechromeput__parameters-5__entry__1">Body</td>
+<td class="entry" headers="updatechromeput__parameters-5__entry__2"><p class="lines"><strong class="ph b">body</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="updatechromeput__parameters-5__entry__3"></td>
+<td class="entry" headers="updatechromeput__parameters-5__entry__4">object</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="updatechromeput__responses-9"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromeput__responses-9__entry__1">HTTP Code</th><th class="entry" id="updatechromeput__responses-9__entry__2">Description</th><th class="entry" id="updatechromeput__responses-9__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="updatechromeput__responses-9__entry__1"><strong class="ph b">202</strong></td>
+<td class="entry" headers="updatechromeput__responses-9__entry__2">Chrome configuration updated</td>
+<td class="entry" headers="updatechromeput__responses-9__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="updatechromeput__responses-9__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="updatechromeput__responses-9__entry__2">Failed to write chrome.json</td>
+<td class="entry" headers="updatechromeput__responses-9__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatechromeput__responses-9__entry__1"><strong class="ph b">401</strong></td>
+<td class="entry" headers="updatechromeput__responses-9__entry__2">Missing or invalid Authorization header</td>
+<td class="entry" headers="updatechromeput__responses-9__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatechromeput__responses-9__entry__1"><strong class="ph b">415</strong></td>
+<td class="entry" headers="updatechromeput__responses-9__entry__2">Content-Type must be application/json</td>
+<td class="entry" headers="updatechromeput__responses-9__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="updatechromeput__produces-8"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+<li class="li"><code class="ph codeph">application/problem+json</code></li>
+</ul>
+</section>
+<section class="section" id="updatechromeput__tags-10"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Configuration</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-post" aria-labelledby="ariaid-title14" id="updatechromepost">
+<h3 class="title" id="ariaid-title14">Update chrome configuration (POST)</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-post"><code><span class="swagger-verb">POST</span>/api/chrome</code></pre>
+<section class="section" id="updatechromepost__description-7"><h4 class="title h4">Description</h4>
+
+<p class="p">Replaces the entire `chrome.json` configuration. (Alias for PUT)</p>
+</section>
+<section class="section" id="updatechromepost__parameters-6"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromepost__parameters-6__entry__1">Type</th><th class="entry" id="updatechromepost__parameters-6__entry__2">Name</th><th class="entry" id="updatechromepost__parameters-6__entry__3">Description</th><th class="entry" id="updatechromepost__parameters-6__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="updatechromepost__parameters-6__entry__1">Body</td>
+<td class="entry" headers="updatechromepost__parameters-6__entry__2"><p class="lines"><strong class="ph b">body</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="updatechromepost__parameters-6__entry__3"></td>
+<td class="entry" headers="updatechromepost__parameters-6__entry__4">object</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="updatechromepost__responses-10"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="updatechromepost__responses-10__entry__1">HTTP Code</th><th class="entry" id="updatechromepost__responses-10__entry__2">Description</th><th class="entry" id="updatechromepost__responses-10__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="updatechromepost__responses-10__entry__1"><strong class="ph b">202</strong></td>
+<td class="entry" headers="updatechromepost__responses-10__entry__2">Chrome configuration updated</td>
+<td class="entry" headers="updatechromepost__responses-10__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="updatechromepost__responses-10__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="updatechromepost__responses-10__entry__2">Failed to write chrome.json</td>
+<td class="entry" headers="updatechromepost__responses-10__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatechromepost__responses-10__entry__1"><strong class="ph b">401</strong></td>
+<td class="entry" headers="updatechromepost__responses-10__entry__2">Missing or invalid Authorization header</td>
+<td class="entry" headers="updatechromepost__responses-10__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+<tr>
+<td class="entry" headers="updatechromepost__responses-10__entry__1"><strong class="ph b">415</strong></td>
+<td class="entry" headers="updatechromepost__responses-10__entry__2">Content-Type must be application/json</td>
+<td class="entry" headers="updatechromepost__responses-10__entry__3"><a class="xref" href="#problemdetail">ProblemDetail</a></td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="updatechromepost__produces-9"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+<li class="li"><code class="ph codeph">application/problem+json</code></li>
+</ul>
+</section>
+<section class="section" id="updatechromepost__tags-11"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Configuration</li>
+</ul>
+</section>
+</div>
+</article>
+<article class="topic nested2 swagger-get" aria-labelledby="ariaid-title15" id="gettopiccontent">
+<h3 class="title" id="ariaid-title15">Serve topic JSON or static files</h3>
+<div class="body">
+<pre xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="pre codeblock alert alert-secondary swagger-get"><code><span class="swagger-verb">GET</span>/data/{topicPath}</code></pre>
+<section class="section" id="gettopiccontent__description-8"><h4 class="title h4">Description</h4>
+
+<p class="p">Serves AST-rendered topic JSON files and static assets from the data directory. File extensions are resolved automatically (`.json` added if not present). Cache-Control header set to "no-cache" to reflect updates.</p>
+</section>
+<section class="section" id="gettopiccontent__parameters-7"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="gettopiccontent__parameters-7__entry__1">Type</th><th class="entry" id="gettopiccontent__parameters-7__entry__2">Name</th><th class="entry" id="gettopiccontent__parameters-7__entry__3">Description</th><th class="entry" id="gettopiccontent__parameters-7__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__1">Path</td>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__2"><p class="lines"><strong class="ph b">topicPath</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__3">Path to topic file (relative to data dir)</td>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__4">string</td>
+</tr>
+<tr>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__1">Path</td>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__2"><p class="lines"><strong class="ph b">topicPath</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__3">Path to toc.json</td>
+<td class="entry" headers="gettopiccontent__parameters-7__entry__4">string</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="gettopiccontent__responses-11"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="gettopiccontent__responses-11__entry__1">HTTP Code</th><th class="entry" id="gettopiccontent__responses-11__entry__2">Description</th><th class="entry" id="gettopiccontent__responses-11__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="gettopiccontent__responses-11__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="gettopiccontent__responses-11__entry__2">File contents</td>
+<td class="entry" headers="gettopiccontent__responses-11__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="gettopiccontent__responses-11__entry__1"><strong class="ph b">404</strong></td>
+<td class="entry" headers="gettopiccontent__responses-11__entry__2">File not found</td>
+<td class="entry" headers="gettopiccontent__responses-11__entry__3">No Content</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="section" id="gettopiccontent__produces-10"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section>
+<section class="section" id="gettopiccontent__tags-12"><h4 class="title h4">Tags</h4>
+
+<ul class="ul">
+<li class="li">Content</li>
+</ul>
+</section>
+</div>
+</article>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title16" id="definitions">
+<h2 class="title" id="ariaid-title16">Definitions</h2>
+<div class="body"></div>
+<article class="topic nested2" aria-labelledby="ariaid-title17" id="docsetinfo">
+<h3 class="title" id="ariaid-title17">DocSetInfo</h3>
+<div class="body">
+<p class="p">Metadata about a document set</p>
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="docsetinfo__entry__1">Name</th><th class="entry" id="docsetinfo__entry__2">Description</th><th class="entry" id="docsetinfo__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">id</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2"><p class="lines">Unique identifier (path relative to data dir, "default" for root)<br><strong class="ph b">Example</strong>: <code class="ph codeph">my-docs</code></p></td>
+<td class="entry" headers="docsetinfo__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">title</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2"><p class="lines">Display name (from toc.json or defaults to id)<br><strong class="ph b">Example</strong>: <code class="ph codeph">My Documentation</code></p></td>
+<td class="entry" headers="docsetinfo__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">description</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2"><p class="lines">Long-form description (optional, from toc.json or index.json)<br><strong class="ph b">Example</strong>: <code class="ph codeph">Complete guide to the system</code></p></td>
+<td class="entry" headers="docsetinfo__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">group</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2"><p class="lines">Parent path for nested doc sets (e.g. "parent" if id="parent/child")<br><strong class="ph b">Example</strong>: <code class="ph codeph">api-docs</code></p></td>
+<td class="entry" headers="docsetinfo__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">navToc</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2">Stringified TOC structure for navigation sidebar (optional)</td>
+<td class="entry" headers="docsetinfo__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">scrollspyToc</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2">Stringified TOC for scrollspy highlights (optional)</td>
+<td class="entry" headers="docsetinfo__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">menubar</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2">Whether to show a menubar (optional)</td>
+<td class="entry" headers="docsetinfo__entry__3">boolean</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">topicCount</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2"><p class="lines">Number of JSON topic files in this doc set<br><strong class="ph b">Example</strong>: <code class="ph codeph">42</code></p></td>
+<td class="entry" headers="docsetinfo__entry__3">integer</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">featured</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2">Whether this doc set is featured (appears first in listings)</td>
+<td class="entry" headers="docsetinfo__entry__3">boolean</td>
+</tr>
+<tr>
+<td class="entry" headers="docsetinfo__entry__1"><p class="lines"><strong class="ph b">priority</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="docsetinfo__entry__2"><p class="lines">Sort priority (higher = earlier, default 100 if featured, else 0)<br><strong class="ph b">Example</strong>: <code class="ph codeph">50</code></p></td>
+<td class="entry" headers="docsetinfo__entry__3">integer</td>
+</tr>
+</tbody></table></div>
+</div>
+</article>
+<article class="topic nested2" aria-labelledby="ariaid-title18" id="topic">
+<h3 class="title" id="ariaid-title18">Topic</h3>
+<div class="body">
+<p class="p">A single AST-rendered DITA topic</p>
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="topic__entry__1">Name</th><th class="entry" id="topic__entry__2">Description</th><th class="entry" id="topic__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="topic__entry__1"><p class="lines"><strong class="ph b">meta</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="topic__entry__2">Topic metadata</td>
+<td class="entry" headers="topic__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="topic__entry__1"><p class="lines"><strong class="ph b">content</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="topic__entry__2">AST tree - see AstNode</td>
+<td class="entry" headers="topic__entry__3">Array of <a class="xref" href="#astnode">AstNode</a></td>
+</tr>
+</tbody></table></div>
+</div>
+</article>
+<article class="topic nested2" aria-labelledby="ariaid-title19" id="toc">
+<h3 class="title" id="ariaid-title19">TOC</h3>
+<div class="body">
+<p class="p">Merged table of contents for all topics in a doc set</p>
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="toc__entry__1">Name</th><th class="entry" id="toc__entry__2">Description</th><th class="entry" id="toc__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">title</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2">Doc set title</td>
+<td class="entry" headers="toc__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">description</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2">Doc set description</td>
+<td class="entry" headers="toc__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">shortdesc</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2"></td>
+<td class="entry" headers="toc__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">featured</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2"></td>
+<td class="entry" headers="toc__entry__3">boolean</td>
+</tr>
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">priority</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2"></td>
+<td class="entry" headers="toc__entry__3">integer</td>
+</tr>
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">lang</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2"></td>
+<td class="entry" headers="toc__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="toc__entry__1"><p class="lines"><strong class="ph b">toc</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="toc__entry__2">TOC entries (each is an AstNode with href pointing to topic .json)</td>
+<td class="entry" headers="toc__entry__3">Array of <a class="xref" href="#astnode">AstNode</a></td>
+</tr>
+</tbody></table></div>
+</div>
+</article>
+<article class="topic nested2" aria-labelledby="ariaid-title20" id="astnode">
+<h3 class="title" id="ariaid-title20">AstNode</h3>
+<div class="body">
+</div>
+</article>
+<article class="topic nested2" aria-labelledby="ariaid-title21" id="problemdetail">
+<h3 class="title" id="ariaid-title21">ProblemDetail</h3>
+<div class="body">
+<p class="p">RFC 9457 Problem Details response</p>
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="problemdetail__entry__1">Name</th><th class="entry" id="problemdetail__entry__2">Description</th><th class="entry" id="problemdetail__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="problemdetail__entry__1"><p class="lines"><strong class="ph b">type</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="problemdetail__entry__2"><p class="lines"><br><strong class="ph b">Example</strong>: <code class="ph codeph">about:blank</code></p></td>
+<td class="entry" headers="problemdetail__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="problemdetail__entry__1"><p class="lines"><strong class="ph b">title</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="problemdetail__entry__2"><p class="lines">Short human-readable error title<br><strong class="ph b">Example</strong>: <code class="ph codeph">Not Found</code></p></td>
+<td class="entry" headers="problemdetail__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="problemdetail__entry__1"><p class="lines"><strong class="ph b">status</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="problemdetail__entry__2"><p class="lines">HTTP status code<br><strong class="ph b">Example</strong>: <code class="ph codeph">404</code></p></td>
+<td class="entry" headers="problemdetail__entry__3">integer</td>
+</tr>
+<tr>
+<td class="entry" headers="problemdetail__entry__1"><p class="lines"><strong class="ph b">detail</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="problemdetail__entry__2"><p class="lines">Detailed explanation<br><strong class="ph b">Example</strong>: <code class="ph codeph">Doc set 'missing' not found</code></p></td>
+<td class="entry" headers="problemdetail__entry__3">string</td>
+</tr>
+</tbody></table></div>
+</div>
+</article>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title22" id="security">
+<h2 class="title" id="ariaid-title22">Security</h2>
+<div class="body">
+<ul class="ul">
+<li class="li"><strong class="ph b">bearerAuth</strong> (http) : Optional RFC 6750 bearer token (only required if AUTH_TOKEN env var is set).
+Header format: `Authorization: Bearer &lt;token&gt;`
+</li>
+</ul>
+</div>
+</article>
+</article></main></div><script language="javascript" src="../js/popovers.js"></script><script language="javascript" src="../js/dark-mode-toggler.js"></script><footer role="contentinfo" class="mt-auto border-top bg-primary-subtle"><!-- Footer --><div class="container text-center">
+  <div class="row">
+    <div class="col">
+      <!-- Social media -->
+      <p class="pt-3">
+        <!-- GitHub -->
+        <a class="btn m-1" href="https://github.com/dita-bootstrap/dita-bootstrap.html" role="button" style="background-color: #333333;">
+          <i class="bi bi-github text-white"></i>
+        </a>
+        <!-- LinkedIn -->
+        <a class="btn m-1" href="https://www.linkedin.com/in/infotexture/" role="button" style="background-color: #0082ca;">
+          <i class="bi bi-linkedin text-white"></i>
+        </a>
+        <!-- Mastodon -->
+        <a class="btn m-1" href="https://indieweb.social/@infotexture" role="button" style="background-color: #563acc;">
+          <i class="bi bi-mastodon text-white"></i>
+        </a>
+        <!-- Bluesky -->
+        <a class="btn m-1" href="https://bsky.app/profile/infotexture.net" role="button" style="background-color: #0085ff;">
+          <i class="bi bi-bluesky text-white"></i>
+        </a>
+      </p>
+      <p>
+        <small>
+          © 2017–2025
+          <a href="https://infotexture.net/">infotexture</a>
+        </small>
+      </p>
+    </div>
+  </div>
+</div><!-- Footer --></footer></body></html>
