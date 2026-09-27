@@ -5,17 +5,21 @@
  */
 
 :root {
-  --dita-prussian-blue: #1d365d;
-  --dita-maroon: #800000;
+  --dita-prussian-blue: var(--bs-primary-text-emphasis);
+  --dita-maroon: var(--bs-danger-text-emphasis);
   --dita-violet: var(--bs-purple);
+  --bs-code-color: rgb(from var(--bs-danger) r g calc(b + 63));
 }
+
+/*!
+ *  This file is part of the DITA Bootstrap plug-in for DITA Open Toolkit.
+ *  See the accompanying LICENSE file for applicable licenses.
+ */
 
 .list-group-item.active,
 .nav-link.active,
 [data-bs-theme='dark'] {
-  --dita-prussian-blue: #6a91cf;
   --dita-violet: #cc99cd;
-  --dita-maroon: #ff7676;
 }
 
 .list-group-item {
@@ -49,14 +53,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --dita-prussian-blue: #6a91cf;
     --dita-violet: #cc99cd;
-    --dita-maroon: #ff7676;
   }
 
   [data-bs-theme='light'] {
-    --dita-prussian-blue: #1d365d;
-    --dita-maroon: #800000;
     --dita-violet: var(--bs-purple);
   }
 }
@@ -93,6 +93,21 @@
   color: var(--dita-prussian-blue);
 }
 
+.nav-pills .active .cmdname,
+.nav-pills .active .codeph,
+.nav-pills .active .filepath,
+.nav-pills .active .option,
+.nav-pills .active .parmname,
+.nav-pills .active .numcharref,
+.nav-pills .active .parameterentity,
+.nav-pills .active .textentity,
+.nav-pills .active .xmlatt,
+.nav-pills .active .xmlelement,
+.nav-pills .active .xmlnsname,
+.nav-pills .active .xmlpi {
+  color: var(--bs-nav-pills-link-active-color);
+}
+
 .boolean {
   color: var(--bs-green);
 }
@@ -121,6 +136,17 @@
 .search-box:hover,
 .search-box:focus-visible {
   outline: -webkit-focus-ring-color auto 1px;
+}
+
+.note {
+  border-left: 6px solid;
+  border-left-color: var(--bs-alert-color, transparent);
+}
+
+[dir='rtl'] .note {
+  border-right: 6px solid;
+  border-right-color: var(--bs-alert-color, transparent);
+  border-left: 0;
 }
 
 /*!
@@ -468,18 +494,69 @@ pre.swagger-deprecated {
     border-color: #ebebeb;
     background: hsla(0,0%,92.2%,.1)
 }
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+
 :root {
-  --prism-maintext: var(--bs-secondary-text-emphasis, #000);
-  --prism-background: var(--bs-secondary-bg-subtle, #f5f2f0);
-  --prism-text: var(--bs-gray-500, #999);
-  --prism-keywords: var(--bs-teal, #07a);
-  --prism-punctuation: var(--bs-gray, #999);
-  --prism-functions: var(--bs-orange, #f08d49);
-  --prism-strings: var(--bs-green, #690);
-  --prism-namespace: var(--bs-pink, #e2777a);
-  --prism-names: var(--bs-blue, #6196cc);
-  --prism-symbol: var(--bs-red, #DD4A68);
-  --prism-url: var(--bs-cyan, #67cdcc);
+  --prism-maintext: black;
+  --prism-background: #f5f2f0;
+  --prism-text: #999;
+  --prism-keywords: #07a;
+  --prism-punctuation: #999;
+  --prism-functions: #f08d49;
+  --prism-strings:  #690;
+  --prism-namespace:  #e2777a;
+  --prism-names: #6196cc;
+  --prism-symbol: #DD4A68;
+  --prism-url: #67cdcc;
+}
+
+[data-bs-theme="dark"] {
+  --prism-maintext: #ccc;
+  --prism-background: #2d2d2d;
+  --prism-text: #999;
+  --prism-keywords: #cc99cd;
+  --prism-punctuation: #ccc;
+  --prism-functions: #f08d49;
+  --prism-strings:  #7ec699;
+  --prism-namespace:  #e2777a;
+  --prism-names: #6196cc;
+  --prism-symbol: #f8c555;
+  --prism-url: #9a6e3a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --prism-maintext: #ccc;
+    --prism-background: #2d2d2d;
+    --prism-text: #999;
+    --prism-keywords: #cc99cd;
+    --prism-punctuation: #ccc;
+    --prism-functions: #f08d49;
+    --prism-strings:  #7ec699;
+    --prism-namespace:  #e2777a;
+    --prism-names: #6196cc;
+    --prism-symbol: #f8c555;
+    --prism-url: #9a6e3a;
+  }
+
+  [data-bs-theme="light"] {
+    --prism-maintext: black;
+    --prism-background: #f5f2f0;
+    --prism-text: #999;
+    --prism-keywords: #07a;
+    --prism-punctuation: #999;
+    --prism-functions: #f08d49;
+    --prism-strings:  #690;
+    --prism-namespace:  #e2777a;
+    --prism-names: #6196cc;
+    --prism-symbol: #DD4A68;
+    --prism-url: #67cdcc;
+  }
 }
 /**
  * Use css variables in themes with a fallback to the prism.js default theme 
