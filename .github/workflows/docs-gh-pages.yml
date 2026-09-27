@@ -36,6 +36,7 @@ jobs:
             fox.jason.prismjs
             fox.jason.favicon
             fox.jason.open-graph
+            https://github.com/jason-fox/fox.jason.passthrough/archive/master.zip
             https://github.com/jason-fox/fox.jason.passthrough.swagger/archive/master.zip
             https://github.com/jason-fox/dita-bootstrap.swagger/archive/master.zip
           project: .github/dita-ot/html.xml
