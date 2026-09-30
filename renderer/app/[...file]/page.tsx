@@ -92,7 +92,7 @@ export default async function ViewPage({ params }: { params: Promise<{ file: str
         </h1>
       )}
       {doc.meta.shortdesc && <p className="shortdesc text-body-secondary lead">{doc.meta.shortdesc}</p>}
-      <AstRenderer nodes={doc.content} docId={docId} topicPath={topicPath} />
+      <AstRenderer nodes={doc.content} docId={docId} topicPath={topicPath} lang={doc.meta.lang || toc?.lang} />
     </article>
   );
 

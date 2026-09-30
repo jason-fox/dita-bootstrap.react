@@ -57,6 +57,7 @@ export interface ApiReferenceFromAstProps {
   specUrl: string;
   docId?: string;
   topicPath?: string;
+  lang?: string;
 }
 
 // specUrl is relative to the topic JSON's own directory in the data store
@@ -69,7 +70,14 @@ export function resolveSpecUrl(specUrl: string, docId?: string, topicPath?: stri
   return [base, topicDir, specUrl.replace(/^(\.\/)+/, "")].filter(Boolean).join("/");
 }
 
-export default function ApiReferenceFromAst({ specUrl, docId, topicPath }: ApiReferenceFromAstProps) {
+// Scalar ships base-language locales plus zh-CN; anything unknown falls back to English
+function toScalarLocale(lang?: string): string | undefined {
+  if (!lang) return undefined;
+  const [base] = lang.toLowerCase().split("-");
+  return base === "zh" ? "zh-CN" : base;
+}
+
+export default function ApiReferenceFromAst({ specUrl, docId, topicPath, lang }: ApiReferenceFromAstProps) {
   const theme = useActiveTheme();
   const [config, setConfig] = useState<Record<string, unknown> | null>(null);
 
@@ -81,12 +89,18 @@ export default function ApiReferenceFromAst({ specUrl, docId, topicPath }: ApiRe
   }, []);
 
   if (!config) return null;
+  const locale = toScalarLocale(lang);
   return (
     <div className="ast-api-reference">
       <style>{CSS}</style>
       <ApiReferenceReact
         key={theme}
-        configuration={{ ...config, forceDarkModeState: theme, url: resolveSpecUrl(specUrl, docId, topicPath) }}
+        configuration={{
+          ...config,
+          forceDarkModeState: theme,
+          localization: { ...(config.localization as object), ...(locale && { locale }) },
+          url: resolveSpecUrl(specUrl, docId, topicPath),
+        }}
       />
     </div>
   );

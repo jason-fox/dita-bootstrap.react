@@ -19,7 +19,7 @@ export function renderNode(node: AstNode, key: Key, ctx: RenderContext): React.R
     return node;
   }
 
-  const { docId, topicPath, title, activeTheme, onNavigate, onToggleSidebar, onClearChat, onSendPrompt } = ctx;
+  const { docId, topicPath, lang, title, activeTheme, onNavigate, onToggleSidebar, onClearChat, onSendPrompt } = ctx;
   const render: RenderChild = (child, childKey) => renderNode(child, childKey, ctx);
 
   const [type, ...rest] = node;
@@ -37,7 +37,7 @@ export function renderNode(node: AstNode, key: Key, ctx: RenderContext): React.R
   const renderChildren = (nodes: AstNode[] = children) => nodes.map((child, index) => render(child, index));
 
   if (type === "ScalarApiReference" && typeof props.specUrl === "string") {
-    return <ApiReference key={key} specUrl={props.specUrl} docId={docId} topicPath={topicPath} />;
+    return <ApiReference key={key} specUrl={props.specUrl} docId={docId} topicPath={topicPath} lang={lang} />;
   }
 
   let nodeType = type;
