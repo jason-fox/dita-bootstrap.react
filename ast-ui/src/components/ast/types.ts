@@ -3,6 +3,7 @@ import type { AstNode } from "../../types/ast";
 
 export interface RenderContext {
   docId?: string;
+  topicPath?: string;
   lang?: string;
   title?: string;
   activeTheme?: string;

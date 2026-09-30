@@ -80,16 +80,19 @@ export default async function ViewPage({ params }: { params: Promise<{ file: str
     notFound();
   }
 
+  // Scalar renders the spec's own title, so skip the topic h1 to avoid a doubled heading
+  const hasApiReference = doc.content.some((node) => Array.isArray(node) && node[0] === "ScalarApiReference");
+
   const article = (
     <article>
       {doc.meta.breadcrumbs && <Breadcrumbs items={doc.meta.breadcrumbs} docId={docId} />}
-      {doc.meta.title && (
+      {doc.meta.title && !hasApiReference && (
         <h1 id="ariaid-title1" tabIndex={-1}>
           {doc.meta.title}
         </h1>
       )}
       {doc.meta.shortdesc && <p className="shortdesc text-body-secondary lead">{doc.meta.shortdesc}</p>}
-      <AstRenderer nodes={doc.content} docId={docId} />
+      <AstRenderer nodes={doc.content} docId={docId} topicPath={topicPath} />
     </article>
   );
 

@@ -19,6 +19,8 @@ const result = await esbuild.build({
   target: "es2020",
   jsx: "automatic",
   jsxImportSource: "react",
+  // Scalar's stylesheet is only wired up in the Next renderer
+  loader: { ".css": "empty" },
   banner: {
     js: 'if (typeof process === "undefined") { window.process = { env: { NODE_ENV: "production" } }; }',
   },

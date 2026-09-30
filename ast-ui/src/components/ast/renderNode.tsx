@@ -1,4 +1,5 @@
 import React, { type Key } from "react";
+import dynamic from "next/dynamic";
 import { isPropsObject, resolveHref, resolveSrc, resolveStyle } from "../../lib/helpers";
 import type { AstArray, AstNode } from "../../types/ast";
 import { isHighlightableCodeBlock, renderCodeBlock } from "./nodes/CodeBlock";
@@ -8,12 +9,17 @@ import { CollapseFromAst } from "./nodes/ToggleNodes";
 import { componentRegistry } from "./registry";
 import type { InterceptedNodeProps, RenderChild, RenderContext } from "./types";
 
+const ApiReference = dynamic(() => import("./nodes/ApiReferenceNode"), {
+  loading: () => <div className="spinner-border spinner-border-sm text-primary" role="status" />,
+  ssr: false,
+});
+
 export function renderNode(node: AstNode, key: Key, ctx: RenderContext): React.ReactNode {
   if (typeof node === "string") {
     return node;
   }
 
-  const { docId, title, activeTheme, onNavigate, onToggleSidebar, onClearChat, onSendPrompt } = ctx;
+  const { docId, topicPath, title, activeTheme, onNavigate, onToggleSidebar, onClearChat, onSendPrompt } = ctx;
   const render: RenderChild = (child, childKey) => renderNode(child, childKey, ctx);
 
   const [type, ...rest] = node;
@@ -29,6 +35,10 @@ export function renderNode(node: AstNode, key: Key, ctx: RenderContext): React.R
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
   const renderChildren = (nodes: AstNode[] = children) => nodes.map((child, index) => render(child, index));
+
+  if (type === "ScalarApiReference" && typeof props.specUrl === "string") {
+    return <ApiReference key={key} specUrl={props.specUrl} docId={docId} topicPath={topicPath} />;
+  }
 
   let nodeType = type;
   if (
