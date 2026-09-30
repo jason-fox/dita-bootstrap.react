@@ -10,6 +10,8 @@ import { PUBLIC_DATA_URL } from "../../../lib/urls";
 const FALLBACK_CONFIG = { hideClientButton: true, withDefaultFonts: false };
 
 const CSS = `
+.ast-api-reference :is(dialog, [role="dialog"]) h2 { font-size: 1.5rem; }
+.ast-api-reference :is(dialog, [role="dialog"]) h3 { font-size: 1.25rem; }
 .ast-api-reference .section { padding: 2rem 0 !important; }
 .ast-api-reference .section-container { padding: 0 !important; }
 .ast-api-reference pre.text-nowrap { white-space: pre !important; }
