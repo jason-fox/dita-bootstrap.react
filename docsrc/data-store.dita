@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="data-store-service">
-  <title>Data Store Service (data-store)</title>
+  <title>Data Store Service <ph class="h5"><codeph class="badge text-bg-primary">data-store</codeph></ph></title>
   <shortdesc
   >Containerized file server and REST API for document set discovery, static AST JSON serving, and search index generation.</shortdesc>
   <prolog>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="mcp-server-service">
-  <title>MCP Server Service <codeph outputclass="small">mcp-server</codeph></title>
+  <title>MCP Server Service  <ph class="h5"><codeph class="badge text-bg-primary">mcp-server</codeph></ph></title>
   <shortdesc
   >Model Context Protocol (MCP) server providing OASIS metadata, clean Markdown text context, search, and MCP-UI interactive component rendering to AI assistants.</shortdesc>
   <prolog>

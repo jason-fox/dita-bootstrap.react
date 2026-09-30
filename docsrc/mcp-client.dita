@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="mcp-client-guide">
-  <title>MCP Web Client <codeph outputclass="small">mcp-client</codeph></title>
+  <title>MCP Web Client  <ph class="h5"><codeph class="badge text-bg-primary">mcp-client</codeph></ph></title>
   <shortdesc
   >User guide for running the standalone reference chatbot client for the MCP Server using containerized deployment.</shortdesc>
   <prolog>

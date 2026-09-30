@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="rag-service-component">
-  <title>RAG Vector Search <codeph outputclass="small">rag-service</codeph></title>
+  <title>RAG Vector Search  <ph class="h5"><codeph class="badge text-bg-primary">rag-service</codeph></ph></title>
   <shortdesc
   >Optional standalone vector search service providing semantic topic chunking, term-frequency vector embeddings, content hashing verification, and MCP server integration.</shortdesc>
   <prolog>

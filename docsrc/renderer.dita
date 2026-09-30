@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="renderer-service">
-  <title>Document Renderer &amp; AI Chat Portal <codeph outputclass="small">renderer</codeph></title>
+  <title>Document Renderer &amp; AI Chat Portal  <ph class="h5"><codeph
+        class="badge text-bg-primary"
+      >renderer</codeph></ph></title>
   <shortdesc
   >User-facing web portal for browsing documentation sets, reading AST topics, and interacting with the integrated AI Assistant chat.</shortdesc>
   <prolog>
