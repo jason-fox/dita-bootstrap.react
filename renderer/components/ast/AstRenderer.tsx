@@ -1,8 +1,8 @@
 "use client";
 
-import { ToggleProvider } from "@/context/ToggleContext";
-import { useActiveTheme } from "@/hooks/useActiveTheme";
-import type { AstNode } from "@/types/ast";
+import { ToggleProvider } from "../../context/ToggleContext";
+import { useActiveTheme } from "../../hooks/useActiveTheme";
+import type { AstNode } from "../../types/ast";
 import { renderNode } from "./renderNode";
 import type { RenderContext } from "./types";
 

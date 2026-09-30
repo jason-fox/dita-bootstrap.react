@@ -32,7 +32,7 @@ import {
 } from "./nodes/ToggleNodes";
 
 const InteractiveTable = dynamic(
-  () => import("@/components/table/InteractiveTable"),
+  () => import("../table/InteractiveTable"),
   {
     loading: () => (
       <div

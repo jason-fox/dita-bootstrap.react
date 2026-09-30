@@ -2,9 +2,9 @@
 
 import React, { type ComponentProps } from "react";
 import { Button, NavDropdown } from "react-bootstrap";
-import { useThemeMode, type ThemeMode } from "@/hooks/useThemeMode";
-import { isPropsObject } from "@/lib/api";
-import type { AstNode } from "@/types/ast";
+import { useThemeMode, type ThemeMode } from "../../../hooks/useThemeMode";
+import { isPropsObject } from "../../../lib/api";
+import type { AstNode } from "../../../types/ast";
 import { componentRegistry } from "../registry";
 import type { InterceptedNodeProps } from "../types";
 import { IconFromAst } from "./IconNodes";

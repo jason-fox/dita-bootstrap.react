@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { isPropsObject } from "@/lib/api";
-import type { AstArray } from "@/types/ast";
+import { isPropsObject } from "../../lib/api";
+import type { AstArray } from "../../types/ast";
 
 function splitEntry(entry: AstArray) {
   const [, maybeProps, ...rest] = entry;

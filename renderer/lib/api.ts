@@ -1,4 +1,4 @@
-import type { ChromeConfig, DocSetInfo, TocDoc, TopicDoc } from "@/types/docs";
+import type { ChromeConfig, DocSetInfo, TocDoc, TopicDoc } from "../types/docs";
 
 const isServer = typeof window === "undefined";
 

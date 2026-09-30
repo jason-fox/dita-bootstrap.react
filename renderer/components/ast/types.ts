@@ -1,5 +1,5 @@
 import type { Key, ReactNode } from "react";
-import type { AstNode } from "@/types/ast";
+import type { AstNode } from "../../types/ast";
 
 export interface RenderContext {
   docId?: string;

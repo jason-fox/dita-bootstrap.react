@@ -4,8 +4,8 @@ import {
   resolveHref,
   resolveSrc,
   resolveStyle,
-} from "@/lib/api";
-import type { AstArray, AstNode } from "@/types/ast";
+} from "../../lib/api";
+import type { AstArray, AstNode } from "../../types/ast";
 import { isHighlightableCodeBlock, renderCodeBlock } from "./nodes/CodeBlock";
 import { SearchFormFromAst } from "./nodes/SearchForm";
 import {

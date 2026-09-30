@@ -1,4 +1,4 @@
-// Vendored from renderer/app/ (*.css) so mcp-server standalone HTML renders
+// Vendored from renderer/styles/ (*.css) so mcp-server standalone HTML renders
 // with 1-to-1 visual fidelity matching the DITA Bootstrap renderer portal.
 
 export const DITA_STYLES_CSS = `

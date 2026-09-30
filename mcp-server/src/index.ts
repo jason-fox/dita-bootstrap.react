@@ -16,7 +16,7 @@ import { registerAppTool, registerAppResource, RESOURCE_MIME_TYPE } from "@model
 import { DocProvider } from "./provider";
 import { renderAppShellHtml } from "./renderer";
 import type { TopicPageProps } from "./TopicPage";
-import type { TocDoc } from "../../renderer/lib/api";
+import type { TocDoc } from "../../renderer/types/docs";
 
 const TOPIC_VIEWER_RESOURCE_URI = "ui://dita-docs/topic-viewer.html";
 

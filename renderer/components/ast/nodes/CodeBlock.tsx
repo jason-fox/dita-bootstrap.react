@@ -6,8 +6,8 @@ import "prismjs/components/prism-clike";
 import "prismjs/components/prism-c";
 import "prismjs/components/prism-cpp";
 import "prismjs/components/prism-bash";
-import { isPropsObject } from "@/lib/api";
-import type { AstArray, AstNode } from "@/types/ast";
+import { isPropsObject } from "../../../lib/api";
+import type { AstArray, AstNode } from "../../../types/ast";
 
 // Prism's DOMContentLoaded listener re-highlights the DOM after React renders, causing a
 // hydration mismatch; Prism.manual can't be set in time, so no-op the listener instead.

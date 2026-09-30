@@ -1,7 +1,8 @@
 import React, { useState, type CSSProperties } from "react";
-import { isPropsObject, resolveStyle, type AstArray } from "../../renderer/lib/api";
+import { isPropsObject, resolveStyle } from "../../renderer/lib/api";
+import type { AstArray } from "../../renderer/types/ast";
 
-// Ported from renderer/components/Toc.tsx, minus next/link + usePathname (no Next.js here) -
+// Ported from renderer/components/toc/Toc.tsx, minus next/link + usePathname (no Next.js here) -
 // navigation goes through onNavigate -> app.callServerTool() in client-entry.tsx instead.
 export interface TocNavProps {
   entries: AstArray[];

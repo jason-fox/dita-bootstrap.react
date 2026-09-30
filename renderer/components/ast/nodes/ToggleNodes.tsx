@@ -6,7 +6,7 @@ import {
   Collapse as BsCollapse,
   Offcanvas as BsOffcanvas,
 } from "react-bootstrap";
-import { useToggleContext } from "@/context/ToggleContext";
+import { useToggleContext } from "../../../context/ToggleContext";
 
 export function OffcanvasFromAst({
   id,

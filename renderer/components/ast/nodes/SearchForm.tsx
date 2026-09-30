@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type MiniSearch from "minisearch";
 import { Form } from "react-bootstrap";
-import { isPropsObject, resolveHref, resolveStyle } from "@/lib/api";
-import { loadSearchIndex, type SearchDoc } from "@/lib/search";
-import type { AstArray, AstNode } from "@/types/ast";
+import { isPropsObject, resolveHref, resolveStyle } from "../../../lib/api";
+import { loadSearchIndex, type SearchDoc } from "../../../lib/search";
+import type { AstArray, AstNode } from "../../../types/ast";
 import { componentRegistry } from "../registry";
 import type { InterceptedNodeProps } from "../types";
 
