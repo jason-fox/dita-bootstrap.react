@@ -76,24 +76,6 @@ paths:
                 items:
                   $ref: "#/components/schemas/DocSetInfo"
 
-  /api/books:
-    get:
-      summary: List all document sets (legacy alias)
-      tags:
-        - Data Store - Document Sets
-      operationId: listBooks
-      deprecated: true
-      description: Backward compatibility alias for `/api/docs`
-      responses:
-        "200":
-          description: List of document sets
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DocSetInfo"
-
   /api/docs/{docSetId}:
     parameters:
       - name: docSetId

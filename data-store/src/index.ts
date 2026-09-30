@@ -371,12 +371,6 @@ if (numWorkers > 1 && cluster.isPrimary) {
     res.json(docSets);
   });
 
-  // backward compatibility alias
-  app.get("/api/books", (_req, res) => {
-    const docSets = findDocSets(DATA_DIR);
-    res.json(docSets);
-  });
-
   app.head("/api/docs/*id", (req, res) => {
     const dir = resolveDocSetDir(DATA_DIR, req.params.id as string[]);
     if (!dir || !fs.existsSync(path.join(dir, "toc.json"))) {

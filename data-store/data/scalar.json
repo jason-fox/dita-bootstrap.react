@@ -9,7 +9,7 @@
   "theme": "default",
   "persistAuth": false,
   "telemetry": true,
-  "layout": "classic",
+  "layout": "modern",
   "isEditable": false,
   "hideModels": false,
   "documentDownloadType": "both",
