@@ -1,41 +1,20 @@
 import React, { type Key } from "react";
-import {
-  isPropsObject,
-  resolveHref,
-  resolveSrc,
-  resolveStyle,
-} from "../../lib/helpers";
+import { isPropsObject, resolveHref, resolveSrc, resolveStyle } from "../../lib/helpers";
 import type { AstArray, AstNode } from "../../types/ast";
 import { isHighlightableCodeBlock, renderCodeBlock } from "./nodes/CodeBlock";
 import { SearchFormFromAst } from "./nodes/SearchForm";
-import {
-  ThemeToggleButtonFromAst,
-  ThemeToggleDropdownFromAst,
-} from "./nodes/ThemeToggle";
+import { ThemeToggleButtonFromAst, ThemeToggleDropdownFromAst } from "./nodes/ThemeToggle";
 import { CollapseFromAst } from "./nodes/ToggleNodes";
 import { componentRegistry } from "./registry";
 import type { InterceptedNodeProps, RenderChild, RenderContext } from "./types";
 
-export function renderNode(
-  node: AstNode,
-  key: Key,
-  ctx: RenderContext,
-): React.ReactNode {
+export function renderNode(node: AstNode, key: Key, ctx: RenderContext): React.ReactNode {
   if (typeof node === "string") {
     return node;
   }
 
-  const {
-    docId,
-    title,
-    activeTheme,
-    onNavigate,
-    onToggleSidebar,
-    onClearChat,
-    onSendPrompt,
-  } = ctx;
-  const render: RenderChild = (child, childKey) =>
-    renderNode(child, childKey, ctx);
+  const { docId, title, activeTheme, onNavigate, onToggleSidebar, onClearChat, onSendPrompt } = ctx;
+  const render: RenderChild = (child, childKey) => renderNode(child, childKey, ctx);
 
   const [type, ...rest] = node;
   const hasProps = rest.length > 0 && isPropsObject(rest[0]);
@@ -49,8 +28,7 @@ export function renderNode(
     ...(props.srcset ? { srcSet: resolveSrc(props.srcset, docId) } : {}),
     ...(props.style ? { style: resolveStyle(props.style) } : {}),
   };
-  const renderChildren = (nodes: AstNode[] = children) =>
-    nodes.map((child, index) => render(child, index));
+  const renderChildren = (nodes: AstNode[] = children) => nodes.map((child, index) => render(child, index));
 
   let nodeType = type;
   if (
@@ -74,27 +52,20 @@ export function renderNode(
       if (
         Array.isArray(child) &&
         child[0] === "span" &&
-        (child.length === 1 ||
-          (child.length === 2 && (child[1] === "" || child[1] === undefined)))
+        (child.length === 1 || (child.length === 2 && (child[1] === "" || child[1] === undefined)))
       ) {
         return ["span", brandTitle] as AstArray;
       }
       return child;
     });
     const Component = componentRegistry[type] ?? type;
-    return React.createElement(
-      Component,
-      { key, ...resolvedProps },
-      ...renderChildren(brandChildren),
-    );
+    return React.createElement(Component, { key, ...resolvedProps }, ...renderChildren(brandChildren));
   }
 
   // Automatically apply activeTheme to NavDropdown and Dropdown popups if not explicitly set
   if (
     activeTheme &&
-    (type === "NavDropdown" ||
-      type === "Dropdown" ||
-      type === "DropdownButton") &&
+    (type === "NavDropdown" || type === "Dropdown" || type === "DropdownButton") &&
     !resolvedProps["data-bs-theme"]
   ) {
     resolvedProps["data-bs-theme"] = activeTheme;
@@ -111,8 +82,7 @@ export function renderNode(
   // Intercept search form role or class
   if (
     resolvedProps.role === "search" ||
-    (typeof resolvedProps.className === "string" &&
-      resolvedProps.className.includes("search-box"))
+    (typeof resolvedProps.className === "string" && resolvedProps.className.includes("search-box"))
   ) {
     return <SearchFormFromAst key={key} {...intercepted} />;
   }
@@ -122,9 +92,7 @@ export function renderNode(
     if (type === "NavDropdown" || type === "Dropdown") {
       return <ThemeToggleDropdownFromAst key={key} {...intercepted} />;
     }
-    return (
-      <ThemeToggleButtonFromAst key={key} nodeType={type} {...intercepted} />
-    );
+    return <ThemeToggleButtonFromAst key={key} nodeType={type} {...intercepted} />;
   }
 
   // Intercept sidebar toggle button click
@@ -157,22 +125,13 @@ export function renderNode(
         onNavigate(docId, cleanTopic);
       };
 
-      return React.createElement(
-        "a",
-        { key, ...resolvedProps, onClick: handleClick },
-        ...renderChildren(),
-      );
+      return React.createElement("a", { key, ...resolvedProps, onClick: handleClick }, ...renderChildren());
     }
   }
 
   // a <pre> wrapping a plain-text <code> tuple is a codeblock - highlight it directly since
   // Prism needs raw text, not already-rendered nodes.
-  if (
-    type === "pre" &&
-    children.length === 1 &&
-    Array.isArray(children[0]) &&
-    children[0][0] === "code"
-  ) {
+  if (type === "pre" && children.length === 1 && Array.isArray(children[0]) && children[0][0] === "code") {
     const codeNode = children[0] as AstArray;
     if (isHighlightableCodeBlock(codeNode)) {
       return renderCodeBlock(resolvedProps, codeNode, key);
@@ -185,16 +144,9 @@ export function renderNode(
     resolvedProps.className.includes("collapse") &&
     resolvedProps.id
   ) {
-    const isHorizontal = resolvedProps.className.includes(
-      "collapse-horizontal",
-    );
+    const isHorizontal = resolvedProps.className.includes("collapse-horizontal");
     return (
-      <CollapseFromAst
-        key={key}
-        id={resolvedProps.id as string}
-        horizontal={isHorizontal}
-        {...resolvedProps}
-      >
+      <CollapseFromAst key={key} id={resolvedProps.id as string} horizontal={isHorizontal} {...resolvedProps}>
         {renderChildren()}
       </CollapseFromAst>
     );
@@ -213,13 +165,7 @@ export function renderNode(
     resolvedProps.onClick = (e: React.MouseEvent) => {
       e.preventDefault();
       const text = children
-        .map((c) =>
-          typeof c === "string"
-            ? c
-            : Array.isArray(c)
-              ? String(c[c.length - 1])
-              : "",
-        )
+        .map((c) => (typeof c === "string" ? c : Array.isArray(c) ? String(c[c.length - 1]) : ""))
         .join("")
         .trim();
       if (text) onSendPrompt(text);
@@ -227,20 +173,10 @@ export function renderNode(
   }
 
   // an unregistered PascalCase type would otherwise silently render as an invalid DOM tag
-  if (
-    process.env.NODE_ENV !== "production" &&
-    !componentRegistry[nodeType] &&
-    /^[A-Z]/.test(nodeType)
-  ) {
-    console.warn(
-      `AstRenderer: no componentRegistry entry for AST type "${nodeType}"`,
-    );
+  if (process.env.NODE_ENV !== "production" && !componentRegistry[nodeType] && /^[A-Z]/.test(nodeType)) {
+    console.warn(`AstRenderer: no componentRegistry entry for AST type "${nodeType}"`);
   }
   const Component = componentRegistry[nodeType] ?? nodeType;
 
-  return React.createElement(
-    Component,
-    { key, ...resolvedProps },
-    ...renderChildren(),
-  );
+  return React.createElement(Component, { key, ...resolvedProps }, ...renderChildren());
 }

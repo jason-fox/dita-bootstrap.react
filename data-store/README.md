@@ -73,18 +73,18 @@ curl -X POST --data-binary @docset.zip \
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `4000` | Port for the Express server to listen on. |
-| `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
-| `DEFAULT_LANGUAGE` | `"en"` | Default language code for document discovery. |
-| `MAX_UPLOAD_SIZE` | `"100mb"` | Max body size accepted by `POST`/`PUT /api/docs/<id>` zip uploads. |
-| `AUTH_TOKEN` | *(unset)* | Bearer token required on `/api/docs/<id>` writes. Auth is disabled when unset. |
-| `RAG_SERVICE_URL` | *(unset)* | Optional `rag-service` URL. When set, `POST`/`PUT`/`DELETE /api/docs/<id>` trigger a background `POST /api/reindex` there. Failures are logged, never returned to the client. |
-| `CHROME_CACHE_TTL_MS` | `5000` | How long `GET /api/chrome` serves `chrome.json` from an in-memory cache before re-reading from disk. `PUT /api/chrome` invalidates the cache immediately on write. |
-| `FEATURED_DOCS` | *(unset)* | Comma-separated doc-set ids to pin first (before priority/alphabetical) in `/api/docs` ordering. |
-| `WEB_CONCURRENCY` / `WORKERS` | *(unset)* | Explicit worker process count. Takes precedence over `CLUSTER_MODE`. |
-| `CLUSTER_MODE` | `false` | Set to `true` to run one worker per CPU core when `WEB_CONCURRENCY`/`WORKERS` aren't set. |
+| Variable                      | Default   | Description                                                                                                                                                                   |
+| ----------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                        | `4000`    | Port for the Express server to listen on.                                                                                                                                     |
+| `DATA_DIR`                    | `./data`  | Directory containing documentation sets with `toc.json` files.                                                                                                                |
+| `DEFAULT_LANGUAGE`            | `"en"`    | Default language code for document discovery.                                                                                                                                 |
+| `MAX_UPLOAD_SIZE`             | `"100mb"` | Max body size accepted by `POST`/`PUT /api/docs/<id>` zip uploads.                                                                                                            |
+| `AUTH_TOKEN`                  | _(unset)_ | Bearer token required on `/api/docs/<id>` writes. Auth is disabled when unset.                                                                                                |
+| `RAG_SERVICE_URL`             | _(unset)_ | Optional `rag-service` URL. When set, `POST`/`PUT`/`DELETE /api/docs/<id>` trigger a background `POST /api/reindex` there. Failures are logged, never returned to the client. |
+| `CHROME_CACHE_TTL_MS`         | `5000`    | How long `GET /api/chrome` serves `chrome.json` from an in-memory cache before re-reading from disk. `PUT /api/chrome` invalidates the cache immediately on write.            |
+| `FEATURED_DOCS`               | _(unset)_ | Comma-separated doc-set ids to pin first (before priority/alphabetical) in `/api/docs` ordering.                                                                              |
+| `WEB_CONCURRENCY` / `WORKERS` | _(unset)_ | Explicit worker process count. Takes precedence over `CLUSTER_MODE`.                                                                                                          |
+| `CLUSTER_MODE`                | `false`   | Set to `true` to run one worker per CPU core when `WEB_CONCURRENCY`/`WORKERS` aren't set.                                                                                     |
 
 ## Contributing
 

@@ -33,9 +33,7 @@ function populateCardAst(node: AstNode, doc: DocSetInfo): AstNode {
       if (Array.isArray(child) && child[0] === "span") {
         const spanProps = isPropsObject(child[1]) ? child[1] : undefined;
         const spanChildren = isPropsObject(child[1]) ? child.slice(2) : child.slice(1);
-        const spanIsEmpty =
-          spanChildren.length === 0 ||
-          (spanChildren.length === 1 && spanChildren[0] === "");
+        const spanIsEmpty = spanChildren.length === 0 || (spanChildren.length === 1 && spanChildren[0] === "");
         if (spanIsEmpty) {
           return spanProps ? ["span", spanProps, doc.title] : ["span", doc.title];
         }
@@ -50,13 +48,9 @@ function populateCardAst(node: AstNode, doc: DocSetInfo): AstNode {
       if (Array.isArray(child) && child[0] === "span") {
         const spanProps = isPropsObject(child[1]) ? child[1] : undefined;
         const spanChildren = isPropsObject(child[1]) ? child.slice(2) : child.slice(1);
-        const spanIsEmpty =
-          spanChildren.length === 0 ||
-          (spanChildren.length === 1 && spanChildren[0] === "");
+        const spanIsEmpty = spanChildren.length === 0 || (spanChildren.length === 1 && spanChildren[0] === "");
         if (spanIsEmpty) {
-          return spanProps
-            ? ["span", spanProps, doc.description ?? ""]
-            : ["span", doc.description ?? ""];
+          return spanProps ? ["span", spanProps, doc.description ?? ""] : ["span", doc.description ?? ""];
         }
       }
       return child;
@@ -86,7 +80,7 @@ export default function HomePageClient({ docs, chrome }: HomePageClientProps) {
           (doc) =>
             doc.title.toLowerCase().includes(q) ||
             (doc.description && doc.description.toLowerCase().includes(q)) ||
-            doc.id.toLowerCase().includes(q)
+            doc.id.toLowerCase().includes(q),
         )
       : docs;
 
@@ -133,25 +127,22 @@ export default function HomePageClient({ docs, chrome }: HomePageClientProps) {
             <i className="bi bi-info-circle display-6 d-block mb-3" />
             <h4>No Documentation Sets Found</h4>
             <p className="mb-0">
-              Ensure the data-store is running and point <code>DATA_DIR</code> at output directories containing documentation sets.
+              Ensure the data-store is running and point <code>DATA_DIR</code> at output directories containing
+              documentation sets.
             </p>
           </div>
         ) : sortedAndFilteredDocs.length === 0 ? (
           <div className="text-center py-5 alert alert-warning col-lg-8 mx-auto">
             <i className="bi bi-search display-6 d-block mb-3" />
             <h4>No Matching Documentation Sets</h4>
-            <p className="mb-0">
-              No documentation sets found matching &ldquo;{searchQuery}&rdquo;.
-            </p>
+            <p className="mb-0">No documentation sets found matching &ldquo;{searchQuery}&rdquo;.</p>
           </div>
         ) : (
           <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
             {sortedAndFilteredDocs.map((doc) => (
               <div key={doc.id} className="col d-flex align-items-stretch">
                 <div className="w-100 h-100 d-flex flex-column">
-                  {cardTemplate && (
-                    <AstRenderer nodes={[populateCardAst(cardTemplate, doc)]} />
-                  )}
+                  {cardTemplate && <AstRenderer nodes={[populateCardAst(cardTemplate, doc)]} />}
                 </div>
               </div>
             ))}

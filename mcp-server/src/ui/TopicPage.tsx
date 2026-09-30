@@ -27,7 +27,9 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
         {hasToc && (
           <button
             type="button"
-            className={`btn btn-outline-secondary btn-sm d-flex align-items-center ms-2 ${showDesktopToc ? "d-lg-none" : ""}`}
+            className={`btn btn-outline-secondary btn-sm d-flex align-items-center ms-2 ${
+              showDesktopToc ? "d-lg-none" : ""
+            }`}
             onClick={() => setShowTocDrawer(true)}
           >
             <i className="bi bi-list fs-6 pe-3"></i>
@@ -42,13 +44,7 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
   );
 
   const mainColClass =
-    showDesktopToc && hasScrollspy
-      ? "col-lg-7"
-      : showDesktopToc
-      ? "col-lg-10"
-      : hasScrollspy
-      ? "col-lg-9"
-      : "col-12";
+    showDesktopToc && hasScrollspy ? "col-lg-7" : showDesktopToc ? "col-lg-10" : hasScrollspy ? "col-lg-9" : "col-12";
 
   return (
     <div className="container-fluid px-3 py-2">

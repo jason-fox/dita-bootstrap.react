@@ -64,10 +64,14 @@ export class LlmService {
   async generateResponse(
     userMessage: string,
     history: ChatMessage[],
-    mcpClient: McpClientService
+    mcpClient: McpClientService,
   ): Promise<{ text: string; toolResults: any[] }> {
     if (this.config.provider !== "ollama" && (!this.config.apiKey || this.config.apiKey.trim() === "")) {
-      throw new Error(`API key for provider '${this.config.provider}' is missing or empty. Please set ${this.config.provider.toUpperCase()}_API_KEY in your .env file.`);
+      throw new Error(
+        `API key for provider '${
+          this.config.provider
+        }' is missing or empty. Please set ${this.config.provider.toUpperCase()}_API_KEY in your .env file.`,
+      );
     }
 
     const tools = await mcpClient.listTools();
@@ -99,9 +103,12 @@ export class LlmService {
             const itemsText = shownSets
               .map((ds: any) => `* ${ds.title || ds.id}${ds.description ? `: ${ds.description}` : ""}`)
               .join("\n");
-            const extraText = docSets.length > maxShown
-              ? `\n* ...etc (${docSets.length - maxShown} more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
-              : "";
+            const extraText =
+              docSets.length > maxShown
+                ? `\n* ...etc (${
+                    docSets.length - maxShown
+                  } more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
+                : "";
             docCorpusSummary = `Available Documentation Sets (${docSets.length} total):\n${itemsText}${extraText}`;
           }
         }
@@ -145,9 +152,10 @@ export class LlmService {
             const functionName = toolCall.function.name;
             let functionArgs: Record<string, any> = {};
             try {
-              functionArgs = typeof toolCall.function.arguments === "string"
-                ? JSON.parse(toolCall.function.arguments)
-                : toolCall.function.arguments;
+              functionArgs =
+                typeof toolCall.function.arguments === "string"
+                  ? JSON.parse(toolCall.function.arguments)
+                  : toolCall.function.arguments;
             } catch (e) {
               functionArgs = {};
             }
@@ -219,11 +227,12 @@ export class LlmService {
     // Force a final text synthesis call without tool calling if loop completes
     const finalResponse = await this.callChatCompletions(messages, []);
     const rawFinal = finalResponse?.choices?.[0]?.message?.content;
-    const finalText = (rawFinal && rawFinal.trim() !== "")
-      ? rawFinal
-      : (executedToolResults.some((tr: any) => tr.toolName === "render_topic_ui")
-          ? "Here is the documentation and interactive preview:"
-          : "Gathered tool information successfully.");
+    const finalText =
+      rawFinal && rawFinal.trim() !== ""
+        ? rawFinal
+        : executedToolResults.some((tr: any) => tr.toolName === "render_topic_ui")
+        ? "Here is the documentation and interactive preview:"
+        : "Gathered tool information successfully.";
 
     return {
       text: finalText,
@@ -232,13 +241,12 @@ export class LlmService {
   }
 
   private async callChatCompletions(messages: ChatMessage[], tools: any[]): Promise<any> {
-    const baseUrl = this.config.baseUrl!.endsWith("/")
-      ? this.config.baseUrl!
-      : `${this.config.baseUrl}/`;
-    
-    const endpoint = baseUrl.endsWith("chat/completions") || baseUrl.endsWith("chat/completions/")
-      ? baseUrl
-      : `${baseUrl}chat/completions`;
+    const baseUrl = this.config.baseUrl!.endsWith("/") ? this.config.baseUrl! : `${this.config.baseUrl}/`;
+
+    const endpoint =
+      baseUrl.endsWith("chat/completions") || baseUrl.endsWith("chat/completions/")
+        ? baseUrl
+        : `${baseUrl}chat/completions`;
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",

@@ -51,7 +51,11 @@ export class VectorStore {
 
   public static tokenize(text: string): string[] {
     const tokens: string[] = [];
-    const words = text.normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}_-]*/gu) ?? [];
+    const words =
+      text
+        .normalize("NFKC")
+        .toLowerCase()
+        .match(/[\p{L}\p{N}][\p{L}\p{N}_-]*/gu) ?? [];
     for (const word of words) {
       if (word.length > 1) tokens.push(word);
       if (/[_-]/.test(word)) {
@@ -69,9 +73,7 @@ export class VectorStore {
 
   public setTopicChunks(topicPath: string, hash: string, chunks: EmbeddedChunk[]): void {
     const data = chunks.map(({ chunk, vector }) => {
-      const tokens = VectorStore.tokenize(
-        `${chunk.title} ${chunk.shortdesc} ${chunk.sectionTitle} ${chunk.content}`
-      );
+      const tokens = VectorStore.tokenize(`${chunk.title} ${chunk.shortdesc} ${chunk.sectionTitle} ${chunk.content}`);
       const terms = new Map<string, number>();
       for (const token of tokens) terms.set(token, (terms.get(token) || 0) + 1);
       return { chunk, vector, terms, length: tokens.length };
@@ -136,7 +138,7 @@ export class VectorStore {
     queryVector: Float32Array,
     docId?: string,
     lang?: string,
-    topK: number = 10
+    topK: number = 10,
   ): SearchHit[] {
     if (this.index.size === 0) return [];
 

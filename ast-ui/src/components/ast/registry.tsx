@@ -21,28 +21,13 @@ import {
   Table,
 } from "react-bootstrap";
 import { FaviconFromAst, IconFromAst } from "./nodes/IconNodes";
-import {
-  PopoverTriggerFromAst,
-  TooltipTriggerFromAst,
-} from "./nodes/OverlayNodes";
-import {
-  CollapseFromAst,
-  OffcanvasFromAst,
-  ToggleButtonFromAst,
-} from "./nodes/ToggleNodes";
+import { PopoverTriggerFromAst, TooltipTriggerFromAst } from "./nodes/OverlayNodes";
+import { CollapseFromAst, OffcanvasFromAst, ToggleButtonFromAst } from "./nodes/ToggleNodes";
 
-const InteractiveTable = dynamic(
-  () => import("../table/InteractiveTable"),
-  {
-    loading: () => (
-      <div
-        className="spinner-border spinner-border-sm text-primary"
-        role="status"
-      />
-    ),
-    ssr: false,
-  },
-);
+const InteractiveTable = dynamic(() => import("../table/InteractiveTable"), {
+  loading: () => <div className="spinner-border spinner-border-sm text-primary" role="status" />,
+  ssr: false,
+});
 
 // PascalCase AST types map to react-bootstrap components; anything not listed here falls
 // through to `type` itself as a literal HTML tag (e.g. "div", "p", "a").

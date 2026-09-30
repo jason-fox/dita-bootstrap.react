@@ -4,10 +4,7 @@ import HomePageClient from "@/components/home/HomePageClient";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [docs, chrome] = await Promise.all([
-    fetchDocs(),
-    fetchChrome().catch(() => null),
-  ]);
+  const [docs, chrome] = await Promise.all([fetchDocs(), fetchChrome().catch(() => null)]);
 
   return <HomePageClient docs={docs} chrome={chrome} />;
 }

@@ -6,9 +6,7 @@ import collapse from "../../../fixtures/dita-bootstrap/collapse.json";
 
 describe("AstRenderer with the dita-bootstrap collapse topic", () => {
   it("expands a collapse from its sibling toggle button", async () => {
-    const { container } = render(
-      <AstRenderer nodes={collapse.content as AstNode[]} docId="dita-bootstrap" />,
-    );
+    const { container } = render(<AstRenderer nodes={collapse.content as AstNode[]} docId="dita-bootstrap" />);
     const panel = container.querySelector("div.collapse:not(.collapse-horizontal)")!;
     expect(panel.classList.contains("show")).toBe(false);
 
@@ -18,9 +16,7 @@ describe("AstRenderer with the dita-bootstrap collapse topic", () => {
   });
 
   it("renders the horizontal collapse variant collapsed", () => {
-    const { container } = render(
-      <AstRenderer nodes={collapse.content as AstNode[]} docId="dita-bootstrap" />,
-    );
+    const { container } = render(<AstRenderer nodes={collapse.content as AstNode[]} docId="dita-bootstrap" />);
     const panel = container.querySelector("div.collapse-horizontal")!;
     expect(panel.classList.contains("collapse-horizontal")).toBe(true);
     expect(panel.classList.contains("show")).toBe(false);

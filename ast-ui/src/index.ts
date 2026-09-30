@@ -6,11 +6,5 @@ export { parseTocEntry, stripHash, tocEntryContains, type TocEntry } from "./toc
 export { isPropsObject, resolveHref, resolveSrc, resolveStyle } from "./lib/helpers";
 export { API_URL, DATA_URL, PUBLIC_API_URL, PUBLIC_DATA_URL } from "./lib/urls";
 export type { AstArray, AstNode } from "./types/ast";
-export type {
-  BreadcrumbItem,
-  ChromeConfig,
-  DocSetInfo,
-  TocDoc,
-  TopicDoc,
-} from "./types/docs";
+export type { BreadcrumbItem, ChromeConfig, DocSetInfo, TocDoc, TopicDoc } from "./types/docs";
 export type { TopicViewerPayload } from "./types/topic-payload";

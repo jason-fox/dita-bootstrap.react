@@ -45,13 +45,13 @@ Serves the MCP Streamable HTTP spec on a single `/mcp` endpoint (`POST` for requ
 
 ### Available MCP Tools
 
-| Tool | Parameters | Description |
-|---|---|---|
-| `list_documentation_sets` | *(none)* | Discovers and returns metadata for all available documentation sets. |
-| `get_toc` | `docId` | Returns the hierarchical Table of Contents for a doc set. |
-| `search_documentation` | `query`, `docId?`, `lang?` | Search query across topics. Delegates to `rag-service` if configured, with MiniSearch fallback. |
-| `get_topic_content` | `docId`, `topicPath` | Returns clean Markdown text extracted from topic AST for LLM reasoning. |
-| `render_topic_ui` | `docId`, `topicPath`, `theme?` | **MCP-UI Tool**: Returns a self-contained HTML/CSS frame rendering interactive React UI. |
+| Tool                      | Parameters                     | Description                                                                                     |
+| ------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `list_documentation_sets` | _(none)_                       | Discovers and returns metadata for all available documentation sets.                            |
+| `get_toc`                 | `docId`                        | Returns the hierarchical Table of Contents for a doc set.                                       |
+| `search_documentation`    | `query`, `docId?`, `lang?`     | Search query across topics. Delegates to `rag-service` if configured, with MiniSearch fallback. |
+| `get_topic_content`       | `docId`, `topicPath`           | Returns clean Markdown text extracted from topic AST for LLM reasoning.                         |
+| `render_topic_ui`         | `docId`, `topicPath`, `theme?` | **MCP-UI Tool**: Returns a self-contained HTML/CSS frame rendering interactive React UI.        |
 
 ### Available MCP Resources
 
@@ -62,15 +62,15 @@ Serves the MCP Streamable HTTP spec on a single `/mcp` endpoint (`POST` for requ
 
 ### Environment Variables & Options
 
-| Parameter / Variable | Default | Description |
-|---|---|---|
-| `-p, --port` / `PORT` | `4001` | HTTP port when running with `--transport http`. |
-| `-d, --data-dir` / `DATA_DIR` | `../data-store/data` | Path to data directory containing documentation sets. |
-| `-r, --rag-service-url` / `RAG_SERVICE_URL` | *(none)* | Optional URL of standalone RAG vector search service (`http://localhost:4002`). |
-| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output (`render_topic_ui`). |
-| `NAVBAR_THEME` / `NAVBAR_TEXT` | `"dark"` / `"dark"` | Optional navbar theme and text scheme overrides. |
-| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag used for root `<html lang="...">`. |
-| `CUSTOM_CSS_PATH` | *(null)* | File path or URL to an additional custom stylesheet to inline into MCP-UI frames. |
+| Parameter / Variable                        | Default              | Description                                                                       |
+| ------------------------------------------- | -------------------- | --------------------------------------------------------------------------------- |
+| `-p, --port` / `PORT`                       | `4001`               | HTTP port when running with `--transport http`.                                   |
+| `-d, --data-dir` / `DATA_DIR`               | `../data-store/data` | Path to data directory containing documentation sets.                             |
+| `-r, --rag-service-url` / `RAG_SERVICE_URL` | _(none)_             | Optional URL of standalone RAG vector search service (`http://localhost:4002`).   |
+| `BOOTSTRAP_THEME`                           | `"default"`          | Bootswatch theme name for MCP-UI shell output (`render_topic_ui`).                |
+| `NAVBAR_THEME` / `NAVBAR_TEXT`              | `"dark"` / `"dark"`  | Optional navbar theme and text scheme overrides.                                  |
+| `DEFAULT_LANGUAGE`                          | `"en"`               | Standard IETF BCP 47 language tag used for root `<html lang="...">`.              |
+| `CUSTOM_CSS_PATH`                           | _(null)_             | File path or URL to an additional custom stylesheet to inline into MCP-UI frames. |
 
 ## Contributing
 

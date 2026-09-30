@@ -16,8 +16,8 @@ const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
 const numWorkers = envWorkers
   ? Math.max(1, Number.parseInt(envWorkers, 10))
   : process.env.CLUSTER_MODE === "true"
-    ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
-    : 1;
+  ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
+  : 1;
 
 if (numWorkers > 1 && cluster.isPrimary) {
   console.log(`Primary process ${process.pid} running. Forking ${numWorkers} mcp-client workers...`);
@@ -25,7 +25,9 @@ if (numWorkers > 1 && cluster.isPrimary) {
     cluster.fork();
   }
   cluster.on("exit", (worker, code, signal) => {
-    console.warn(`Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`);
+    console.warn(
+      `Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`,
+    );
     cluster.fork();
   });
 } else {
@@ -38,14 +40,7 @@ async function startWorker() {
   app.use(cors());
   app.use(express.json());
 
-  const DARK_ONLY_THEMES = new Set([
-    "cyborg",
-    "darkly",
-    "slate",
-    "solar",
-    "superhero",
-    "vapor",
-  ]);
+  const DARK_ONLY_THEMES = new Set(["cyborg", "darkly", "slate", "solar", "superhero", "vapor"]);
 
   const rawTheme = (process.env.BOOTSTRAP_THEME || "default").trim();
   const themeName = rawTheme.toLowerCase();
@@ -164,24 +159,28 @@ async function startWorker() {
     let html = fs.readFileSync(indexPath, "utf-8");
 
     if (useBootswatch) {
-      html = html.replace(
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
-        bootstrapCssUrl
-      );
+      html = html.replace("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", bootstrapCssUrl);
     }
 
     // Replace default navbar color scheme and background
-    const defaultNavClass = 'class="navbar navbar-expand-lg bg-dark navbar-dark border-bottom shadow-sm py-2 sticky-top flex-shrink-0" data-bs-theme="dark"';
+    const defaultNavClass =
+      'class="navbar navbar-expand-lg bg-dark navbar-dark border-bottom shadow-sm py-2 sticky-top flex-shrink-0" data-bs-theme="dark"';
     const customNavClass = `class="navbar navbar-expand-lg ${navBgColor} ${navColorScheme} border-bottom shadow-sm py-2 sticky-top flex-shrink-0" data-bs-theme="${navBsTheme}"`;
     html = html.replace(defaultNavClass, customNavClass);
 
     const defaultLang = (process.env.DEFAULT_LANGUAGE || "en").trim();
     const bsTheme = isDarkOnly ? "dark" : "light";
-    html = html.replace(/<html lang="[^"]*"\s*(data-bs-theme="[^"]*")?>/, `<html lang="${defaultLang}" data-bs-theme="${bsTheme}">`);
+    html = html.replace(
+      /<html lang="[^"]*"\s*(data-bs-theme="[^"]*")?>/,
+      `<html lang="${defaultLang}" data-bs-theme="${bsTheme}">`,
+    );
 
     if (docsTitle) {
       html = html.replace("<title>AI Assistant</title>", `<title>${docsTitle}</title>`);
-      html = html.replace('<span id="nav-brand-title">AI Assistant</span>', `<span id="nav-brand-title">${docsTitle}</span>`);
+      html = html.replace(
+        '<span id="nav-brand-title">AI Assistant</span>',
+        `<span id="nav-brand-title">${docsTitle}</span>`,
+      );
       html = html.replace("Welcome to AI Assistant", `Welcome to ${docsTitle}`);
     }
 
@@ -205,9 +204,13 @@ async function startWorker() {
   });
 
   app.listen(port, () => {
-    console.log(`DITA Docs MCP Client worker ${process.pid} running at http://localhost:${port} (standalone mode, chrome.json reading disabled)`);
+    console.log(
+      `DITA Docs MCP Client worker ${process.pid} running at http://localhost:${port} (standalone mode, chrome.json reading disabled)`,
+    );
     console.log(`Active Provider: ${llmService.activeConfig.provider} (${llmService.activeConfig.model})`);
     console.log(`Bootswatch Theme: ${themeName} (darkOnly: ${isDarkOnly})`);
-    console.log(`Navbar Styling: NAVBAR_THEME=${navThemeRaw} (${navBgColor}), NAVBAR_TEXT=${textVal} (${navColorScheme})`);
+    console.log(
+      `Navbar Styling: NAVBAR_THEME=${navThemeRaw} (${navBgColor}), NAVBAR_TEXT=${textVal} (${navColorScheme})`,
+    );
   });
 }

@@ -17,11 +17,8 @@ const SEARCH_INDEX_OPTIONS = {
   storeFields: ["title", "shortdesc", "lang"],
 };
 
-export async function loadSearchIndex(
-  docId?: string,
-): Promise<MiniSearch<SearchDoc>> {
-  const relativePath =
-    docId && docId !== "default" ? `${docId}/search-index.json` : "search-index.json";
+export async function loadSearchIndex(docId?: string): Promise<MiniSearch<SearchDoc>> {
+  const relativePath = docId && docId !== "default" ? `${docId}/search-index.json` : "search-index.json";
   const res = await fetch(`${PUBLIC_DATA_URL}/${relativePath}`, {
     cache: "no-store",
   }).catch(() => null);
@@ -32,5 +29,3 @@ export async function loadSearchIndex(
   const json = await res.text();
   return MiniSearch.loadJSON<SearchDoc>(json, SEARCH_INDEX_OPTIONS);
 }
-
-

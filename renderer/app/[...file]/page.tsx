@@ -12,20 +12,14 @@ function firstHref(entries: AstArray[]): string | undefined {
     const hasProps = isPropsObject(maybeProps);
     const href = hasProps ? (maybeProps as { href?: string }).href : undefined;
     if (href) return href;
-    const children = (
-      hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
-    ) as AstArray[];
+    const children = (hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)) as AstArray[];
     const nested = firstHref(children);
     if (nested) return nested;
   }
   return undefined;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ file: string[] }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ file: string[] }> }): Promise<Metadata> {
   const { file } = await params;
   const docs = await fetchDocs();
   const { docId, topicPath } = matchDocSet(file, docs);
@@ -65,19 +59,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ViewPage({
-  params,
-}: {
-  params: Promise<{ file: string[] }>;
-}) {
+export default async function ViewPage({ params }: { params: Promise<{ file: string[] }> }) {
   const { file } = await params;
   const docs = await fetchDocs();
   const { docId, topicPath } = matchDocSet(file, docs);
 
-  const [toc, chrome] = await Promise.all([
-    fetchToc(docId).catch(() => null),
-    fetchChrome().catch(() => null),
-  ]);
+  const [toc, chrome] = await Promise.all([fetchToc(docId).catch(() => null), fetchChrome().catch(() => null)]);
 
   // If visiting the root of a doc set (e.g. /dita-bootstrap-sample), redirect to its first topic
   if (!topicPath && toc) {
@@ -96,12 +83,12 @@ export default async function ViewPage({
   const article = (
     <article>
       {doc.meta.breadcrumbs && <Breadcrumbs items={doc.meta.breadcrumbs} docId={docId} />}
-      {doc.meta.title && <h1 id="ariaid-title1" tabIndex={-1}>{doc.meta.title}</h1>}
-      {doc.meta.shortdesc && (
-        <p className="shortdesc text-body-secondary lead">
-          {doc.meta.shortdesc}
-        </p>
+      {doc.meta.title && (
+        <h1 id="ariaid-title1" tabIndex={-1}>
+          {doc.meta.title}
+        </h1>
       )}
+      {doc.meta.shortdesc && <p className="shortdesc text-body-secondary lead">{doc.meta.shortdesc}</p>}
       <AstRenderer nodes={doc.content} docId={docId} />
     </article>
   );

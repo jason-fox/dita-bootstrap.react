@@ -72,15 +72,15 @@ When no custom `--args.hdr` or `--args.ftr` parameters are specified, `renderer`
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `3000` | HTTP port for Next.js web application. |
-| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). |
-| `OPEN_GRAPH_URL` | *(empty)* | Base URL used to generate `og:url` and `twitter:url` metadata tags. |
-| `CUSTOM_CSS_PATH` | *(null)* | Path or URL to an additional custom stylesheet. |
-| `NEXT_PUBLIC_DATA_URL` | `http://localhost:4000/data` | Base URL for JSON AST static files. |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api` | Base URL for data-store API routes. |
-| `MCP_SERVER_URL` | `http://localhost:4001/mcp` | Streamable HTTP endpoint of `mcp-server` used by `/chat`. |
+| Variable               | Default                      | Description                                                            |
+| ---------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| `PORT`                 | `3000`                       | HTTP port for Next.js web application.                                 |
+| `BOOTSTRAP_THEME`      | `"default"`                  | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). |
+| `OPEN_GRAPH_URL`       | _(empty)_                    | Base URL used to generate `og:url` and `twitter:url` metadata tags.    |
+| `CUSTOM_CSS_PATH`      | _(null)_                     | Path or URL to an additional custom stylesheet.                        |
+| `NEXT_PUBLIC_DATA_URL` | `http://localhost:4000/data` | Base URL for JSON AST static files.                                    |
+| `NEXT_PUBLIC_API_URL`  | `http://localhost:4000/api`  | Base URL for data-store API routes.                                    |
+| `MCP_SERVER_URL`       | `http://localhost:4001/mcp`  | Streamable HTTP endpoint of `mcp-server` used by `/chat`.              |
 
 ## Contributing
 

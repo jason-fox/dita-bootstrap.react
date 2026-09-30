@@ -10,19 +10,11 @@ import type { AstArray, AstNode } from "../../../types/ast";
 import { componentRegistry } from "../registry";
 import type { InterceptedNodeProps } from "../types";
 
-export function SearchFormFromAst({
-  nodeKey,
-  resolvedProps,
-  children,
-  ctx,
-  render,
-}: InterceptedNodeProps) {
+export function SearchFormFromAst({ nodeKey, resolvedProps, children, ctx, render }: InterceptedNodeProps) {
   const { docId, lang, onSearch, noResultsText } = ctx;
   const indexRef = useRef<MiniSearch<SearchDoc> | null>(null);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<
-    Array<{ id: string; title: string; shortdesc: string }>
-  >([]);
+  const [results, setResults] = useState<Array<{ id: string; title: string; shortdesc: string }>>([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -52,10 +44,7 @@ export function SearchFormFromAst({
       filter: lang
         ? (result) => {
             if (!result.lang || !lang) return true;
-            return (
-              result.lang.split(/[-_]/)[0].toLowerCase() ===
-              lang.split(/[-_]/)[0].toLowerCase()
-            );
+            return result.lang.split(/[-_]/)[0].toLowerCase() === lang.split(/[-_]/)[0].toLowerCase();
           }
         : undefined,
     });
@@ -69,10 +58,7 @@ export function SearchFormFromAst({
     setOpen(true);
   }
 
-  const renderSearchChild = (
-    node: AstNode,
-    index: React.Key,
-  ): React.ReactNode => {
+  const renderSearchChild = (node: AstNode, index: React.Key): React.ReactNode => {
     if (typeof node === "string") return node;
     const [childType, ...rest] = node;
     const hasProps = rest.length > 0 && isPropsObject(rest[0]);
@@ -83,30 +69,20 @@ export function SearchFormFromAst({
       const formControlProps = {
         ...props,
         value: query,
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-          handleChange(e.target.value),
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange(e.target.value),
         onFocus: () => docId && query && results.length > 0 && setOpen(true),
       };
-      return render(
-        [childType, formControlProps, ...subChildren] as AstArray,
-        index,
-      );
+      return render([childType, formControlProps, ...subChildren] as AstArray, index);
     }
 
-    const renderedSubChildren = subChildren.map((c, i) =>
-      renderSearchChild(c, i),
-    );
+    const renderedSubChildren = subChildren.map((c, i) => renderSearchChild(c, i));
     const Component = componentRegistry[childType] ?? childType;
     const resolved = {
       ...props,
       ...(props.href ? { href: resolveHref(props.href, docId) } : {}),
       ...(props.style ? { style: resolveStyle(props.style) } : {}),
     };
-    return React.createElement(
-      Component,
-      { key: index, ...resolved },
-      ...renderedSubChildren,
-    );
+    return React.createElement(Component, { key: index, ...resolved }, ...renderedSubChildren);
   };
 
   const renderedChildren = children.map((c, i) => renderSearchChild(c, i));
@@ -128,14 +104,9 @@ export function SearchFormFromAst({
     >
       {renderedChildren}
       {open && (
-        <ul
-          className="dropdown-menu show w-100 mt-1"
-          style={{ maxHeight: "60vh", overflowY: "auto" }}
-        >
+        <ul className="dropdown-menu show w-100 mt-1" style={{ maxHeight: "60vh", overflowY: "auto" }}>
           {results.length === 0 ? (
-            <li className="px-3 py-2 text-body-secondary">
-              {effectiveNoResultsText}
-            </li>
+            <li className="px-3 py-2 text-body-secondary">{effectiveNoResultsText}</li>
           ) : (
             results.map((result) => (
               <li key={result.id}>
@@ -146,9 +117,7 @@ export function SearchFormFromAst({
                 >
                   <div className="fw-semibold">{result.title}</div>
                   {result.shortdesc && (
-                    <div className="small text-body-secondary text-truncate">
-                      {result.shortdesc}
-                    </div>
+                    <div className="small text-body-secondary text-truncate">{result.shortdesc}</div>
                   )}
                 </Link>
               </li>

@@ -27,9 +27,7 @@ function extractLanguage(className: unknown): string {
 
 // a ["code", props?, ...children] tuple's children, with props stripped off
 function codeNodeChildren(codeNode: AstArray): AstNode[] {
-  return (
-    isPropsObject(codeNode[1]) ? codeNode.slice(2) : codeNode.slice(1)
-  ) as AstNode[];
+  return (isPropsObject(codeNode[1]) ? codeNode.slice(2) : codeNode.slice(1)) as AstNode[];
 }
 
 // Prism.highlight() needs one plain-text string; codeblocks with nested semantic markup
@@ -51,11 +49,7 @@ export function renderCodeBlock(
   const language = extractLanguage(preProps.className);
   const grammar = Prism.languages[language];
   if (!grammar) {
-    return React.createElement(
-      "pre",
-      { key, ...preProps },
-      React.createElement("code", null, text),
-    );
+    return React.createElement("pre", { key, ...preProps }, React.createElement("code", null, text));
   }
   const html = Prism.highlight(text, grammar, language);
   return React.createElement(

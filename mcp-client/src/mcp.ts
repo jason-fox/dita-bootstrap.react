@@ -15,7 +15,7 @@ export class McpClientService {
       },
       {
         capabilities: {},
-      }
+      },
     );
   }
 
@@ -23,7 +23,7 @@ export class McpClientService {
     return Promise.race([
       promise,
       new Promise<T>((_, reject) =>
-        setTimeout(() => reject(new Error(`MCP operation timed out after ${timeoutMs}ms`)), timeoutMs)
+        setTimeout(() => reject(new Error(`MCP operation timed out after ${timeoutMs}ms`)), timeoutMs),
       ),
     ]);
   }
@@ -40,7 +40,7 @@ export class McpClientService {
         },
         {
           capabilities: {},
-        }
+        },
       );
       const url = new URL(this.serverUrl);
       const transport = new StreamableHTTPClientTransport(url);
@@ -92,7 +92,7 @@ export class McpClientService {
           name,
           arguments: args,
         }),
-        5000
+        5000,
       );
       return response;
     } catch (error: any) {

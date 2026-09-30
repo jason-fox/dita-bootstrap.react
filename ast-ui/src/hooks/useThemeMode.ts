@@ -9,8 +9,7 @@ const MODES: ThemeMode[] = ["light", "dark", "auto"];
 
 function resolveTheme(mode: ThemeMode): "light" | "dark" {
   if (mode === "auto") {
-    return typeof window !== "undefined" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+    return typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
   }
@@ -36,11 +35,7 @@ function getSnapshot(): ThemeMode {
 }
 
 export function useThemeMode() {
-  const mode = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    () => "auto" as ThemeMode,
-  );
+  const mode = useSyncExternalStore(subscribe, getSnapshot, () => "auto" as ThemeMode);
 
   useEffect(() => applyMode(mode), [mode]);
 

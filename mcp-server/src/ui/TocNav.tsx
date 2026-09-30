@@ -16,10 +16,9 @@ export interface TocNavProps {
 // toc.json hrefs are sibling <topic>.json paths (see CLAUDE.local.md's AST shape docs);
 // strip the extension to get the topicPath render_topic_ui/get_topic_content expect.
 function tocHrefToTopicPath(href: unknown): string | undefined {
-  if (typeof href !== "string" || href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:")) return undefined;
-  return href
-    .replace(/^(\.\.\/|\.\/|\/)+/, "")
-    .replace(/\.(json|html)(#.*)?$/, "");
+  if (typeof href !== "string" || href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:"))
+    return undefined;
+  return href.replace(/^(\.\.\/|\.\/|\/)+/, "").replace(/\.(json|html)(#.*)?$/, "");
 }
 
 function splitEntry(entry: AstArray) {
@@ -283,12 +282,15 @@ export default function TocNav({
   const isListGroup = navToc.startsWith("list-group");
   const isNavPill = navToc.startsWith("nav-pill");
 
-  const displayEntries = menubar
-    ? entries.filter((entry) => containsActive(entry, activeTopicPath))
-    : entries;
+  const displayEntries = menubar ? entries.filter((entry) => containsActive(entry, activeTopicPath)) : entries;
 
   return (
-    <nav aria-label="Table of contents" id="bs-sidebar-nav" role="navigation" className="d-flex flex-column h-100 overflow-y-auto">
+    <nav
+      aria-label="Table of contents"
+      id="bs-sidebar-nav"
+      role="navigation"
+      className="d-flex flex-column h-100 overflow-y-auto"
+    >
       <div className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}>
         {isListGroup ? (
           <div className="list-group me-3">

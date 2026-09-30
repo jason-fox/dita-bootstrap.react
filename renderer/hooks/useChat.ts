@@ -16,10 +16,7 @@ export function useChat() {
       .then((data) => {
         setHealth(data);
         if (data.llmConfigured === false) {
-          setError(
-            data.llmError ||
-              `No API key configured for provider '${data.provider}'.`,
-          );
+          setError(data.llmError || `No API key configured for provider '${data.provider}'.`);
         }
       })
       .catch((err) => console.warn("Could not fetch health status:", err));
@@ -33,10 +30,7 @@ export function useChat() {
     if (!textToSend || isLoading) return;
 
     setError(null);
-    const updatedMessages: ChatMessage[] = [
-      ...messages,
-      { role: "user", content: textToSend },
-    ];
+    const updatedMessages: ChatMessage[] = [...messages, { role: "user", content: textToSend }];
     setMessages(updatedMessages);
     if (!customMsg) setInput("");
     setIsLoading(true);

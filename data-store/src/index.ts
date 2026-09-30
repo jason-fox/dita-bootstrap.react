@@ -10,9 +10,7 @@ import AdmZip from "adm-zip";
 
 const PORT = Number(process.env.PORT ?? 4000);
 // point this at a dita2ast-bootstrap output directory to serve real content
-const DATA_DIR = process.env.DATA_DIR
-  ? path.resolve(process.env.DATA_DIR)
-  : path.resolve(__dirname, "../data");
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.resolve(__dirname, "../data");
 // max body size accepted by POST/PUT /api/docs/<id> zip uploads
 const MAX_UPLOAD_SIZE = process.env.MAX_UPLOAD_SIZE || "100mb";
 // optional bearer token guarding the /api/docs/<id> write routes - auth is off when unset
@@ -24,8 +22,8 @@ const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
 const numWorkers = envWorkers
   ? Math.max(1, Number.parseInt(envWorkers, 10))
   : process.env.CLUSTER_MODE === "true"
-    ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
-    : 1;
+  ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
+  : 1;
 
 interface DocSetInfo {
   id: string;
@@ -61,13 +59,8 @@ function extractText(node: unknown): string {
   if (typeof node === "string") return node;
   if (!Array.isArray(node)) return "";
   const [, maybeProps, ...rest] = node;
-  const isProps =
-    typeof maybeProps === "object" &&
-    maybeProps !== null &&
-    !Array.isArray(maybeProps);
-  const children = isProps
-    ? rest
-    : [maybeProps, ...rest].filter((item) => item !== undefined);
+  const isProps = typeof maybeProps === "object" && maybeProps !== null && !Array.isArray(maybeProps);
+  const children = isProps ? rest : [maybeProps, ...rest].filter((item) => item !== undefined);
   return children.map(extractText).join(" ");
 }
 
@@ -80,11 +73,7 @@ function findTopicFiles(docDir: string, dir: string = docDir): string[] {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       results.push(...findTopicFiles(docDir, fullPath));
-    } else if (
-      entry.name.endsWith(".json") &&
-      entry.name !== "toc.json" &&
-      entry.name !== "search-index.json"
-    ) {
+    } else if (entry.name.endsWith(".json") && entry.name !== "toc.json" && entry.name !== "search-index.json") {
       results.push(path.relative(docDir, fullPath).split(path.sep).join("/"));
     }
   }
@@ -214,9 +203,7 @@ function buildSearchIndex(docDir: string): void {
         id: file.replace(/\.json$/, ""),
         title: doc.meta?.title ?? "",
         shortdesc: doc.meta?.shortdesc ?? "",
-        keywords: Array.isArray(doc.meta?.keywords)
-          ? doc.meta.keywords.join(" ")
-          : "",
+        keywords: Array.isArray(doc.meta?.keywords) ? doc.meta.keywords.join(" ") : "",
         text: (doc.content ?? []).map(extractText).join(" "),
         lang: docLang,
       });
@@ -227,10 +214,7 @@ function buildSearchIndex(docDir: string): void {
 
   const miniSearch = new MiniSearch<SearchDoc>(SEARCH_INDEX_OPTIONS);
   miniSearch.addAll(documents);
-  fs.writeFileSync(
-    path.join(docDir, "search-index.json"),
-    JSON.stringify(miniSearch),
-  );
+  fs.writeFileSync(path.join(docDir, "search-index.json"), JSON.stringify(miniSearch));
   console.log(`[${path.basename(docDir)}] search index built: ${documents.length} documents`);
 }
 
@@ -292,9 +276,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
   const tokenBuf = Buffer.from(token || "", "utf-8");
   const expectedBuf = Buffer.from(AUTH_TOKEN, "utf-8");
   const valid =
-    scheme === "Bearer" &&
-    tokenBuf.length === expectedBuf.length &&
-    crypto.timingSafeEqual(tokenBuf, expectedBuf);
+    scheme === "Bearer" && tokenBuf.length === expectedBuf.length && crypto.timingSafeEqual(tokenBuf, expectedBuf);
   if (!valid) {
     res.set("WWW-Authenticate", "Bearer");
     sendProblem(res, 401, "Unauthorized", "Missing or invalid Authorization: Bearer <token> header");
@@ -340,7 +322,9 @@ if (numWorkers > 1 && cluster.isPrimary) {
     cluster.fork();
   }
   cluster.on("exit", (worker, code, signal) => {
-    console.warn(`Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`);
+    console.warn(
+      `Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`,
+    );
     cluster.fork();
   });
 } else {
@@ -530,5 +514,3 @@ if (numWorkers > 1 && cluster.isPrimary) {
     console.log(`serving ${DATA_DIR} under /data`);
   });
 }
-
-

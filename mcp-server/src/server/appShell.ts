@@ -8,14 +8,7 @@ import { CLIENT_BUNDLE_JS_BASE64 } from "./vendor/client-bundle";
 const BOOTSTRAP_BUNDLE_JS = Buffer.from(BOOTSTRAP_BUNDLE_JS_BASE64, "base64").toString("utf-8");
 const CLIENT_BUNDLE_JS = Buffer.from(CLIENT_BUNDLE_JS_BASE64, "base64").toString("utf-8");
 
-const DARK_ONLY_THEMES = new Set([
-  "cyborg",
-  "darkly",
-  "slate",
-  "solar",
-  "superhero",
-  "vapor",
-]);
+const DARK_ONLY_THEMES = new Set(["cyborg", "darkly", "slate", "solar", "superhero", "vapor"]);
 
 // Helper to resolve custom CSS injection with explicit null check
 function getCustomCssElement(): string {
@@ -61,7 +54,7 @@ export function renderAppShellHtml(themeOverride?: string, langOverride?: string
     ? `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${themeName}/bootstrap.min.css`
     : "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
 
-  const darkAttr = isDarkOnly ? ' data-bs-theme="dark"' : '';
+  const darkAttr = isDarkOnly ? ' data-bs-theme="dark"' : "";
   const customCssElement = getCustomCssElement();
 
   return `<!DOCTYPE html>

@@ -2,7 +2,9 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="generating-ast">
   <title>Generating AST</title>
-  <shortdesc>Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the <option>ast-bootstrap</option> transtype, configuring custom header and footer build parameters, and publishing into the document store.</shortdesc>
+  <shortdesc
+  >Installing the org.dita-bootstrap.ast plug-in, generating Abstract Syntax Tree (AST) JSON topic files using the <option
+    >ast-bootstrap</option> transtype, configuring custom header and footer build parameters, and publishing into the document store.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -19,7 +21,8 @@
   <body>
     <section>
       <title>Plug-in Overview &amp; Installation</title>
-      <p>The <codeph>org.dita-bootstrap.ast</codeph> plug-in transforms DITA XML source topics into JSON Abstract Syntax Trees (AST). Install the plug-in into your DITA Open Toolkit instance:</p>
+      <p>The <codeph
+        >org.dita-bootstrap.ast</codeph> plug-in transforms DITA XML source topics into JSON Abstract Syntax Trees (AST). Install the plug-in into your DITA Open Toolkit instance:</p>
       
       <codeblock outputclass="language-bash"># Install plug-ins using the dita command:
 <cmdname>dita</cmdname> <parmname>install</parmname> fox.jason.extend.css
@@ -28,36 +31,44 @@
 
     <section>
       <title>Publishing AST to the Document Store</title>
-      <p>Publishing a DITA map to JSON AST requires a single DITA-OT execution command using the <option>ast-bootstrap</option> transformation type:</p>
+      <p>Publishing a DITA map to JSON AST requires a single DITA-OT execution command using the <option
+        >ast-bootstrap</option> transformation type:</p>
       
       <codeblock outputclass="language-bash"># Publish documentation directly into the data store directory:
 <cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
      <parmname>--format</parmname>=<option>ast-bootstrap</option></codeblock>
 
-      <p>The output directory contains a zip file holding the <filepath>toc.json</filepath> alongside AST JSON topic files. Once published, <filepath>data-store</filepath> automatically discovers the document set and adds it to the catalog.</p>
+      <p>The output directory contains a zip file holding the <filepath
+        >toc.json</filepath> alongside AST JSON topic files. Once published, <filepath
+        >data-store</filepath> automatically discovers the document set and adds it to the catalog.</p>
     </section>
 
     <section>
       <title>Customizing Headers &amp; Footers via Build Parameters</title>
-      <p>Custom navigation headers and footers can be attached at publish time using the <parmname>--args.hdr</parmname> and <parmname>--args.ftr</parmname> build parameters:</p>
+      <p>Custom navigation headers and footers can be attached at publish time using the <parmname
+        >--args.hdr</parmname> and <parmname>--args.ftr</parmname> build parameters:</p>
       
-      <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
+      <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath
+        >path/to/document.ditamap</filepath> \
      <parmname>--format</parmname>=<option>ast-bootstrap</option> \
      <parmname>--args.hdr</parmname>=<filepath>path/to/custom-header.xml</filepath> \
      <parmname>--args.ftr</parmname>=<filepath>path/to/custom-footer.xml</filepath></codeblock>
 
-      <p>You can reference the following existing XML include files provided by the plug-in suite as functional examples:</p>
+      <p
+      >You can reference the following existing XML include files provided by the plug-in suite as functional examples:</p>
       <ul>
         <li><filepath>hdr.navbar.example.xml</filepath> — Example top navigation bar layout template.</li>
         <li><filepath>hdr.sidebar.example.xml</filepath> — Example sidebar header layout template.</li>
         <li><filepath>hdr.topbar.example.xml</filepath> — Example top bar header layout template.</li>
-        <li><filepath>ftr.content.example.xml</filepath> — Example multi-column social and copyright footer layout template.</li>
+        <li><filepath
+          >ftr.content.example.xml</filepath> — Example multi-column social and copyright footer layout template.</li>
       </ul>
     </section>
 
     <section>
       <title>Detailed Structure of Default Navigation Header (hdr.navbar.default.xml)</title>
-      <p>The plug-in includes <filepath>hdr.navbar.default.xml</filepath> as the default primary header template. Its XML structure demonstrates how Bootstrap components, placeholders, and interactive roles are compiled into AST nodes:</p>
+      <p>The plug-in includes <filepath
+        >hdr.navbar.default.xml</filepath> as the default primary header template. Its XML structure demonstrates how Bootstrap components, placeholders, and interactive roles are compiled into AST nodes:</p>
 
       <codeblock outputclass="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;Navbar data-bs-theme="dark" expand="lg" sticky="top" bg="primary" variant="dark"&gt;
@@ -103,13 +114,15 @@
       <parml>
         <plentry>
           <pt><xmlelement>Navbar</xmlelement> Root Component</pt>
-          <pd>Defines a fixed top Bootstrap navigation bar with dark styling (<xmlatt>data-bs-theme="dark"</xmlatt>, <xmlatt>bg="primary"</xmlatt>, <xmlatt>sticky="top"</xmlatt>).</pd>
+          <pd>Defines a fixed top Bootstrap navigation bar with dark styling (<xmlatt
+            >data-bs-theme="dark"</xmlatt>, <xmlatt>bg="primary"</xmlatt>, <xmlatt>sticky="top"</xmlatt>).</pd>
         </plentry>
         <plentry>
           <pt>XML Placeholders</pt>
           <pd>
             <ul>
-              <li><xmlelement>document-title/</xmlelement> — XML placeholder element automatically substituted at publish time with the document map title.</li>
+              <li><xmlelement
+                >document-title/</xmlelement> — XML placeholder element automatically substituted at publish time with the document map title.</li>
               <li><xmlelement>favicon/</xmlelement> — Placeholder element replaced by the branding favicon icon.</li>
             </ul>
           </pd>
@@ -118,8 +131,10 @@
           <pt>Interactive Role Attributes</pt>
           <pd>
             <ul>
-              <li><xmlatt>role="search"</xmlatt> — Placed on the search <xmlelement>Form</xmlelement>; compiled into AST and intercepted by the web renderer to mount the live client-side search box.</li>
-              <li><xmlatt>role="theme-toggle"</xmlatt> — Placed on the <xmlelement>NavDropdown</xmlelement>; intercepted by the web renderer to mount the interactive Light/Dark theme switcher.</li>
+              <li><xmlatt>role="search"</xmlatt> — Placed on the search <xmlelement
+                >Form</xmlelement>; compiled into AST and intercepted by the web renderer to mount the live client-side search box.</li>
+              <li><xmlatt>role="theme-toggle"</xmlatt> — Placed on the <xmlelement
+                >NavDropdown</xmlelement>; intercepted by the web renderer to mount the interactive Light/Dark theme switcher.</li>
             </ul>
           </pd>
         </plentry>

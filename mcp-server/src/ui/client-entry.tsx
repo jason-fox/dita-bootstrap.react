@@ -119,11 +119,20 @@ function AppShell() {
 
       let toc = snapshot?.toc;
       if (!toc) {
-        const tocRes = await fetch(`${window.location.protocol}//${window.location.hostname}:4000/data/${docId}/toc.json`).catch(() => null);
+        const tocRes = await fetch(
+          `${window.location.protocol}//${window.location.hostname}:4000/data/${docId}/toc.json`,
+        ).catch(() => null);
         if (tocRes && tocRes.ok) toc = await tocRes.json();
       }
 
-      const payload: TopicPageProps = { docId, topicPath, doc, toc, theme: (theme as any) || "light", previewMode: snapshot?.previewMode };
+      const payload: TopicPageProps = {
+        docId,
+        topicPath,
+        doc,
+        toc,
+        theme: (theme as any) || "light",
+        previewMode: snapshot?.previewMode,
+      };
       applyPayload(payload);
       commitData(payload);
       setResultError(null);

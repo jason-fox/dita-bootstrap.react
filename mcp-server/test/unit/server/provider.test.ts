@@ -106,8 +106,6 @@ describe("DocProvider.astToMarkdown", () => {
   });
 
   it("fences code blocks with their language", () => {
-    expect(md(["pre", { outputclass: "language-bash" }, "echo hi"])).toContain(
-      "```bash\necho hi\n```",
-    );
+    expect(md(["pre", { outputclass: "language-bash" }, "echo hi"])).toContain("```bash\necho hi\n```");
   });
 });

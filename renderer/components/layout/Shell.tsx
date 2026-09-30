@@ -53,16 +53,10 @@ export default function Shell({
     <div className="d-flex flex-column min-vh-100">
       <div className="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary">
         <div className="container-xl">
-          <a
-            className="d-inline-flex m-1 btn btn-outline-primary btn-sm"
-            href="#ariaid-title1"
-          >
+          <a className="d-inline-flex m-1 btn btn-outline-primary btn-sm" href="#ariaid-title1">
             {accessibility?.main || "Skip to main content"}
           </a>
-          <a
-            className="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm"
-            href="#bs-sidebar-nav"
-          >
+          <a className="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm" href="#bs-sidebar-nav">
             {accessibility?.nav || "Skip to docs navigation"}
           </a>
         </div>
@@ -82,17 +76,19 @@ export default function Shell({
         {hasSidebar ? (
           <Row className="flex-grow-1">
             <div className="col-lg-2 py-3 overflow-y-auto bs-sidebar">
-              <Offcanvas
-                id="bdSidebar"
-                responsive="lg"
-                show={showSidebar}
-                onHide={() => setShowSidebar(false)}
-              >
+              <Offcanvas id="bdSidebar" responsive="lg" show={showSidebar} onHide={() => setShowSidebar(false)}>
                 <Offcanvas.Header closeButton>
                   <Offcanvas.Title>{title}</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body className="p-0">
-                  <Toc entries={tocEntries} navToc={navToc} menubar={menubar} docId={docId} accessibility={accessibility} texts={texts} />
+                  <Toc
+                    entries={tocEntries}
+                    navToc={navToc}
+                    menubar={menubar}
+                    docId={docId}
+                    accessibility={accessibility}
+                    texts={texts}
+                  />
                 </Offcanvas.Body>
               </Offcanvas>
             </div>
@@ -101,7 +97,9 @@ export default function Shell({
             </Col>
           </Row>
         ) : (
-          <main id="content" tabIndex={-1} className="py-3 flex-grow-1 d-flex flex-column">{children}</main>
+          <main id="content" tabIndex={-1} className="py-3 flex-grow-1 d-flex flex-column">
+            {children}
+          </main>
         )}
       </Container>
       {footerAst && (

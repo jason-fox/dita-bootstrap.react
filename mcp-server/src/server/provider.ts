@@ -59,7 +59,7 @@ export class DocProvider {
   // walks dataDir recursively, discovering any folder containing a toc.json file
   public findDocSets(dir: string = this.dataDir): DocSetOasisMetadata[] {
     const isRootDir = dir === this.dataDir;
-    if (isRootDir && this.docSetsCache && (Date.now() - this.docSetsCache.timestamp < this.DOC_SETS_CACHE_TTL_MS)) {
+    if (isRootDir && this.docSetsCache && Date.now() - this.docSetsCache.timestamp < this.DOC_SETS_CACHE_TTL_MS) {
       return this.docSetsCache.data;
     }
 
@@ -172,11 +172,7 @@ export class DocProvider {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         results.push(...this.findTopicFiles(docDir, fullPath));
-      } else if (
-        entry.name.endsWith(".json") &&
-        entry.name !== "toc.json" &&
-        entry.name !== "search-index.json"
-      ) {
+      } else if (entry.name.endsWith(".json") && entry.name !== "toc.json" && entry.name !== "search-index.json") {
         results.push(path.relative(docDir, fullPath).split(path.sep).join("/"));
       }
     }
@@ -255,7 +251,10 @@ export class DocProvider {
           }
         }
       } catch (error) {
-        console.warn(`[DocProvider] RAG service search at ${this.ragServiceUrl} failed, falling back to MiniSearch:`, error);
+        console.warn(
+          `[DocProvider] RAG service search at ${this.ragServiceUrl} failed, falling back to MiniSearch:`,
+          error,
+        );
       }
     }
 
@@ -264,9 +263,7 @@ export class DocProvider {
 
   public searchMiniSearch(query: string, docId?: string, lang?: string): SearchHit[] {
     const docSets = this.findDocSets();
-    const targetSets = docId
-      ? docSets.filter((s) => s.id === docId || s.id.startsWith(`${docId}/`))
-      : docSets;
+    const targetSets = docId ? docSets.filter((s) => s.id === docId || s.id.startsWith(`${docId}/`)) : docSets;
 
     const allResults: SearchHit[] = [];
 
@@ -322,15 +319,10 @@ export class DocProvider {
     if (!Array.isArray(node) || node.length === 0) return "";
 
     const [type, maybeProps, ...rest] = node;
-    const isProps =
-      typeof maybeProps === "object" &&
-      maybeProps !== null &&
-      !Array.isArray(maybeProps);
+    const isProps = typeof maybeProps === "object" && maybeProps !== null && !Array.isArray(maybeProps);
 
     const props = isProps ? (maybeProps as Record<string, unknown>) : {};
-    const children = (isProps ? rest : [maybeProps, ...rest]).filter(
-      (child) => child !== undefined,
-    );
+    const children = (isProps ? rest : [maybeProps, ...rest]).filter((child) => child !== undefined);
 
     const childText = children
       .map((child) => this.astToMarkdown(child, depth + 1))
@@ -416,7 +408,10 @@ export class DocProvider {
         const collectRow = (n: unknown, target: string[][]) => {
           if (tagOf(n) !== "tr") return;
           const cells = rawChildren(n).map((c) =>
-            this.astToMarkdown(c, depth + 1).trim().replace(/\|/g, "\\|").replace(/\s*\n\s*/g, " "),
+            this.astToMarkdown(c, depth + 1)
+              .trim()
+              .replace(/\|/g, "\\|")
+              .replace(/\s*\n\s*/g, " "),
           );
           colCount = Math.max(colCount, cells.length);
           target.push(cells);

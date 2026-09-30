@@ -14,8 +14,7 @@ export default function TopicIframe({
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const retryTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const mcpServerUrl =
-    process.env.NEXT_PUBLIC_MCP_SERVER_URL || "http://localhost:4001";
+  const mcpServerUrl = process.env.NEXT_PUBLIC_MCP_SERVER_URL || "http://localhost:4001";
   const viewerUrl = `${mcpServerUrl.replace(/\/mcp\/?$/, "")}/viewer`;
 
   const clearRetries = useCallback(() => {
@@ -27,13 +26,9 @@ export default function TopicIframe({
     if (iframeRef.current && iframeRef.current.contentWindow) {
       const clonedPayload = JSON.parse(JSON.stringify(payload));
       clonedPayload.previewMode = previewMode;
-      const hostTheme =
-        document.documentElement.getAttribute("data-bs-theme") || "light";
+      const hostTheme = document.documentElement.getAttribute("data-bs-theme") || "light";
       clonedPayload.theme = hostTheme;
-      iframeRef.current.contentWindow.postMessage(
-        { type: "SET_PAYLOAD", payload: clonedPayload },
-        "*",
-      );
+      iframeRef.current.contentWindow.postMessage({ type: "SET_PAYLOAD", payload: clonedPayload }, "*");
     }
   }, [payload, previewMode]);
 
@@ -41,10 +36,7 @@ export default function TopicIframe({
   // otherwise a late retry can clobber a topic the user already navigated to.
   useEffect(() => {
     const handleAck = (event: MessageEvent) => {
-      if (
-        event.data?.type === "PAYLOAD_ACK" &&
-        event.source === iframeRef.current?.contentWindow
-      ) {
+      if (event.data?.type === "PAYLOAD_ACK" && event.source === iframeRef.current?.contentWindow) {
         clearRetries();
       }
     };
@@ -52,10 +44,7 @@ export default function TopicIframe({
 
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "data-bs-theme"
-        ) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-bs-theme") {
           sendPayload();
         }
       }
@@ -81,9 +70,7 @@ export default function TopicIframe({
       onLoad={() => {
         clearRetries();
         sendPayload();
-        retryTimers.current = [150, 400, 900].map((delay) =>
-          setTimeout(sendPayload, delay),
-        );
+        retryTimers.current = [150, 400, 900].map((delay) => setTimeout(sendPayload, delay));
       }}
     />
   );

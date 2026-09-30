@@ -1,0 +1,9 @@
+# Manage Git hooks with Lefthook
+# https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+
+pre-commit:
+  commands:
+    prettier:
+      glob: '*.{css,dita*,json,md,xml,xsl,yml,ts,tsx,js,mjs,mts}'
+      run: prettier --write {staged_files}
+      stage_fixed: true

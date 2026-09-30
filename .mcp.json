@@ -2,11 +2,7 @@
   "mcpServers": {
     "dita-docs": {
       "command": "node",
-      "args": [
-        "mcp-server/dist/mcp-server/src/index.js",
-        "--transport", "stdio",
-        "--data-dir", "data-store/data"
-      ]
+      "args": ["mcp-server/dist/mcp-server/src/index.js", "--transport", "stdio", "--data-dir", "data-store/data"]
     }
   }
 }

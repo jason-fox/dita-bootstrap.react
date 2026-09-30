@@ -1,20 +1,10 @@
 "use client";
 
 import type React from "react";
-import {
-  Button,
-  Collapse as BsCollapse,
-  Offcanvas as BsOffcanvas,
-} from "react-bootstrap";
+import { Button, Collapse as BsCollapse, Offcanvas as BsOffcanvas } from "react-bootstrap";
 import { useToggleContext } from "../../../context/ToggleContext";
 
-export function OffcanvasFromAst({
-  id,
-  ...props
-}: {
-  id: string;
-  [key: string]: unknown;
-}) {
+export function OffcanvasFromAst({ id, ...props }: { id: string; [key: string]: unknown }) {
   const { isOpen, close } = useToggleContext();
   return <BsOffcanvas {...props} show={isOpen(id)} onHide={() => close(id)} />;
 }

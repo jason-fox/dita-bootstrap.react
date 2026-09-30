@@ -15,9 +15,7 @@ function splitEntry(entry: AstArray, docId?: string) {
     icon?: string;
     iconStyle?: string;
   };
-  const children = (
-    hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
-  ) as AstArray[];
+  const children = (hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)) as AstArray[];
   return {
     title,
     href: href ? (resolveHref(href, docId) as string) : undefined,
@@ -78,7 +76,9 @@ export default function Menubar({
                   {effectiveHref ? (
                     <Link
                       href={effectiveHref}
-                      className={`nav-link rounded-0 ${isActive ? "bg-secondary-subtle text-secondary active" : "text-secondary"}`}
+                      className={`nav-link rounded-0 ${
+                        isActive ? "bg-secondary-subtle text-secondary active" : "text-secondary"
+                      }`}
                       role="menuitem"
                     >
                       {icon && <i className={`${icon} me-1`} style={iconStyle} />}

@@ -136,7 +136,12 @@ const TABLE_ROW = /^\s*\|.*\|\s*$/;
 const TABLE_DIVIDER = /^\s*\|(\s*:?-+:?\s*\|)+\s*$/;
 
 function splitCells(row: string): string[] {
-  return row.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+  return row
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((c) => c.trim());
 }
 
 function processTables(text: string): string {
@@ -150,23 +155,30 @@ function processTables(text: string): string {
     }
 
     const aligns = splitCells(lines[i + 1]).map((c) =>
-      c.startsWith(":") && c.endsWith(":") ? "text-center" : c.endsWith(":") ? "text-end" : ""
+      c.startsWith(":") && c.endsWith(":") ? "text-center" : c.endsWith(":") ? "text-end" : "",
     );
-    const cell = (tag: string, c: string, idx: number) =>
-      `<${tag} class="${aligns[idx] ?? ""}">${c}</${tag}>`;
+    const cell = (tag: string, c: string, idx: number) => `<${tag} class="${aligns[idx] ?? ""}">${c}</${tag}>`;
 
-    const head = splitCells(lines[i]).map((c, idx) => cell("th", c, idx)).join("");
+    const head = splitCells(lines[i])
+      .map((c, idx) => cell("th", c, idx))
+      .join("");
     let j = i + 2;
     const body: string[] = [];
     while (j < lines.length && TABLE_ROW.test(lines[j])) {
-      body.push(`<tr>${splitCells(lines[j]).map((c, idx) => cell("td", c, idx)).join("")}</tr>`);
+      body.push(
+        `<tr>${splitCells(lines[j])
+          .map((c, idx) => cell("td", c, idx))
+          .join("")}</tr>`,
+      );
       j++;
     }
 
     out.push(
       "",
-      `<div class="table-responsive my-2"><table class="table table-sm table-bordered table-striped align-middle mb-0"><thead><tr>${head}</tr></thead><tbody>${body.join("")}</tbody></table></div>`,
-      ""
+      `<div class="table-responsive my-2"><table class="table table-sm table-bordered table-striped align-middle mb-0"><thead><tr>${head}</tr></thead><tbody>${body.join(
+        "",
+      )}</tbody></table></div>`,
+      "",
     );
     i = j - 1;
   }
@@ -222,13 +234,16 @@ export function renderMarkdown(markdown: string): string {
   processed = processed.replace(/^# (.*$)/gim, '<h3 class="fw-bold mt-3 mb-2">$1</h3>');
 
   // 6. Process bold & italics
-  processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  processed = processed.replace(/__(.*?)__/g, '<strong>$1</strong>');
-  processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  processed = processed.replace(/_(.*?)_/g, '<em>$1</em>');
+  processed = processed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  processed = processed.replace(/__(.*?)__/g, "<strong>$1</strong>");
+  processed = processed.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  processed = processed.replace(/_(.*?)_/g, "<em>$1</em>");
 
   // 7. Process links ([title](url))
-  processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-underline">$1</a>');
+  processed = processed.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-underline">$1</a>',
+  );
 
   processed = processTables(processed);
 

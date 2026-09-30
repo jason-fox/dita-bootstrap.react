@@ -26,8 +26,16 @@ program
   .description("MCP Server for Technical Documentation search, content extraction, and UI rendering")
   .option("-t, --transport <type>", "Transport type: stdio or http", "stdio")
   .option("-p, --port <number>", "Port to run HTTP server on", "4001")
-  .option("-d, --data-dir <path>", "Path to data-store data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../data-store/data"))
-  .option("-r, --rag-service-url <url>", "Optional URL to standalone RAG vector search service", process.env.RAG_SERVICE_URL)
+  .option(
+    "-d, --data-dir <path>",
+    "Path to data-store data directory",
+    process.env.DATA_DIR || path.resolve(__dirname, "../../data-store/data"),
+  )
+  .option(
+    "-r, --rag-service-url <url>",
+    "Optional URL to standalone RAG vector search service",
+    process.env.RAG_SERVICE_URL,
+  )
   .option("-c, --cluster [workers]", "Enable multi-core cluster mode")
   .option("-w, --workers <number>", "Number of worker processes in cluster mode");
 
@@ -95,7 +103,10 @@ function createMcpServer(): McpServer {
     "Performs full-text keyword search across documentation sets and returns ranked topic matches with relevant snippets. Use this to find specific topics or concepts when the exact path is unknown.",
     {
       query: z.string().describe("Search query string (keywords, error messages, or feature names)"),
-      docId: z.string().optional().describe("Optional documentation set ID to scope the search to a single document collection"),
+      docId: z
+        .string()
+        .optional()
+        .describe("Optional documentation set ID to scope the search to a single document collection"),
       lang: z.string().optional().describe("Optional IETF BCP 47 language code filter (e.g., 'en', 'de', 'fr')"),
     },
     async ({ query, docId, lang }) => {
@@ -117,7 +128,9 @@ function createMcpServer(): McpServer {
     "Retrieves the full content of a documentation topic formatted in clean Markdown. Use this tool to fetch detailed technical information required for reasoning, analysis, or answering user questions.",
     {
       docId: z.string().describe("ID of the target documentation set"),
-      topicPath: z.string().describe("Relative topic path without file extension (e.g., 'release-notes/index' or 'color')"),
+      topicPath: z
+        .string()
+        .describe("Relative topic path without file extension (e.g., 'release-notes/index' or 'color')"),
     },
     async ({ docId, topicPath }) => {
       try {
@@ -129,9 +142,8 @@ function createMcpServer(): McpServer {
         const breadcrumbs = Array.isArray(doc.meta.breadcrumbs)
           ? (doc.meta.breadcrumbs as Array<{ title: string; href?: string }>)
           : undefined;
-        const breadcrumbHeader = breadcrumbs && breadcrumbs.length > 0
-          ? `*Location: ${breadcrumbs.map((b) => b.title).join(" > ")}*\n\n`
-          : "";
+        const breadcrumbHeader =
+          breadcrumbs && breadcrumbs.length > 0 ? `*Location: ${breadcrumbs.map((b) => b.title).join(" > ")}*\n\n` : "";
 
         const fullOutput = `${breadcrumbHeader}# ${title}\n\n${shortdesc ? `*${shortdesc}*\n\n` : ""}${markdown}`;
 
@@ -163,7 +175,11 @@ function createMcpServer(): McpServer {
       inputSchema: z.object({
         docId: z.string().describe("ID of the target documentation set"),
         topicPath: z.string().describe("Relative topic path to render (e.g., 'release-notes/index' or 'color')"),
-        theme: z.enum(["light", "dark"]).optional().default("light").describe("Color theme for the rendered UI ('light' or 'dark')"),
+        theme: z
+          .enum(["light", "dark"])
+          .optional()
+          .default("light")
+          .describe("Color theme for the rendered UI ('light' or 'dark')"),
       }),
       _meta: { ui: { resourceUri: TOPIC_VIEWER_RESOURCE_URI } },
     },
@@ -186,15 +202,9 @@ function createMcpServer(): McpServer {
   );
 
   // The MCP App's own iframe shell - a static, topic-agnostic HTML page.
-  registerAppResource(
-    mcpServer,
-    "topic-viewer",
-    TOPIC_VIEWER_RESOURCE_URI,
-    {},
-    async () => ({
-      contents: [{ uri: TOPIC_VIEWER_RESOURCE_URI, mimeType: RESOURCE_MIME_TYPE, text: renderAppShellHtml() }],
-    }),
-  );
+  registerAppResource(mcpServer, "topic-viewer", TOPIC_VIEWER_RESOURCE_URI, {}, async () => ({
+    contents: [{ uri: TOPIC_VIEWER_RESOURCE_URI, mimeType: RESOURCE_MIME_TYPE, text: renderAppShellHtml() }],
+  }));
 
   // --- MCP RESOURCES ---
 
@@ -241,9 +251,12 @@ function createMcpServer(): McpServer {
       const summaryText = shownSets
         .map((ds) => `* ${ds.title} (${ds.id})${ds.description ? `: ${ds.description}` : ""}`)
         .join("\n");
-      const extraText = docSets.length > maxShown
-        ? `\n* ...etc (${docSets.length - maxShown} more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
-        : "";
+      const extraText =
+        docSets.length > maxShown
+          ? `\n* ...etc (${
+              docSets.length - maxShown
+            } more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
+          : "";
       return {
         contents: [
           {
@@ -253,7 +266,7 @@ function createMcpServer(): McpServer {
           },
         ],
       };
-    }
+    },
   );
 
   return mcpServer;
@@ -282,7 +295,9 @@ async function main() {
   }
 
   if (isCluster && workerCount > 1 && cluster.isPrimary) {
-    console.log(`dita-docs-mcp primary process ${process.pid} running. Spawning ${workerCount} sticky worker processes...`);
+    console.log(
+      `dita-docs-mcp primary process ${process.pid} running. Spawning ${workerCount} sticky worker processes...`,
+    );
     const workers: Worker[] = [];
 
     for (let i = 0; i < workerCount; i++) {
@@ -290,7 +305,9 @@ async function main() {
     }
 
     cluster.on("exit", (worker, code, signal) => {
-      console.warn(`Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`);
+      console.warn(
+        `Worker process ${worker.process.pid} exited (code: ${code}, signal: ${signal}). Spawning replacement...`,
+      );
       const idx = workers.indexOf(worker);
       const newWorker = cluster.fork();
       if (idx !== -1) {
@@ -328,7 +345,7 @@ async function main() {
           socket.removeListener("data", onData);
 
           const match = text.match(/mcp-session-id:\s*([^\r\n]+)/i);
-          const key = match ? match[1].trim() : (socket.remoteAddress || "default");
+          const key = match ? match[1].trim() : socket.remoteAddress || "default";
 
           const activeWorkers = workers.filter((w) => w.isConnected() && !w.isDead());
           if (activeWorkers.length === 0) {
@@ -463,7 +480,7 @@ async function main() {
       console.log(
         `dita-docs-mcp worker ${process.pid} running on Streamable HTTP${
           isCluster && cluster.isWorker ? " (sticky worker)" : ` at http://localhost:${port}/mcp`
-        }`
+        }`,
       );
     });
 
@@ -490,4 +507,3 @@ main().catch((error) => {
   console.error("Fatal error running dita-docs-mcp server:", error);
   process.exit(1);
 });
-

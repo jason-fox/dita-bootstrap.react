@@ -1,14 +1,18 @@
-import { API_URL, DATA_URL, type ChromeConfig, type DocSetInfo, type TocDoc, type TopicDoc } from "@dita-bootstrap/ast-ui";
+import {
+  API_URL,
+  DATA_URL,
+  type ChromeConfig,
+  type DocSetInfo,
+  type TocDoc,
+  type TopicDoc,
+} from "@dita-bootstrap/ast-ui";
 
 let chromeCache: ChromeConfig | null = null;
 
 function isDynamicServerUsage(err: unknown): boolean {
   if (typeof err !== "object" || err === null) return false;
   const { digest, message } = err as { digest?: unknown; message?: unknown };
-  return (
-    digest === "DYNAMIC_SERVER_USAGE" ||
-    (typeof message === "string" && message.includes("DYNAMIC_SERVER_USAGE"))
-  );
+  return digest === "DYNAMIC_SERVER_USAGE" || (typeof message === "string" && message.includes("DYNAMIC_SERVER_USAGE"));
 }
 
 export async function fetchChrome(): Promise<ChromeConfig> {
@@ -42,34 +46,25 @@ export async function fetchChrome(): Promise<ChromeConfig> {
 }
 
 export async function fetchDocs(): Promise<DocSetInfo[]> {
-  const res = await fetch(`${API_URL}/docs`, { cache: "no-store" }).catch(
-    () => null,
-  );
+  const res = await fetch(`${API_URL}/docs`, { cache: "no-store" }).catch(() => null);
   if (!res || !res.ok) return [];
   return res.json();
 }
 
 export async function fetchToc(docId?: string): Promise<TocDoc> {
-  const relativePath =
-    docId && docId !== "default" ? `${docId}/toc.json` : "toc.json";
+  const relativePath = docId && docId !== "default" ? `${docId}/toc.json` : "toc.json";
   const res = await fetch(`${DATA_URL}/${relativePath}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load ${relativePath}: ${res.status}`);
   return res.json();
 }
 
-export async function fetchPage(
-  docId: string,
-  file: string,
-): Promise<TopicDoc> {
+export async function fetchPage(docId: string, file: string): Promise<TopicDoc> {
   let cleanFile = file;
   if (docId && docId !== "default" && cleanFile.startsWith(`${docId}/`)) {
     cleanFile = cleanFile.slice(docId.length + 1);
   }
   const normalizedFile = cleanFile.endsWith(".json") ? cleanFile : `${cleanFile}.json`;
-  const relativePath =
-    docId && docId !== "default"
-      ? `${docId}/${normalizedFile}`
-      : normalizedFile;
+  const relativePath = docId && docId !== "default" ? `${docId}/${normalizedFile}` : normalizedFile;
   const res = await fetch(`${DATA_URL}/${relativePath}`, {
     cache: "no-store",
   });
@@ -78,10 +73,7 @@ export async function fetchPage(
 }
 
 // Matches a URL path array against available doc sets to separate docId from topic path
-export function matchDocSet(
-  segments: string[],
-  docSets: DocSetInfo[],
-): { docId: string; topicPath: string } {
+export function matchDocSet(segments: string[], docSets: DocSetInfo[]): { docId: string; topicPath: string } {
   const fullPath = segments.join("/");
   // Sort by ID length descending to match longest path prefix first
   const sortedSets = [...docSets].sort((a, b) => b.id.length - a.id.length);
@@ -100,4 +92,3 @@ export function matchDocSet(
   }
   return { docId: "default", topicPath: "" };
 }
-

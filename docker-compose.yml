@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   # 1. Express Backend Data API
@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     container_name: data-store
     ports:
-      - "4000:4000"
+      - '4000:4000'
     environment:
       - PORT=4000
       - DATA_DIR=/app/data
@@ -29,7 +29,7 @@ services:
       dockerfile: mcp-server/Dockerfile
     container_name: mcp-server
     ports:
-      - "4001:4001"
+      - '4001:4001'
     environment:
       - PORT=4001
       - DATA_DIR=/app/data
@@ -49,7 +49,7 @@ services:
       dockerfile: Dockerfile
     container_name: rag-service
     ports:
-      - "4002:4002"
+      - '4002:4002'
     environment:
       - PORT=4002
       - DATA_DIR=/app/data
@@ -65,7 +65,7 @@ services:
       dockerfile: renderer/Dockerfile
     container_name: renderer
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env
     environment:
@@ -83,4 +83,3 @@ services:
       - data-store
       - mcp-server
     restart: unless-stopped
-

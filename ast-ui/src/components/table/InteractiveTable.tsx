@@ -21,9 +21,7 @@ function getTextContent(node: React.ReactNode): string {
   if (typeof node === "string" || typeof node === "number") return String(node);
   if (Array.isArray(node)) return node.map(getTextContent).join(" ");
   if (React.isValidElement(node) && node.props) {
-    return getTextContent(
-      (node.props as { children?: React.ReactNode }).children,
-    );
+    return getTextContent((node.props as { children?: React.ReactNode }).children);
   }
   return "";
 }
@@ -47,14 +45,10 @@ function parseChildren(children: React.ReactNode): ParsedTableData {
     const traverse = (node: React.ReactNode) => {
       React.Children.forEach(node, (child) => {
         if (React.isValidElement<{ children?: React.ReactNode }>(child)) {
-          const typeName =
-            typeof child.type === "string"
-              ? child.type
-              : (child.type as { name?: string }).name;
+          const typeName = typeof child.type === "string" ? child.type : (child.type as { name?: string }).name;
           if (
             typeName === targetType ||
-            (typeof child.type === "string" &&
-              child.type.toLowerCase() === targetType.toLowerCase())
+            (typeof child.type === "string" && child.type.toLowerCase() === targetType.toLowerCase())
           ) {
             result.push(child);
           } else if (child.props && child.props.children) {
@@ -76,10 +70,7 @@ function parseChildren(children: React.ReactNode): ParsedTableData {
   }
 
   const tbodyElements = extractElements(childArray, "tbody");
-  const trElements = extractElements(
-    tbodyElements.length > 0 ? tbodyElements : childArray,
-    "tr",
-  );
+  const trElements = extractElements(tbodyElements.length > 0 ? tbodyElements : childArray, "tr");
 
   trElements.forEach((tr) => {
     const tdElements = extractElements([tr], "td");
@@ -240,10 +231,7 @@ export default function InteractiveTable({
 
   const labels = TABLE_LOCALES[activeLang] || TABLE_LOCALES.en;
 
-  const { headers, rows } = useMemo(
-    () => parseChildren(children),
-    [children],
-  );
+  const { headers, rows } = useMemo(() => parseChildren(children), [children]);
 
   const columnHelper = createColumnHelper<Record<string, React.ReactNode>>();
 
@@ -293,9 +281,10 @@ export default function InteractiveTable({
     const visibleCols = table.getVisibleLeafColumns();
     const csvHeader = visibleCols
       .map((col) => {
-        const rawHeader = typeof col.columnDef.header === "function"
-          ? (col.columnDef.header as (ctx: object) => React.ReactNode)({})
-          : col.columnDef.header;
+        const rawHeader =
+          typeof col.columnDef.header === "function"
+            ? (col.columnDef.header as (ctx: object) => React.ReactNode)({})
+            : col.columnDef.header;
         const headerText = getTextContent(rawHeader);
         return `"${headerText.replace(/"/g, '""')}"`;
       })
@@ -322,13 +311,7 @@ export default function InteractiveTable({
     document.body.removeChild(link);
   };
 
-  const tableClasses = [
-    "table",
-    "interactive-table",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const tableClasses = ["table", "interactive-table", className].filter(Boolean).join(" ");
 
   const hasControls = searchable || exportable || columnToggle;
 
@@ -344,9 +327,10 @@ export default function InteractiveTable({
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="p-2" style={{ minWidth: "12rem" }}>
                   {table.getAllLeafColumns().map((col) => {
-                    const rawHeader = typeof col.columnDef.header === "function"
-                      ? (col.columnDef.header as (ctx: object) => React.ReactNode)({})
-                      : col.columnDef.header;
+                    const rawHeader =
+                      typeof col.columnDef.header === "function"
+                        ? (col.columnDef.header as (ctx: object) => React.ReactNode)({})
+                        : col.columnDef.header;
                     const headerText = getTextContent(rawHeader) || col.id;
                     return (
                       <Form.Check
@@ -365,11 +349,7 @@ export default function InteractiveTable({
             )}
 
             {exportable && (
-              <Button
-                variant="outline-secondary"
-                size="sm"
-                onClick={handleExportCSV}
-              >
+              <Button variant="outline-secondary" size="sm" onClick={handleExportCSV}>
                 {labels.exportCsv}
               </Button>
             )}
@@ -417,7 +397,11 @@ export default function InteractiveTable({
                 };
 
                 return (
-                  <th key={header.id} onClick={isSortable ? header.column.getToggleSortingHandler() : undefined} style={thStyle}>
+                  <th
+                    key={header.id}
+                    onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
+                    style={thStyle}
+                  >
                     <div className="d-flex align-items-center justify-content-between gap-1">
                       <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
                       {isSortable && (
@@ -440,9 +424,7 @@ export default function InteractiveTable({
             table.getRowModel().rows.map((row: TableRow<Record<string, React.ReactNode>>) => (
               <tr key={row.id}>
                 {row.getVisibleCells().map((cell: Cell<Record<string, React.ReactNode>, unknown>) => (
-                  <td key={cell.id}>
-                    {cell.getValue() as React.ReactNode}
-                  </td>
+                  <td key={cell.id}>{cell.getValue() as React.ReactNode}</td>
                 ))}
               </tr>
             ))
@@ -456,60 +438,51 @@ export default function InteractiveTable({
         </tbody>
       </Table>
 
-      {paginated && table.getPageCount() > 1 && (() => {
-        const currentPage = table.getState().pagination.pageIndex;
-        const totalPages = table.getPageCount();
-        const maxVisible = 5;
+      {paginated &&
+        table.getPageCount() > 1 &&
+        (() => {
+          const currentPage = table.getState().pagination.pageIndex;
+          const totalPages = table.getPageCount();
+          const maxVisible = 5;
 
-        let start = Math.max(0, currentPage - Math.floor(maxVisible / 2));
-        let end = start + maxVisible - 1;
+          let start = Math.max(0, currentPage - Math.floor(maxVisible / 2));
+          let end = start + maxVisible - 1;
 
-        if (end >= totalPages) {
-          end = totalPages - 1;
-          start = Math.max(0, end - maxVisible + 1);
-        }
+          if (end >= totalPages) {
+            end = totalPages - 1;
+            start = Math.max(0, end - maxVisible + 1);
+          }
 
-        const showFirstEllipsis = start > 0;
-        const showLastEllipsis = end < totalPages - 1;
-        const visiblePages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+          const showFirstEllipsis = start > 0;
+          const showLastEllipsis = end < totalPages - 1;
+          const visiblePages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
-        return (
-          <div className="d-flex justify-content-between align-items-center mt-2">
-            <span className="small text-muted">
-              {labels.pageText(currentPage + 1, totalPages, rows.length)}
-            </span>
-            <Pagination size="sm" className="mb-0">
-              <Pagination.First
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              />
-              <Pagination.Prev
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              />
-              {showFirstEllipsis && <Pagination.Ellipsis disabled />}
-              {visiblePages.map((pageIdx) => (
-                <Pagination.Item
-                  key={pageIdx}
-                  active={pageIdx === currentPage}
-                  onClick={() => table.setPageIndex(pageIdx)}
-                >
-                  {pageIdx + 1}
-                </Pagination.Item>
-              ))}
-              {showLastEllipsis && <Pagination.Ellipsis disabled />}
-              <Pagination.Next
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              />
-              <Pagination.Last
-                onClick={() => table.setPageIndex(totalPages - 1)}
-                disabled={!table.getCanNextPage()}
-              />
-            </Pagination>
-          </div>
-        );
-      })()}
+          return (
+            <div className="d-flex justify-content-between align-items-center mt-2">
+              <span className="small text-muted">{labels.pageText(currentPage + 1, totalPages, rows.length)}</span>
+              <Pagination size="sm" className="mb-0">
+                <Pagination.First onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()} />
+                <Pagination.Prev onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} />
+                {showFirstEllipsis && <Pagination.Ellipsis disabled />}
+                {visiblePages.map((pageIdx) => (
+                  <Pagination.Item
+                    key={pageIdx}
+                    active={pageIdx === currentPage}
+                    onClick={() => table.setPageIndex(pageIdx)}
+                  >
+                    {pageIdx + 1}
+                  </Pagination.Item>
+                ))}
+                {showLastEllipsis && <Pagination.Ellipsis disabled />}
+                <Pagination.Next onClick={() => table.nextPage()} disabled={!table.getCanNextPage()} />
+                <Pagination.Last
+                  onClick={() => table.setPageIndex(totalPages - 1)}
+                  disabled={!table.getCanNextPage()}
+                />
+              </Pagination>
+            </div>
+          );
+        })()}
     </div>
   );
 }

@@ -14,7 +14,7 @@ export class Indexer {
     private dataDir: string,
     private vectorStore: VectorStore,
     private embedder: Embedder,
-    private cachePath: string
+    private cachePath: string,
   ) {
     this.vectorStore.load(this.cachePath, this.embedder.id);
     this.vectorStore.rebuildLexicalStats();
@@ -108,22 +108,15 @@ export class Indexer {
           const lang = (topicDoc.meta?.lang as string) || fallbackLang;
           const markdown = AstParser.astToMarkdown(topicDoc.content);
 
-          const chunks = AstParser.chunkMarkdown(
-            markdown,
-            docSet.id,
-            cleanTopic,
-            title,
-            shortdesc,
-            lang
-          );
+          const chunks = AstParser.chunkMarkdown(markdown, docSet.id, cleanTopic, title, shortdesc, lang);
 
           const vectors = await this.embedder.embedPassages(
-            chunks.map((c) => `${c.title} > ${c.sectionTitle}\n${c.content}`)
+            chunks.map((c) => `${c.title} > ${c.sectionTitle}\n${c.content}`),
           );
           this.vectorStore.setTopicChunks(
             relativeTopicKey,
             fileHash,
-            chunks.map((chunk, i) => ({ chunk, vector: vectors[i] }))
+            chunks.map((chunk, i) => ({ chunk, vector: vectors[i] })),
           );
           indexedCount++;
         }

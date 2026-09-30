@@ -24,8 +24,29 @@
     <topicref href="generating-chrome.dita"/>
   </chapter>
   <appendix navtitle="API Specifications">
-    <topicref navtitle="Data Store API" locktitle="yes" format="swagger" processing-role="normal" type="topic" href="src/data-store.openapi.yaml"/>
-    <topicref navtitle="MCP Server API" locktitle="yes" format="swagger" processing-role="normal" type="topic" href="src/mcp-server.openapi.yaml"/>
-    <topicref navtitle="RAG Service API" locktitle="yes" format="swagger" processing-role="normal" type="topic" href="src/rag-service.openapi.yaml"/>
+    <topicref
+      navtitle="Data Store API"
+      locktitle="yes"
+      format="swagger"
+      processing-role="normal"
+      type="topic"
+      href="src/data-store.openapi.yaml"
+    />
+    <topicref
+      navtitle="MCP Server API"
+      locktitle="yes"
+      format="swagger"
+      processing-role="normal"
+      type="topic"
+      href="src/mcp-server.openapi.yaml"
+    />
+    <topicref
+      navtitle="RAG Service API"
+      locktitle="yes"
+      format="swagger"
+      processing-role="normal"
+      type="topic"
+      href="src/rag-service.openapi.yaml"
+    />
   </appendix>
 </bookmap>

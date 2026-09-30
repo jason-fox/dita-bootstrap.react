@@ -2,7 +2,8 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="rag-service-component">
   <title>RAG Vector Search Service (rag-service)</title>
-  <shortdesc>Optional standalone vector search service providing semantic topic chunking, term-frequency vector embeddings, content hashing verification, and MCP server integration.</shortdesc>
+  <shortdesc
+  >Optional standalone vector search service providing semantic topic chunking, term-frequency vector embeddings, content hashing verification, and MCP server integration.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -18,16 +19,24 @@
   <body>
     <section>
       <title>Service Overview</title>
-      <p>The <b>rag-service</b> operates as an optional background service on port <codeph>4002</codeph>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<codeph>#</codeph>, <codeph>##</codeph>), embeds each chunk with a locally hosted model (multilingual <codeph>bge-m3</codeph> by default, or an English-only model selected at image build time), and exposes a hybrid search endpoint that fuses embedding similarity with BM25 keyword ranking.</p>
+      <p>The <b>rag-service</b> operates as an optional background service running on port <codeph
+        >4002</codeph> by default. It converts DITA AST JSON topic files into clean Markdown chunks along heading boundaries (<codeph
+        >#</codeph> to <codeph
+        >###</codeph>, capped at roughly 450 tokens with tiny sections merged), embeds each chunk with a locally hosted model (multilingual <codeph
+        >bge-m3</codeph> by default, or another supported multilingual or English-only model selected at image build time), and exposes a hybrid search endpoint that fuses embedding similarity with BM25 keyword ranking.</p>
     </section>
 
     <section>
       <title>Data Ingestion &amp; Currency Pipeline</title>
-      <p>To ensure vector search returns current data only, the service performs automated hash checks and active TOC manifest synchronization:</p>
+      <p
+      >To ensure vector search returns current data only, the service performs automated hash checks and active TOC manifest synchronization:</p>
       <ul>
-        <li><b>AST to Markdown Chunking</b> — Transforms JSON AST tuples into clean Markdown text and splits content along natural section heading boundaries.</li>
-        <li><b>SHA-256 Content Hashing</b> — Calculates cryptographic hashes for each topic file. Unchanged topics are skipped instantly during updates; modified topics are re-chunked and re-indexed.</li>
-        <li><b>Active TOC Sync &amp; Purging</b> — Verifies active topic paths against <filepath>toc.json</filepath>. Topics deleted from disk or removed from the TOC manifest are automatically hard-purged from vector memory.</li>
+        <li><b
+          >AST to Markdown Chunking</b> — Transforms JSON AST tuples into clean Markdown text and splits content along natural section heading boundaries.</li>
+        <li><b
+          >SHA-256 Content Hashing</b> — Calculates cryptographic hashes for each topic file. Unchanged topics are skipped instantly during updates; modified topics are re-chunked and re-indexed.</li>
+        <li><b>Active TOC Sync &amp; Purging</b> — Verifies active topic paths against <filepath
+          >toc.json</filepath>. Topics deleted from disk or removed from the TOC manifest are automatically hard-purged from vector memory.</li>
       </ul>
     </section>
 
@@ -36,30 +45,41 @@
       <parml>
         <plentry>
           <pt><codeph>GET /health</codeph></pt>
-          <pd>Returns server health status, resolved data directory path, total indexed topics, and total vector chunk count.</pd>
+          <pd
+          >Returns server health status, resolved data directory path, total indexed topics, and total vector chunk count.</pd>
         </plentry>
         <plentry>
           <pt><codeph>POST /api/search</codeph></pt>
-          <pd>Accepts JSON payload <codeph>{"query": "...", "docId": "...", "lang": "...", "topK": 10}</codeph> and returns ranked semantic search hits.</pd>
+          <pd>Accepts JSON payload <codeph
+            >{"query": "...", "docId": "...", "lang": "...", "topK": 10}</codeph> and returns ranked semantic search hits.</pd>
         </plentry>
         <plentry>
           <pt><codeph>POST /api/reindex</codeph></pt>
-          <pd>Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <codeph>DATA_DIR</codeph>.</pd>
+          <pd
+          >Triggers an on-demand incremental hash scan and vector re-indexing pass across all documentation sets in <codeph
+            >DATA_DIR</codeph>.</pd>
         </plentry>
       </parml>
     </section>
 
     <section>
       <title>Integration with MCP Server</title>
-      <p>When the <codeph>RAG_SERVICE_URL</codeph> environment variable is set on <codeph>mcp-server</codeph> (e.g. <codeph>http://localhost:4002</codeph>), search requests made via the <codeph>search_documentation</codeph> tool are transparently delegated to <codeph>rag-service</codeph> for vector similarity scoring. If the RAG service is unreachable or unconfigured, <codeph>mcp-server</codeph> automatically falls back to local MiniSearch full-text indexing.</p>
+      <p>When the <codeph>RAG_SERVICE_URL</codeph> environment variable is set on <codeph
+        >mcp-server</codeph> (e.g. <codeph>http://<b>&lt;rag-service&gt;</b></codeph>, where <b
+        >&lt;rag-service&gt;</b> is the host and port the service is running on, e.g. <codeph
+        >localhost:4002</codeph>), search requests made via the <codeph
+        >search_documentation</codeph> tool are transparently delegated to <codeph
+        >rag-service</codeph> for vector similarity scoring. If the RAG service is unreachable or unconfigured, <codeph
+        >mcp-server</codeph> automatically falls back to local MiniSearch full-text indexing.</p>
     </section>
 
     <section>
       <title>Triggering RAG Index Updates</title>
-      <p>RAG re-indexing occurs automatically on service startup and can be triggered on-demand following DITA-OT publishing runs:</p>
+      <p
+      >RAG re-indexing occurs automatically on service startup and can be triggered on-demand following DITA-OT publishing runs:</p>
 
       <codeblock outputclass="language-bash"># Trigger on-demand RAG re-indexing via HTTP POST:
-<cmdname>curl</cmdname> -X POST http://localhost:4002/api/reindex</codeblock>
+<cmdname>curl</cmdname> -X POST http://<b>&lt;rag-service&gt;</b>/api/reindex</codeblock>
     </section>
 
     <section>
@@ -86,11 +106,13 @@
         </plentry>
         <plentry>
           <pt><codeph>EMBED_MODEL</codeph></pt>
-          <pd>Embedding model name (default: <option>bge-m3</option>). Docker images fix this at build time with <codeph>--build-arg EMBED_MODEL=...</codeph>.</pd>
+          <pd>Embedding model name (default: <option>bge-m3</option>). Docker images fix this at build time with <codeph
+            >--build-arg EMBED_MODEL=...</codeph>.</pd>
         </plentry>
         <plentry>
           <pt><codeph>CACHE_DIR</codeph></pt>
-          <pd>Directory where embeddings are persisted between restarts (default: <filepath>/app/cache</filepath> in Docker).</pd>
+          <pd>Directory where embeddings are persisted between restarts (default: <filepath
+            >/app/cache</filepath> in Docker).</pd>
         </plentry>
       </parml>
     </section>

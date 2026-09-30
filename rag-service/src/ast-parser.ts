@@ -21,15 +21,10 @@ export class AstParser {
     if (!Array.isArray(node) || node.length === 0) return "";
 
     const [type, maybeProps, ...rest] = node;
-    const isProps =
-      typeof maybeProps === "object" &&
-      maybeProps !== null &&
-      !Array.isArray(maybeProps);
+    const isProps = typeof maybeProps === "object" && maybeProps !== null && !Array.isArray(maybeProps);
 
     const props = isProps ? (maybeProps as Record<string, unknown>) : {};
-    const children = (isProps ? rest : [maybeProps, ...rest]).filter(
-      (child) => child !== undefined,
-    );
+    const children = (isProps ? rest : [maybeProps, ...rest]).filter((child) => child !== undefined);
 
     const childText = children.map((c) => this.astToMarkdown(c)).join("");
     const tag = String(type).toLowerCase();
@@ -110,7 +105,7 @@ export class AstParser {
     topicPath: string,
     title: string,
     shortdesc: string,
-    lang?: string
+    lang?: string,
   ): MarkdownChunk[] {
     const sections: { sectionTitle: string; text: string }[] = [];
     let sectionTitle = title;

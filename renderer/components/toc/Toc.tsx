@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Chevron, parseTocEntry, resolveHref, stripHash, tocEntryContains, type AstArray, type ChromeConfig } from "@dita-bootstrap/ast-ui";
+import {
+  Chevron,
+  parseTocEntry,
+  resolveHref,
+  stripHash,
+  tocEntryContains,
+  type AstArray,
+  type ChromeConfig,
+} from "@dita-bootstrap/ast-ui";
 
 function splitEntry(entry: AstArray, docId?: string) {
   const { href, ...rest } = parseTocEntry(entry);
@@ -33,8 +41,7 @@ function TocEntryItem({
   const cleanHref = href ? href.split("#")[0] : undefined;
   const cleanPathname = pathname ? pathname.split("#")[0] : undefined;
   const isActive = Boolean(cleanHref && cleanHref === cleanPathname);
-  const isCurrentSection =
-    isActive || children.some((child) => containsPath(child, pathname, docId));
+  const isCurrentSection = isActive || children.some((child) => containsPath(child, pathname, docId));
   const [userExpanded, setUserExpanded] = useState<boolean | null>(null);
   const expanded = userExpanded ?? isCurrentSection;
 
@@ -47,10 +54,7 @@ function TocEntryItem({
 
   if (children.length === 0) {
     const leafLabel = href ? (
-      <Link
-        href={href}
-        className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}
-      >
+      <Link href={href} className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}>
         {content}
       </Link>
     ) : (
@@ -64,10 +68,7 @@ function TocEntryItem({
   }
 
   const label = href ? (
-    <Link
-      href={href}
-      className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}
-    >
+    <Link href={href} className={`d-inline-flex align-items-center flex-shrink-1${isActive ? " active" : ""}`}>
       {content}
     </Link>
   ) : (
@@ -88,7 +89,7 @@ function TocEntryItem({
           className={`btn d-inline-flex align-items-center p-0 border-0${isCurrentSection ? " active" : ""}`}
           aria-expanded={expanded}
           aria-current={isCurrentSection ? "true" : undefined}
-          aria-label={`${expanded ? (texts?.collapse ?? "Collapse") : (texts?.expand ?? "Expand")} ${title}`}
+          aria-label={`${expanded ? texts?.collapse ?? "Collapse" : texts?.expand ?? "Expand"} ${title}`}
           onClick={() => setUserExpanded(!expanded)}
         >
           <Chevron />
@@ -98,7 +99,7 @@ function TocEntryItem({
       <div className={`ps-2 collapse${expanded ? " show" : ""}`}>
         <ul className="list-unstyled fw-normal ps-4">
           {children.map((child, index) => (
-            <TocEntryItem key={index} entry={child} pathname={pathname} docId={docId} texts={texts}/>
+            <TocEntryItem key={index} entry={child} pathname={pathname} docId={docId} texts={texts} />
           ))}
         </ul>
       </div>
@@ -144,37 +145,17 @@ function ListGroupEntryItem({
         <span className="list-group-item bg-body-tertiary">{content}</span>
       )}
       {children.map((child, index) => (
-        <ListGroupEntryItem
-          key={index}
-          entry={child}
-          pathname={pathname}
-          parentActive={isActive}
-          docId={docId}
-        />
+        <ListGroupEntryItem key={index} entry={child} pathname={pathname} parentActive={isActive} docId={docId} />
       ))}
     </>
   );
 }
 
-function ListGroupToc({
-  entries,
-  pathname,
-  docId,
-}: {
-  entries: AstArray[];
-  pathname: string;
-  docId?: string;
-}) {
+function ListGroupToc({ entries, pathname, docId }: { entries: AstArray[]; pathname: string; docId?: string }) {
   return (
     <div className="list-group me-3">
       {entries.map((entry, index) => (
-        <ListGroupEntryItem
-          key={index}
-          entry={entry}
-          pathname={pathname}
-          parentActive={false}
-          docId={docId}
-        />
+        <ListGroupEntryItem key={index} entry={entry} pathname={pathname} parentActive={false} docId={docId} />
       ))}
     </div>
   );
@@ -182,19 +163,10 @@ function ListGroupToc({
 
 // Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's nav-pill-toc mode: nested Bootstrap
 // nav-pills, one <nav> per level, with ancestors of the active page also marked "active".
-function NavPillEntryItem({
-  entry,
-  pathname,
-  docId,
-}: {
-  entry: AstArray;
-  pathname: string;
-  docId?: string;
-}) {
+function NavPillEntryItem({ entry, pathname, docId }: { entry: AstArray; pathname: string; docId?: string }) {
   const { title, href, icon, iconStyle, children } = splitEntry(entry, docId);
   const isActive = href === pathname;
-  const isCurrentSection =
-    isActive || children.some((child) => containsPath(child, pathname, docId));
+  const isCurrentSection = isActive || children.some((child) => containsPath(child, pathname, docId));
 
   const content = (
     <>
@@ -206,10 +178,7 @@ function NavPillEntryItem({
   return (
     <>
       {href ? (
-        <Link
-          href={href}
-          className={`my-1 nav-link${isCurrentSection ? " active" : ""}`}
-        >
+        <Link href={href} className={`my-1 nav-link${isCurrentSection ? " active" : ""}`}>
           {content}
         </Link>
       ) : (
@@ -226,15 +195,7 @@ function NavPillEntryItem({
   );
 }
 
-function NavPillToc({
-  entries,
-  pathname,
-  docId,
-}: {
-  entries: AstArray[];
-  pathname: string;
-  docId?: string;
-}) {
+function NavPillToc({ entries, pathname, docId }: { entries: AstArray[]; pathname: string; docId?: string }) {
   return (
     <nav className="nav nav-pills flex-column navbar-light">
       {entries.map((entry, index) => (
@@ -263,9 +224,7 @@ export default function Toc({
   const isListGroup = navToc.startsWith("list-group");
   const isNavPill = navToc.startsWith("nav-pill");
 
-  const displayEntries = menubar
-    ? entries.filter((entry) => containsPath(entry, pathname, docId))
-    : entries;
+  const displayEntries = menubar ? entries.filter((entry) => containsPath(entry, pathname, docId)) : entries;
 
   return (
     <nav
@@ -275,9 +234,7 @@ export default function Toc({
       role="navigation"
       className="d-flex flex-column h-100 overflow-y-auto"
     >
-      <div
-        className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}
-      >
+      <div className={`overflow-y-auto${isNavPill ? " alert alert-light" : ""}`}>
         {isListGroup ? (
           <ListGroupToc entries={displayEntries} pathname={pathname} docId={docId} />
         ) : isNavPill ? (
@@ -286,7 +243,7 @@ export default function Toc({
           <div className="flex-column bd-links">
             <ul className="list-unstyled mb-0 py-3 pt-md-1">
               {displayEntries.map((entry, index) => (
-                <TocEntryItem key={index} entry={entry} pathname={pathname} docId={docId} texts={texts}/>
+                <TocEntryItem key={index} entry={entry} pathname={pathname} docId={docId} texts={texts} />
               ))}
             </ul>
           </div>
@@ -295,4 +252,3 @@ export default function Toc({
     </nav>
   );
 }
-

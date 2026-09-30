@@ -9,26 +9,16 @@ import { componentRegistry } from "../registry";
 import type { InterceptedNodeProps } from "../types";
 import { IconFromAst } from "./IconNodes";
 
-export function ThemeToggleDropdownFromAst({
-  nodeKey,
-  resolvedProps,
-  children,
-  ctx,
-  render,
-}: InterceptedNodeProps) {
+export function ThemeToggleDropdownFromAst({ nodeKey, resolvedProps, children, ctx, render }: InterceptedNodeProps) {
   const { mode, select } = useThemeMode();
 
   let activeIconNode: AstNode | undefined;
   for (const child of children) {
     if (Array.isArray(child) && child.length > 0) {
-      const childProps = isPropsObject(child[1])
-        ? (child[1] as Record<string, unknown>)
-        : {};
+      const childProps = isPropsObject(child[1]) ? (child[1] as Record<string, unknown>) : {};
       const val = childProps["data-bs-theme-value"] || childProps["value"];
       if (val === mode) {
-        const subChildren = (
-          isPropsObject(child[1]) ? child.slice(2) : child.slice(1)
-        ) as AstNode[];
+        const subChildren = (isPropsObject(child[1]) ? child.slice(2) : child.slice(1)) as AstNode[];
         for (const sub of subChildren) {
           if (Array.isArray(sub) && (sub[0] === "Icon" || sub[0] === "i")) {
             activeIconNode = sub;
@@ -41,17 +31,11 @@ export function ThemeToggleDropdownFromAst({
   }
 
   const activeIconProps =
-    activeIconNode && isPropsObject(activeIconNode[1])
-      ? (activeIconNode[1] as Record<string, unknown>)
-      : {};
+    activeIconNode && isPropsObject(activeIconNode[1]) ? (activeIconNode[1] as Record<string, unknown>) : {};
   const activeIconName =
     (activeIconProps.name as string) ||
     (activeIconProps.className as string) ||
-    (mode === "light"
-      ? "brightness-high-fill"
-      : mode === "dark"
-        ? "moon-stars-fill"
-        : "circle-half");
+    (mode === "light" ? "brightness-high-fill" : mode === "dark" ? "moon-stars-fill" : "circle-half");
 
   const titleIcon = <IconFromAst name={activeIconName} className="fs-5" />;
 
@@ -76,15 +60,10 @@ export function ThemeToggleDropdownFromAst({
           const itemType = child[0];
           if (itemType === "NavDropdownItem" || itemType === "DropdownItem") {
             const hasProps = child.length > 1 && isPropsObject(child[1]);
-            const itemProps = hasProps
-              ? (child[1] as Record<string, unknown>)
-              : {};
-            const itemVal = (itemProps["data-bs-theme-value"] ||
-              itemProps["value"]) as ThemeMode | undefined;
+            const itemProps = hasProps ? (child[1] as Record<string, unknown>) : {};
+            const itemVal = (itemProps["data-bs-theme-value"] || itemProps["value"]) as ThemeMode | undefined;
             const isActive = itemVal === mode;
-            const subChildren = (
-              hasProps ? child.slice(2) : child.slice(1)
-            ) as AstNode[];
+            const subChildren = (hasProps ? child.slice(2) : child.slice(1)) as AstNode[];
 
             return (
               <NavDropdown.Item
@@ -124,32 +103,16 @@ export function ThemeToggleButtonFromAst({
   };
 
   const activeIconName =
-    mode === "light"
-      ? "brightness-high-fill"
-      : mode === "dark"
-        ? "moon-stars-fill"
-        : "circle-half";
+    mode === "light" ? "brightness-high-fill" : mode === "dark" ? "moon-stars-fill" : "circle-half";
 
   const renderedChildren = children.map((child, index) => {
     if (Array.isArray(child) && (child[0] === "Icon" || child[0] === "i")) {
-      const childProps = isPropsObject(child[1])
-        ? (child[1] as Record<string, unknown>)
-        : {};
-      return (
-        <IconFromAst
-          key={index}
-          name={activeIconName}
-          className={(childProps.className as string) || "fs-5"}
-        />
-      );
+      const childProps = isPropsObject(child[1]) ? (child[1] as Record<string, unknown>) : {};
+      return <IconFromAst key={index} name={activeIconName} className={(childProps.className as string) || "fs-5"} />;
     }
     return render(child, index);
   });
 
   const Component = componentRegistry[nodeType] ?? nodeType ?? Button;
-  return React.createElement(
-    Component,
-    { key: nodeKey, ...resolvedProps, onClick: handleCycle },
-    ...renderedChildren,
-  );
+  return React.createElement(Component, { key: nodeKey, ...resolvedProps, onClick: handleCycle }, ...renderedChildren);
 }

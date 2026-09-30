@@ -2,7 +2,8 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="mcp-client-guide">
   <title>Standalone Reference MCP Web Client (mcp-client)</title>
-  <shortdesc>User guide for running the standalone reference chatbot client for the MCP Server using containerized deployment.</shortdesc>
+  <shortdesc
+  >User guide for running the standalone reference chatbot client for the MCP Server using containerized deployment.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -16,7 +17,9 @@
   <body>
     <section>
       <title>Overview</title>
-      <p>The <b>mcp-client</b> service provides a standalone reference web chatbot interface on port <codeph>3200</codeph>. It connects to <codeph>mcp-server</codeph> via Streamable HTTP transport to execute Model Context Protocol (MCP) tool calls and render MCP-UI topic component previews.</p>
+      <p>The <b>mcp-client</b> service provides a standalone reference web chatbot interface on port <codeph
+        >3200</codeph>. It connects to <codeph
+        >mcp-server</codeph> via Streamable HTTP transport to execute Model Context Protocol (MCP) tool calls and render MCP-UI topic component previews.</p>
     </section>
 
     <section>
@@ -29,7 +32,9 @@
   -e GEMINI_API_KEY=your_api_key \
   ghcr.io/jason-fox/ast-mcp-client:latest</codeblock>
 
-      <p>Open your web browser to <filepath>http://localhost:3200</filepath>.</p>
+      <p>Open your web browser to <codeph>http://<b>&lt;mcp-client&gt;</b></codeph>, where <b
+        >&lt;mcp-client&gt;</b> is the host and port the service is running on, defaulting to <codeph
+        >localhost:3200</codeph>.</p>
     </section>
 
     <section>
@@ -41,15 +46,18 @@
         </plentry>
         <plentry>
           <pt><codeph>MCP_SERVER_URL</codeph></pt>
-          <pd>Streamable HTTP endpoint of the connected MCP server (default: <filepath>http://localhost:4001/mcp</filepath>).</pd>
+          <pd>Streamable HTTP endpoint of the connected MCP server (default: <filepath
+            >http://localhost:4001/mcp</filepath>).</pd>
         </plentry>
         <plentry>
           <pt><codeph>CHAT_BOT_PROVIDER</codeph></pt>
-          <pd>Active LLM provider (<codeph>gemini</codeph>, <codeph>anthropic</codeph>, <codeph>openai</codeph>, <codeph>ollama</codeph>).</pd>
+          <pd>Active LLM provider (<codeph>gemini</codeph>, <codeph>anthropic</codeph>, <codeph>openai</codeph>, <codeph
+            >ollama</codeph>).</pd>
         </plentry>
         <plentry>
           <pt><codeph>SHOW_TOOL_INVOCATIONS</codeph></pt>
-          <pd>Set to <codeph>true</codeph> to display MCP tool call parameters and execution details in chat responses.</pd>
+          <pd>Set to <codeph
+            >true</codeph> to display MCP tool call parameters and execution details in chat responses.</pd>
         </plentry>
       </parml>
     </section>

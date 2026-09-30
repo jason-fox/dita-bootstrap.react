@@ -24,11 +24,7 @@ describe("renderNode", () => {
   });
 
   it("highlights a plain-text code block with Prism", () => {
-    const { container } = renderAst([
-      "pre",
-      { className: "language-bash" },
-      ["code", "echo hi"],
-    ]);
+    const { container } = renderAst(["pre", { className: "language-bash" }, ["code", "echo hi"]]);
     expect(container.querySelector("code.language-bash .token")).not.toBeNull();
   });
 
@@ -38,9 +34,7 @@ describe("renderNode", () => {
       onNavigate: (docId: string, topic: string) => calls.push([docId, topic]),
     });
     const link = container.querySelector("a")!;
-    const notPrevented = link.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true }),
-    );
+    const notPrevented = link.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
     expect(notPrevented).toBe(false);
     expect(calls).toEqual([["guide", "topics/intro"]]);
   });

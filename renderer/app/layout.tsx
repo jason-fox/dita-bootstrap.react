@@ -11,14 +11,7 @@ import "@/styles/side-toc.css";
 import "@/styles/scrollspy-toc.css";
 import "@/styles/prism-theme.css";
 
-const DARK_ONLY_THEMES = new Set([
-  "cyborg",
-  "darkly",
-  "slate",
-  "solar",
-  "superhero",
-  "vapor",
-]);
+const DARK_ONLY_THEMES = new Set(["cyborg", "darkly", "slate", "solar", "superhero", "vapor"]);
 
 const openGraphBase = (process.env.OPEN_GRAPH_URL ?? "").trim();
 
@@ -49,11 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   const rawTheme = (process.env.BOOTSTRAP_THEME ?? "default").trim();
 
   const themeName = rawTheme.toLowerCase();
@@ -61,8 +50,7 @@ export default function RootLayout({
   const rawCustomCssPath = (process.env.CUSTOM_CSS_PATH ?? "").trim();
 
   const isDarkOnly = DARK_ONLY_THEMES.has(themeName);
-  const useBootswatch =
-    themeName !== "" && themeName !== "default" && themeName !== "none";
+  const useBootswatch = themeName !== "" && themeName !== "default" && themeName !== "none";
 
   const themeStylesheetUrl = useBootswatch
     ? `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${themeName}/bootstrap.min.css`
@@ -83,10 +71,7 @@ export default function RootLayout({
         {themeStylesheetUrl ? (
           <link rel="stylesheet" href={themeStylesheetUrl} />
         ) : (
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          />
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
         )}
         {customCssUrl ? <link rel="stylesheet" href={customCssUrl} /> : null}
       </head>

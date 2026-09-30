@@ -20,9 +20,7 @@ export function parseTocEntry(entry: AstArray): TocEntry {
     icon?: string;
     iconStyle?: string;
   };
-  const children = (
-    hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
-  ) as AstArray[];
+  const children = (hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)) as AstArray[];
   return {
     title,
     href,
@@ -32,10 +30,7 @@ export function parseTocEntry(entry: AstArray): TocEntry {
   };
 }
 
-export function tocEntryContains(
-  entry: AstArray,
-  predicate: (entry: TocEntry) => boolean,
-): boolean {
+export function tocEntryContains(entry: AstArray, predicate: (entry: TocEntry) => boolean): boolean {
   const parsed = parseTocEntry(entry);
   return predicate(parsed) || parsed.children.some((child) => tocEntryContains(child, predicate));
 }

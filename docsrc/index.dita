@@ -2,7 +2,8 @@
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="index">
   <title>DITA Harness User Guide</title>
-  <shortdesc>User guide for viewing, rendering, querying, and chatting with DITA documentation rendered by a React web application with a RAG Vector Search service, and AI Assistant.</shortdesc>
+  <shortdesc
+  >User guide for viewing, rendering, querying, and chatting with DITA documentation rendered by a React web application with a RAG Vector Search service, and AI Assistant.</shortdesc>
   <prolog>
     <metadata>
       <keywords>
@@ -20,23 +21,31 @@
   <body>
     <section>
       <title>Welcome to the DITA Harness</title>
-      <p>The <b>DITA Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, querying content via semantic vector search (RAG Service), and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
+      <p>The <b
+        >DITA Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, querying content via semantic vector search (RAG Service), and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
     </section>
 
 
 
     <section>
       <title>Quick Start with Docker Compose</title>
-      <p>Launch the complete React Harness documentation system (data-store, renderer, mcp-server, and optional rag-service) using Docker Compose:</p>
+      <p
+      >Launch the complete React Harness documentation system (data-store, renderer, mcp-server, and optional rag-service) using Docker Compose:</p>
       
       <codeblock outputclass="language-bash"><cmdname>docker</cmdname> compose up -d</codeblock>
 
       <p>Once launched, access the system services in your browser:</p>
       <ul>
-        <li><b>Documentation Portal:</b> <filepath>http://localhost:3000</filepath> — View and browse loaded documentation sets.</li>
-        <li><b>AI Assistant Chat:</b> <filepath>http://localhost:3000/chat</filepath> — Chat with the AI documentation assistant.</li>
-        <li><b>RAG Vector Search Service:</b> <filepath>http://localhost:4002/health</filepath> — Check semantic vector search status.</li>
+        <li><b>Documentation Portal:</b> <codeph>http://<b
+            >&lt;renderer&gt;</b></codeph> — View and browse loaded documentation sets.</li>
+        <li><b>AI Assistant Chat:</b> <codeph>http://<b
+            >&lt;renderer&gt;</b>/chat</codeph> — Chat with the AI documentation assistant.</li>
+        <li><b>RAG Vector Search Service:</b> <codeph>http://<b
+            >&lt;rag-service&gt;</b>/health</codeph> — Check semantic vector search status.</li>
       </ul>
+      <p>Where <b>&lt;renderer&gt;</b> and <b
+        >&lt;rag-service&gt;</b> are the hosts and ports the services are running on, defaulting to <codeph
+        >localhost:3000</codeph> and <codeph>localhost:4002</codeph>.</p>
     </section>
 
 
@@ -45,12 +54,17 @@
       <p>Generate a document set's AST content using DITA-OT:</p>
       <ol>
         <li><b>Generating AST:</b> Publish your DITA map using the <option>ast-bootstrap</option> format:
-          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
+          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath
+            >path/to/document.ditamap</filepath> \
      <parmname>--format</parmname>=<option>ast-bootstrap</option></codeblock>
-          See <xref href="generating-ast.dita">Generating AST</xref> for detailed instructions on AST publishing and custom header/footer templates.
+          See <xref
+            href="generating-ast.dita"
+          >Generating AST</xref> for detailed instructions on AST publishing and custom header/footer templates.
         </li>
-        <li><b>Generating Chrome:</b> Generate global chrome layouts for the React web application using the <option>ast-chrome</option> format:
-          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath>path/to/document.ditamap</filepath> \
+        <li><b>Generating Chrome:</b> Generate global chrome layouts for the React web application using the <option
+          >ast-chrome</option> format:
+          <codeblock outputclass="language-bash"><cmdname>dita</cmdname> <parmname>--input</parmname>=<filepath
+            >path/to/document.ditamap</filepath> \
      <parmname>--format</parmname>=<option>ast-chrome</option> \
      <parmname>--output</parmname>=path/to/output</codeblock>
           See <xref href="generating-chrome.dita">Generating Chrome</xref> for overridable chrome elements.
@@ -61,14 +75,19 @@
     <section>
       <title>Publishing Documentation</title>
       <p>Upload the generated document output to the data-store via its REST API:</p>
-      <codeblock outputclass="language-bash"><cmdname>curl</cmdname> -X POST --data-binary <filepath>@path/to/output/document.zip</filepath> \
+      <codeblock outputclass="language-bash"><cmdname>curl</cmdname> -X POST --data-binary <filepath
+        >@path/to/output/document.zip</filepath> \
      -H "Content-Type: application/zip" \
      http://<b>&lt;data-store&gt;</b>/api/docs/&lt;document-id&gt;</codeblock>
 
-     <p>The system automatically detects published document sets, builds search indices, and displays them in your documentation catalog. See <xref href="data-store.dita">Data Store Service</xref> for the full upload API, including authorization and validation rules.</p>
+     <p
+      >The system automatically detects published document sets, builds search indices, and displays them in your documentation catalog. See <xref
+          href="data-store.dita"
+        >Data Store Service</xref> for the full upload API, including authorization and validation rules.</p>
 
     <p>Publish updates to the global chrome layout:</p>
-    <codeblock outputclass="language-bash"><cmdname>curl</cmdname> -X PUT --data-binary <filepath>@path/to/output/chrome.json</filepath> \
+    <codeblock outputclass="language-bash"><cmdname>curl</cmdname> -X PUT --data-binary <filepath
+        >@path/to/output/chrome.json</filepath> \
      -H "Content-Type: application/json" \
      http://<b>&lt;data-store&gt;</b>/api/chrome</codeblock>
       
@@ -82,19 +101,23 @@
       <parml>
         <plentry>
           <pt><b>Documentation Library Portal (<filepath>/</filepath>)</b></pt>
-          <pd>A visual catalog displaying all published document sets. Select any card to open its topic reader view.</pd>
+          <pd
+          >A visual catalog displaying all published document sets. Select any card to open its topic reader view.</pd>
         </plentry>
         <plentry>
           <pt><b>Collapsible Navigation Sidebar</b></pt>
-          <pd>A multi-level Table of Contents sidebar for expanding chapters and navigating directly between topics.</pd>
+          <pd
+          >A multi-level Table of Contents sidebar for expanding chapters and navigating directly between topics.</pd>
         </plentry>
         <plentry>
           <pt><b>Interactive Component Rendering</b></pt>
-          <pd>DITA elements (tables, accordions, alerts, badges, cards, code blocks, figures) render as live interactive Bootstrap components with column sorting, text filtering, and pagination.</pd>
+          <pd
+          >DITA elements (tables, accordions, alerts, badges, cards, code blocks, figures) render as live interactive Bootstrap components with column sorting, text filtering, and pagination.</pd>
         </plentry>
         <plentry>
           <pt><b>RAG Vector Search &amp; Header Search Bar</b></pt>
-          <pd>Type keywords into the header search bar or chat prompt to query topics. Requests leverage the standalone RAG Service for high-speed semantic vector ranking.</pd>
+          <pd
+          >Type keywords into the header search bar or chat prompt to query topics. Requests leverage the standalone RAG Service for high-speed semantic vector ranking.</pd>
         </plentry>
         <plentry>
           <pt><b>Dark Mode Switcher</b></pt>
@@ -102,7 +125,8 @@
         </plentry>
         <plentry>
           <pt><b>AI Assistant Chat (<filepath>/chat</filepath>)</b></pt>
-          <pd>Chat with an AI Assistant to answer questions about the documentation corpus or preview interactive topic components inline.</pd>
+          <pd
+          >Chat with an AI Assistant to answer questions about the documentation corpus or preview interactive topic components inline.</pd>
         </plentry>
       </parml>
     </section>
@@ -119,11 +143,13 @@
       <parml otherprops="cols(4)">
         <plentry>
           <pt><codeph>BOOTSTRAP_THEME</codeph></pt>
-          <pd>Site Bootswatch theme (e.g. <option>default</option>, <option>darkly</option>, <option>journal</option>).</pd>
+          <pd>Site Bootswatch theme (e.g. <option>default</option>, <option>darkly</option>, <option
+            >journal</option>).</pd>
         </plentry>
         <plentry>
           <pt><codeph>CHAT_BOT_PROVIDER</codeph></pt>
-          <pd>Active LLM provider: <option>gemini</option>, <option>anthropic</option>, <option>openai</option>, or <option>ollama</option>.</pd>
+          <pd>Active LLM provider: <option>gemini</option>, <option>anthropic</option>, <option
+            >openai</option>, or <option>ollama</option>.</pd>
         </plentry>
         <plentry>
           <pt><codeph>ANTHROPIC_API_KEY</codeph> / <codeph>_BASE_URL</codeph> / <codeph>_MODEL</codeph></pt>
@@ -154,7 +180,13 @@
           <pd>Bearer token guarding data-store's write API. Unset by default.</pd>
         </plentry>
       </parml>
-      <p>See <xref href="renderer.dita" format="dita">Web Renderer</xref>, <xref href="search-and-chatbot.dita" format="dita">Search Bar &amp; AI Chat Bot</xref>, and <xref href="data-store.dita" format="dita">Data Store Service</xref> for setup details.</p>
+      <p>See <xref href="renderer.dita" format="dita">Web Renderer</xref>, <xref
+          href="search-and-chatbot.dita"
+          format="dita"
+        >Search Bar &amp; AI Chat Bot</xref>, and <xref
+          href="data-store.dita"
+          format="dita"
+        >Data Store Service</xref> for setup details.</p>
     </section>
   </body>
 </topic>

@@ -15,10 +15,18 @@ program
   .name("ast-rag-service")
   .description("Optional standalone RAG vector search service for AST DITA documentation")
   .option("-p, --port <number>", "Port to run HTTP server on", process.env.PORT || "4002")
-  .option("-d, --data-dir <path>", "Path to data-store data directory", process.env.DATA_DIR || path.resolve(__dirname, "../../data-store/data"))
+  .option(
+    "-d, --data-dir <path>",
+    "Path to data-store data directory",
+    process.env.DATA_DIR || path.resolve(__dirname, "../../data-store/data"),
+  )
   .option("-m, --model <name>", "Embedding model (see src/models.ts)", process.env.EMBED_MODEL || DEFAULT_MODEL)
   .option("--dtype <dtype>", "Model weight precision (q8, fp32, fp16, q4)", process.env.EMBED_DTYPE || "q8")
-  .option("--cache-dir <path>", "Directory for persisted embeddings", process.env.CACHE_DIR || path.join(os.homedir(), ".cache", "ast-rag-service"))
+  .option(
+    "--cache-dir <path>",
+    "Directory for persisted embeddings",
+    process.env.CACHE_DIR || path.join(os.homedir(), ".cache", "ast-rag-service"),
+  )
   .option("--model-dir <path>", "Directory holding downloaded model weights", process.env.MODEL_DIR);
 
 program.parse(process.argv);
@@ -98,7 +106,7 @@ app.listen(port, () => {
     .then((result) => {
       ready = true;
       console.log(
-        `[rag-service] Initial index complete. Indexed: ${result.indexed}, Skipped: ${result.skipped}, Purged: ${result.purged}`
+        `[rag-service] Initial index complete. Indexed: ${result.indexed}, Skipped: ${result.skipped}, Purged: ${result.purged}`,
       );
     })
     .catch((err) => {

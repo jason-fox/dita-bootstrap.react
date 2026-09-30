@@ -23,7 +23,7 @@ The DITA-OT toolkit normally transforms DITA XML files into static HTML, PDFs et
 This repository provides an integrated suite of services to consume and interact with AST output:
 
 - **`data-store/`**: Express static file server and API. Serves JSON AST files, discovers documentation sets recursively (`toc.json`), and builds MiniSearch indices for each document set.
-- **`rag-service/`**: *(Optional)* Standalone RAG vector search service listening on port `4002`. Transforms AST topics into clean Markdown chunks along `#` and `##` section boundaries, computes SHA-256 content hashes for incremental sync, verifies active `toc.json` manifests to purge deleted topics, and provides a semantic vector search API endpoint (`/api/search`).
+- **`rag-service/`**: _(Optional)_ Standalone RAG vector search service listening on port `4002`. Transforms AST topics into clean Markdown chunks along `#` and `##` section boundaries, computes SHA-256 content hashes for incremental sync, verifies active `toc.json` manifests to purge deleted topics, and provides a semantic vector search API endpoint (`/api/search`).
 - **`renderer/`**: Next.js + react-bootstrap web application. Presents a card grid library landing page, renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars, and includes an integrated AI Assistant Chat (`/chat`).
 - **`mcp-server/`**: Model Context Protocol (MCP) Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces. Transparently delegates search to `rag-service` when configured via `RAG_SERVICE_URL`, with automatic fallback to MiniSearch.
 - **`ast-ui/`**: `@dita-bootstrap/ast-ui`, the AST-to-`react-bootstrap` rendering shared by `renderer` and the `mcp-server` topic viewer (source-only npm workspace package).
@@ -57,6 +57,7 @@ dita --input=path/to/your.ditamap \
 ```
 
 You can reference existing XML include files as examples:
+
 - `hdr.navbar.example.xml` — Example top navigation bar layout.
 - `hdr.sidebar.example.xml` — Example sidebar header layout.
 - `hdr.topbar.example.xml` — Example top bar header layout.
@@ -143,6 +144,7 @@ When a document set is published without explicit `--args.hdr` or `--args.ftr` f
 #### Chrome Include Files as Examples
 
 You can reference the following existing XML include files as functional examples:
+
 - `chrome.content.docs-page.xml` — Defines catalog portal titles, descriptions, and document card grid templates (`<document-title/>`, `<document-description/>`).
 - `chrome.navbar.chat-bot.xml` — Defines AI Assistant header navbar layout containing the Clear Chat button (`role="clear-chat"`) and theme toggle (`role="theme-toggle"`).
 - `chrome.content.chat-bot.xml` — Defines AI Assistant welcome card (`#welcome-card`) with quick prompts and prompt submission form layout (`#chat-form`).
@@ -195,8 +197,10 @@ Add `mcp-server` to your AI assistant configuration (Claude Desktop, Cursor, Ant
       "command": "node",
       "args": [
         "/path/to/react-harness/mcp-server/dist/index.js",
-        "--transport", "stdio",
-        "--data-dir", "/path/to/react-harness/data-store/data"
+        "--transport",
+        "stdio",
+        "--data-dir",
+        "/path/to/react-harness/data-store/data"
       ]
     }
   }
@@ -217,51 +221,51 @@ Add `mcp-server` to your AI assistant configuration (Claude Desktop, Cursor, Ant
 
 #### Renderer (`renderer/`)
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `3000` | Port for the Next.js web application to listen on. |
-| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.). |
-| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language code for root `<html lang="...">`. |
-| `OPEN_GRAPH_URL` | *(empty)* | Base URL used to construct `og:url` and `twitter:url` metadata tags. |
-| `CUSTOM_CSS_PATH` | *(null)* | Optional path or URL to an additional custom stylesheet. |
-| `NEXT_PUBLIC_DATA_URL` / `INTERNAL_DATA_URL` | `http://localhost:4000/data` | Base URL used to fetch `toc.json`, topic files, and search indices. |
-| `NEXT_PUBLIC_API_URL` / `INTERNAL_API_URL` | `http://localhost:4000/api` | Base URL for data-store API endpoints like `GET /api/docs`. |
-| `NEXT_PUBLIC_MCP_SERVER_URL` / `MCP_SERVER_URL` | `http://localhost:4001/mcp` | Streamable HTTP endpoint of the `mcp-server` used by `/chat`. |
-| `ENABLE_CHAT` | *(auto)* | Explicitly enable or disable `/chat` route (`true`/`false`). |
-| `SHOW_TOOL_INVOCATIONS` | `false` | Set to `true` to display accordion details for MCP tool calls in AI Chat. |
-| `CHAT_BOT_PROVIDER` | `"gemini"` | Active LLM provider for `/chat` (`gemini`, `anthropic`, `openai`, `ollama`). |
-| `GEMINI_API_KEY` / `GEMINI_MODEL` | *(none)* / `models/gemini-3.6-flash` | API key and model name when using Google Gemini. |
-| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | *(none)* / `claude-3-5-sonnet-20241022` | API key and model name when using Anthropic Claude. |
-| `OPENAI_API_KEY` / `OPENAI_MODEL` | *(none)* / `gpt-4o` | API key and model name when using OpenAI. |
-| `OLLAMA_BASE_URL` / `OLLAMA_MODEL` | `http://host.docker.internal:11434/v1` / `qwen2.5:3b` | Base URL and model name when using Ollama. |
+| Variable                                        | Default                                               | Description                                                                  |
+| ----------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `PORT`                                          | `3000`                                                | Port for the Next.js web application to listen on.                           |
+| `BOOTSTRAP_THEME`                               | `"default"`                                           | Bootswatch theme name (`journal`, `darkly`, `flatly`, `cyborg`, etc.).       |
+| `DEFAULT_LANGUAGE`                              | `"en"`                                                | Standard IETF BCP 47 language code for root `<html lang="...">`.             |
+| `OPEN_GRAPH_URL`                                | _(empty)_                                             | Base URL used to construct `og:url` and `twitter:url` metadata tags.         |
+| `CUSTOM_CSS_PATH`                               | _(null)_                                              | Optional path or URL to an additional custom stylesheet.                     |
+| `NEXT_PUBLIC_DATA_URL` / `INTERNAL_DATA_URL`    | `http://localhost:4000/data`                          | Base URL used to fetch `toc.json`, topic files, and search indices.          |
+| `NEXT_PUBLIC_API_URL` / `INTERNAL_API_URL`      | `http://localhost:4000/api`                           | Base URL for data-store API endpoints like `GET /api/docs`.                  |
+| `NEXT_PUBLIC_MCP_SERVER_URL` / `MCP_SERVER_URL` | `http://localhost:4001/mcp`                           | Streamable HTTP endpoint of the `mcp-server` used by `/chat`.                |
+| `ENABLE_CHAT`                                   | _(auto)_                                              | Explicitly enable or disable `/chat` route (`true`/`false`).                 |
+| `SHOW_TOOL_INVOCATIONS`                         | `false`                                               | Set to `true` to display accordion details for MCP tool calls in AI Chat.    |
+| `CHAT_BOT_PROVIDER`                             | `"gemini"`                                            | Active LLM provider for `/chat` (`gemini`, `anthropic`, `openai`, `ollama`). |
+| `GEMINI_API_KEY` / `GEMINI_MODEL`               | _(none)_ / `models/gemini-3.6-flash`                  | API key and model name when using Google Gemini.                             |
+| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL`         | _(none)_ / `claude-3-5-sonnet-20241022`               | API key and model name when using Anthropic Claude.                          |
+| `OPENAI_API_KEY` / `OPENAI_MODEL`               | _(none)_ / `gpt-4o`                                   | API key and model name when using OpenAI.                                    |
+| `OLLAMA_BASE_URL` / `OLLAMA_MODEL`              | `http://host.docker.internal:11434/v1` / `qwen2.5:3b` | Base URL and model name when using Ollama.                                   |
 
 #### MCP Server (`mcp-server/`)
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `4001` | HTTP port when running with `--transport http`. |
-| `DATA_DIR` | `./data-store/data` | Path to data-store data directory containing documentation sets. |
-| `RAG_SERVICE_URL` | *(none)* | Optional URL of standalone RAG search service (`http://localhost:4002`). |
-| `BOOTSTRAP_THEME` | `"default"` | Bootswatch theme name for MCP-UI shell output (`render_topic_ui`). |
-| `DEFAULT_LANGUAGE` | `"en"` | Standard IETF BCP 47 language tag used for `render_topic_ui`. |
-| `FEATURED_DOCS` | *(empty)* | Comma-separated list of document set IDs to prioritize in TOC listings. |
-| `CORPUS_SUMMARY_OVERRIDE` | *(null)* | Optional custom description override for LLM `docs://summary` resource. |
-| `CUSTOM_CSS_PATH` | *(null)* | Optional file path or URL to inject additional custom CSS into `render_topic_ui`. |
-| `NAVBAR_THEME` / `NAVBAR_TEXT` | `"dark"` / `"dark"` | Optional navbar theme and text scheme overrides for `render_topic_ui`. |
+| Variable                       | Default             | Description                                                                       |
+| ------------------------------ | ------------------- | --------------------------------------------------------------------------------- |
+| `PORT`                         | `4001`              | HTTP port when running with `--transport http`.                                   |
+| `DATA_DIR`                     | `./data-store/data` | Path to data-store data directory containing documentation sets.                  |
+| `RAG_SERVICE_URL`              | _(none)_            | Optional URL of standalone RAG search service (`http://localhost:4002`).          |
+| `BOOTSTRAP_THEME`              | `"default"`         | Bootswatch theme name for MCP-UI shell output (`render_topic_ui`).                |
+| `DEFAULT_LANGUAGE`             | `"en"`              | Standard IETF BCP 47 language tag used for `render_topic_ui`.                     |
+| `FEATURED_DOCS`                | _(empty)_           | Comma-separated list of document set IDs to prioritize in TOC listings.           |
+| `CORPUS_SUMMARY_OVERRIDE`      | _(null)_            | Optional custom description override for LLM `docs://summary` resource.           |
+| `CUSTOM_CSS_PATH`              | _(null)_            | Optional file path or URL to inject additional custom CSS into `render_topic_ui`. |
+| `NAVBAR_THEME` / `NAVBAR_TEXT` | `"dark"` / `"dark"` | Optional navbar theme and text scheme overrides for `render_topic_ui`.            |
 
 #### Data Store (`data-store/`)
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `4000` | Port for the Express server to listen on. |
-| `DATA_DIR` | `./data` | Directory containing documentation sets with `toc.json` files. |
-| `DEFAULT_LANGUAGE` | `"en"` | Default language code for document discovery. |
+| Variable           | Default  | Description                                                    |
+| ------------------ | -------- | -------------------------------------------------------------- |
+| `PORT`             | `4000`   | Port for the Express server to listen on.                      |
+| `DATA_DIR`         | `./data` | Directory containing documentation sets with `toc.json` files. |
+| `DEFAULT_LANGUAGE` | `"en"`   | Default language code for document discovery.                  |
 
 #### RAG Service (`rag-service/`)
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `4002` | Port for the RAG service Express server to listen on. |
+| Variable   | Default              | Description                                                    |
+| ---------- | -------------------- | -------------------------------------------------------------- |
+| `PORT`     | `4002`               | Port for the RAG service Express server to listen on.          |
 | `DATA_DIR` | `../data-store/data` | Directory containing documentation sets with `toc.json` files. |
 
 ## License

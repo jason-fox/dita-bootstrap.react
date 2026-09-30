@@ -2,20 +2,10 @@ import Card from "react-bootstrap/Card";
 import TopicIframe from "./TopicIframe";
 import type { TopicViewerPayload } from "@dita-bootstrap/ast-ui";
 
-export default function TopicPreviewCard({
-  payload,
-  onExpand,
-}: {
-  payload: TopicViewerPayload;
-  onExpand: () => void;
-}) {
+export default function TopicPreviewCard({ payload, onExpand }: { payload: TopicViewerPayload; onExpand: () => void }) {
   const docTitle = payload.toc?.title || payload.docId;
-  const pageTitle =
-    payload.doc?.meta?.title || payload.topicPath || "Topic Viewer";
-  const titleText =
-    docTitle && docTitle !== pageTitle
-      ? `${docTitle} | ${pageTitle}`
-      : pageTitle;
+  const pageTitle = payload.doc?.meta?.title || payload.topicPath || "Topic Viewer";
+  const titleText = docTitle && docTitle !== pageTitle ? `${docTitle} | ${pageTitle}` : pageTitle;
 
   return (
     <Card className="shadow-sm mt-3 w-100 border-secondary-subtle">

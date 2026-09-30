@@ -11,9 +11,7 @@ function splitEntry(entry: AstArray) {
     title?: string;
     href?: string;
   };
-  const children = (
-    hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
-  ) as AstArray[];
+  const children = (hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)) as AstArray[];
   return { title, href, children };
 }
 
@@ -36,9 +34,7 @@ function useActiveId(entries: AstArray[]): string | null {
 
   useEffect(() => {
     const ids = collectIds(entries);
-    const targets = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
+    const targets = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
     if (targets.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -58,13 +54,7 @@ function useActiveId(entries: AstArray[]): string | null {
 }
 
 // default/"list" variant: matches scrollspy.xsl's plain <nav><ul><li><a> fallback
-function ListEntryItem({
-  entry,
-  activeId,
-}: {
-  entry: AstArray;
-  activeId: string | null;
-}) {
+function ListEntryItem({ entry, activeId }: { entry: AstArray; activeId: string | null }) {
   const { title, href, children } = splitEntry(entry);
   const isActive = idOf(href) === activeId;
   return (
@@ -86,22 +76,13 @@ function ListEntryItem({
 }
 
 // list-group variant: flat siblings, no ul/li wrapper (matches Bootstrap's list-group markup)
-function ListGroupEntryItem({
-  entry,
-  activeId,
-}: {
-  entry: AstArray;
-  activeId: string | null;
-}) {
+function ListGroupEntryItem({ entry, activeId }: { entry: AstArray; activeId: string | null }) {
   const { title, href, children } = splitEntry(entry);
   const isActive = idOf(href) === activeId;
   return (
     <>
       {href && (
-        <a
-          href={href}
-          className={`list-group-item list-group-item-action${isActive ? " active" : ""}`}
-        >
+        <a href={href} className={`list-group-item list-group-item-action${isActive ? " active" : ""}`}>
           {title}
         </a>
       )}
@@ -113,22 +94,13 @@ function ListGroupEntryItem({
 }
 
 // nav-pill variant: nested <nav class="nav nav-pills"> per level, matching Toc.tsx's own NavPillEntryItem
-function NavPillEntryItem({
-  entry,
-  activeId,
-}: {
-  entry: AstArray;
-  activeId: string | null;
-}) {
+function NavPillEntryItem({ entry, activeId }: { entry: AstArray; activeId: string | null }) {
   const { title, href, children } = splitEntry(entry);
   const isActive = idOf(href) === activeId;
   return (
     <>
       {href && (
-        <a
-          href={href}
-          className={`my-1 ps-2 nav-link${isActive ? " active" : ""}`}
-        >
+        <a href={href} className={`my-1 ps-2 nav-link${isActive ? " active" : ""}`}>
           {title}
         </a>
       )}
@@ -145,13 +117,7 @@ function NavPillEntryItem({
 
 // Matches plugins/dita-bootstrap Customization/xsl/scrollspy.xsl's three BOOTSTRAP_SCROLLSPY_TOC
 // variants; wrapper positioning/link styling come from the vendored css/scrollspy-toc.css (.bs-scrollspy).
-export default function Scrollspy({
-  entries,
-  variant = "list",
-}: {
-  entries: AstArray[];
-  variant?: string;
-}) {
+export default function Scrollspy({ entries, variant = "list" }: { entries: AstArray[]; variant?: string }) {
   const activeId = useActiveId(entries);
 
   if (variant === "list-group") {

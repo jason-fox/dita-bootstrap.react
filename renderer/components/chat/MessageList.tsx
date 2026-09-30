@@ -48,25 +48,14 @@ export default function MessageList({
       {messages.length === 0 ? (
         <div className="py-4 my-auto">
           {welcomeCardAst && (
-            <div
-              className="max-w-xl mx-auto mb-4"
-              style={{ maxWidth: "700px" }}
-            >
-              <AstRenderer
-                nodes={[welcomeCardAst]}
-                title={title}
-                onSendPrompt={onSendPrompt}
-              />
+            <div className="max-w-xl mx-auto mb-4" style={{ maxWidth: "700px" }}>
+              <AstRenderer nodes={[welcomeCardAst]} title={title} onSendPrompt={onSendPrompt} />
             </div>
           )}
         </div>
       ) : (
         messages.map((msg, index) => {
-          const hasInteractive =
-            msg.toolResults &&
-            msg.toolResults.some(
-              (tr) => tr.toolName === "render_topic_ui",
-            );
+          const hasInteractive = msg.toolResults && msg.toolResults.some((tr) => tr.toolName === "render_topic_ui");
 
           return (
             <div
@@ -84,37 +73,31 @@ export default function MessageList({
                   msg.content
                 ) : (
                   <>
-                    {showToolInvocations &&
-                      msg.toolResults &&
-                      msg.toolResults.length > 0 && (
-                        <Accordion className="mb-3">
-                          {msg.toolResults.map((tr, tIdx) => (
-                            <Accordion.Item
-                              key={tIdx}
-                              eventKey={String(tIdx)}
-                              className="border-0 bg-transparent"
-                            >
-                              <Accordion.Header className="py-0">
-                                <small className="text-primary font-monospace">
-                                  <i className="bi bi-tools me-1" />
-                                  Tool called: <strong>{tr.toolName}</strong>
-                                </small>
-                              </Accordion.Header>
-                              <Accordion.Body className="p-2 small bg-body border rounded">
-                                <div className="mb-1">
-                                  <strong>Arguments:</strong>
-                                  <pre
-                                    className="p-2 bg-body-tertiary rounded mb-2 font-monospace"
-                                    style={{ fontSize: "0.8em" }}
-                                  >
-                                    {JSON.stringify(tr.args, null, 2)}
-                                  </pre>
-                                </div>
-                              </Accordion.Body>
-                            </Accordion.Item>
-                          ))}
-                        </Accordion>
-                      )}
+                    {showToolInvocations && msg.toolResults && msg.toolResults.length > 0 && (
+                      <Accordion className="mb-3">
+                        {msg.toolResults.map((tr, tIdx) => (
+                          <Accordion.Item key={tIdx} eventKey={String(tIdx)} className="border-0 bg-transparent">
+                            <Accordion.Header className="py-0">
+                              <small className="text-primary font-monospace">
+                                <i className="bi bi-tools me-1" />
+                                Tool called: <strong>{tr.toolName}</strong>
+                              </small>
+                            </Accordion.Header>
+                            <Accordion.Body className="p-2 small bg-body border rounded">
+                              <div className="mb-1">
+                                <strong>Arguments:</strong>
+                                <pre
+                                  className="p-2 bg-body-tertiary rounded mb-2 font-monospace"
+                                  style={{ fontSize: "0.8em" }}
+                                >
+                                  {JSON.stringify(tr.args, null, 2)}
+                                </pre>
+                              </div>
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        ))}
+                      </Accordion>
+                    )}
 
                     {msg.content && (
                       <div
@@ -129,28 +112,20 @@ export default function MessageList({
                       msg.toolResults.map((tr, trIdx) => {
                         if (tr.toolName !== "render_topic_ui") return null;
                         try {
-                          const contentText = tr.result?.content?.find(
-                            (c) => c.type === "text",
-                          )?.text;
+                          const contentText = tr.result?.content?.find((c) => c.type === "text")?.text;
                           if (!contentText) return null;
                           const payload: TopicViewerPayload = JSON.parse(contentText);
                           const docTitle = payload.toc?.title || payload.docId;
                           const pageTitle =
-                            payload.doc?.meta?.title ||
-                            (tr.args?.topicPath as string | undefined) ||
-                            "Topic Viewer";
+                            payload.doc?.meta?.title || (tr.args?.topicPath as string | undefined) || "Topic Viewer";
                           const titleText =
-                            docTitle && docTitle !== pageTitle
-                              ? `${docTitle} | ${pageTitle}`
-                              : pageTitle;
+                            docTitle && docTitle !== pageTitle ? `${docTitle} | ${pageTitle}` : pageTitle;
 
                           return (
                             <TopicPreviewCard
                               key={trIdx}
                               payload={payload}
-                              onExpand={() =>
-                                onExpandTopic({ title: titleText, payload })
-                              }
+                              onExpand={() => onExpandTopic({ title: titleText, payload })}
                             />
                           );
                         } catch {

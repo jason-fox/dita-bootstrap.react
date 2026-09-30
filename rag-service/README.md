@@ -63,11 +63,11 @@ docker build --build-arg EMBED_MODEL=bge-base-en-v1.5 -t ast-rag-service:en .
 
 Available models (`src/models.ts`):
 
-| Model | Languages | Notes |
-|---|---|---|
-| `bge-m3` (default) | Multilingual, incl. Finnish, German, French | Best quality, slowest indexing. Supports cross-language queries. |
-| `multilingual-e5-base` / `multilingual-e5-small` | Multilingual | Lighter alternatives. |
-| `bge-base-en-v1.5` / `bge-small-en-v1.5` | English only | Faster; use when all docs are English. |
+| Model                                            | Languages                                   | Notes                                                            |
+| ------------------------------------------------ | ------------------------------------------- | ---------------------------------------------------------------- |
+| `bge-m3` (default)                               | Multilingual, incl. Finnish, German, French | Best quality, slowest indexing. Supports cross-language queries. |
+| `multilingual-e5-base` / `multilingual-e5-small` | Multilingual                                | Lighter alternatives.                                            |
+| `bge-base-en-v1.5` / `bge-small-en-v1.5`         | English only                                | Faster; use when all docs are English.                           |
 
 Embeddings are cached in `CACHE_DIR`, keyed by model and precision, so a restart only re-embeds changed topics. Changing the model starts a fresh cache.
 
@@ -81,15 +81,15 @@ Embeddings are cached in `CACHE_DIR`, keyed by model and precision, so a restart
 
 ### Environment Variables & Parameters
 
-| Parameter | Environment Variable | Default | Description |
-|---|---|---|---|
-| `-p, --port` | `PORT` | `4002` | Port for the Express server to listen on. |
-| `-d, --data-dir` | `DATA_DIR` | `../data-store/data` | Path to data directory containing documentation sets. |
-| `-m, --model` | `EMBED_MODEL` | `bge-m3` | Embedding model name. In Docker it is fixed at build time. |
-| `--dtype` | `EMBED_DTYPE` | `q8` | Model weight precision (`q8`, `fp16`, `fp32`, `q4`). |
-| `--cache-dir` | `CACHE_DIR` | `~/.cache/ast-rag-service` | Where embeddings are persisted. |
-| `--model-dir` | `MODEL_DIR` | `<cache-dir>/models` | Where model weights are downloaded. |
-| | `HF_OFFLINE` | *(unset)* | Set to `true` to forbid model downloads at runtime. |
+| Parameter        | Environment Variable | Default                    | Description                                                |
+| ---------------- | -------------------- | -------------------------- | ---------------------------------------------------------- |
+| `-p, --port`     | `PORT`               | `4002`                     | Port for the Express server to listen on.                  |
+| `-d, --data-dir` | `DATA_DIR`           | `../data-store/data`       | Path to data directory containing documentation sets.      |
+| `-m, --model`    | `EMBED_MODEL`        | `bge-m3`                   | Embedding model name. In Docker it is fixed at build time. |
+| `--dtype`        | `EMBED_DTYPE`        | `q8`                       | Model weight precision (`q8`, `fp16`, `fp32`, `q4`).       |
+| `--cache-dir`    | `CACHE_DIR`          | `~/.cache/ast-rag-service` | Where embeddings are persisted.                            |
+| `--model-dir`    | `MODEL_DIR`          | `<cache-dir>/models`       | Where model weights are downloaded.                        |
+|                  | `HF_OFFLINE`         | _(unset)_                  | Set to `true` to forbid model downloads at runtime.        |
 
 ## License
 

@@ -2,7 +2,7 @@ import { resolveModel, type ModelSpec } from "./models";
 
 type Extractor = (
   texts: string[],
-  opts: { pooling: "cls" | "mean"; normalize: boolean }
+  opts: { pooling: "cls" | "mean"; normalize: boolean },
 ) => Promise<{ data: Float32Array; dims: number[] }>;
 
 const BATCH_SIZE = 16;
@@ -14,7 +14,7 @@ export class Embedder {
   constructor(
     public readonly modelName: string,
     private dtype: string = "q8",
-    private cacheDir?: string
+    private cacheDir?: string,
   ) {
     this.spec = resolveModel(modelName);
   }

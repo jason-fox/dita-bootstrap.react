@@ -1,0 +1,12 @@
+node_modules
+dist
+.next
+coverage
+package-lock.json
+data-store/data
+docsrc/src
+renderer/public
+renderer/styles
+renderer/tsconfig.json
+ast-ui/test/fixtures
+mcp-server/src/server/vendor
