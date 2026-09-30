@@ -1,3 +1,5 @@
+import type { ChromeConfig, DocSetInfo, TocDoc, TopicDoc } from "@/types/docs";
+
 const isServer = typeof window === "undefined";
 
 export const PUBLIC_DATA_URL = process.env.NEXT_PUBLIC_DATA_URL ?? "http://localhost:4000/data";
@@ -11,79 +13,16 @@ export const API_URL = isServer
   ? (process.env.INTERNAL_API_URL ?? PUBLIC_API_URL)
   : PUBLIC_API_URL;
 
-export interface DocSetInfo {
-  id: string;
-  title: string;
-  description?: string;
-  group?: string;
-  navToc?: string;
-  scrollspyToc?: string;
-  menubar?: boolean;
-  topicCount: number;
-  featured?: boolean;
-  priority?: number;
-}
-
-// [type, props?, ...children] - props is present only when item[1] is a plain object
-export type AstNode = string | AstArray;
-export type AstArray = [string, ...unknown[]];
-
-export interface BreadcrumbItem {
-  title: string;
-  href?: string;
-}
-
-export interface TopicDoc {
-  // meta.breadcrumbs (see plugins/dita-bootstrap.ast Customization/xsl/breadcrumb.xsl) is the
-  // one non-string field; everything else is a plain string
-  meta: Record<string, string> & { breadcrumbs?: BreadcrumbItem[] };
-  content: AstNode[];
-  // "on this page" nav (see Customization/xsl/scrollspy.xsl) - TocEntry-shaped tuples like toc.json.
-  // Absent (not just empty) when --scrollspy-toc=none or there's nothing to link to.
-  scrollspy?: AstArray[];
-}
-
-export interface TocDoc {
-  toc: AstArray[];
-  // derived from the map's title cascade (see map2ast-bootstrap.xsl) - absent only if the
-  // map has no title anywhere (no map/@title, no mainbooktitle, no topic titles)
-  title?: string;
-  lang?: string;
-  // raw --nav-toc/--scrollspy-toc transtype param values, passed through as-is for the
-  // frontend to interpret; Toc.tsx branches on navToc (collapsible/list-group*/nav-pill*)
-  navToc?: string;
-  scrollspyToc?: string;
-  menubar?: boolean;
-  header?: AstArray;
-  footer?: AstArray;
-  accessibility?: { main?: string; nav?: string };
-}
-
-export interface ChromeConfig {
-  "docs-page"?: {
-    title?: string;
-    description?: string;
-    header?: AstArray;
-    card?: AstArray;
-  };
-  "chat-bot"?: {
-    title?: string;
-    description?: string;
-    header?: AstArray;
-    card?: AstArray;
-    form?: AstArray;
-  };
-  footer?: AstArray;
-  texts?: {
-    noResults?: string;
-    tableOfContents?: string;
-    menubarNavigation?: string;
-    expand?: string;
-    collapse?: string;
-  };
-}
-
 let chromeCache: ChromeConfig | null = null;
+
+function isDynamicServerUsage(err: unknown): boolean {
+  if (typeof err !== "object" || err === null) return false;
+  const { digest, message } = err as { digest?: unknown; message?: unknown };
+  return (
+    digest === "DYNAMIC_SERVER_USAGE" ||
+    (typeof message === "string" && message.includes("DYNAMIC_SERVER_USAGE"))
+  );
+}
 
 export async function fetchChrome(): Promise<ChromeConfig> {
   if (chromeCache) {
@@ -92,10 +31,8 @@ export async function fetchChrome(): Promise<ChromeConfig> {
   let res: Response | null = null;
   try {
     res = await fetch(`${DATA_URL}/chrome.json`, { cache: "no-store" });
-  } catch (err: any) {
-    if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
-      throw err;
-    }
+  } catch (err: unknown) {
+    if (isDynamicServerUsage(err)) throw err;
     console.warn("[Info] chrome.json not found or unavailable, using default configuration.");
     return { texts: {} };
   }
@@ -110,10 +47,8 @@ export async function fetchChrome(): Promise<ChromeConfig> {
       texts,
     };
     return chromeCache!;
-  } catch (err: any) {
-    if (err && (err.digest === "DYNAMIC_SERVER_USAGE" || (typeof err.message === "string" && err.message.includes("DYNAMIC_SERVER_USAGE")))) {
-      throw err;
-    }
+  } catch (err: unknown) {
+    if (isDynamicServerUsage(err)) throw err;
     console.warn("[Info] Failed to parse chrome.json, using default configuration.");
     return { texts: {} };
   }
@@ -162,6 +97,22 @@ export function resolveHref(href: unknown, docId?: string): unknown {
   }
   const prefix = docId && docId !== "default" ? `/${docId}` : "";
   return cleanPath ? `${prefix}/${cleanPath}` : `${prefix}`;
+}
+
+// image/media srcs are relative to the topic's own JSON file in the output dir,
+// not to this app's /view/<topic> route, so resolve them against the backend instead
+export function resolveSrc(src: unknown, docId?: string): unknown {
+  if (
+    typeof src !== "string" ||
+    /^(https?:)?\/\//.test(src) ||
+    src.startsWith("data:")
+  ) {
+    return src;
+  }
+  const cleanSrc = src.replace(/^(\.\.\/|\.\/)+/, "");
+  const prefix =
+    docId && docId !== "default" ? `${PUBLIC_DATA_URL}/${docId}` : PUBLIC_DATA_URL;
+  return `${prefix}/${cleanSrc}`;
 }
 
 export async function fetchDocs(): Promise<DocSetInfo[]> {

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import "./commonltr.css";
-import "./bootswatch-colors.css";
-import "./bootswatch-static.css";
+import { fetchChrome } from "@/lib/api";
+import "@/styles/commonltr.css";
+import "@/styles/bootswatch-colors.css";
+import "@/styles/bootswatch-static.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "./common-bootstrap.css";
-import "./collapsible-toc.css";
-import "./side-toc.css";
-import "./scrollspy-toc.css";
-import "./prism-theme.css";
+import "@/styles/common-bootstrap.css";
+import "@/styles/collapsible-toc.css";
+import "@/styles/side-toc.css";
+import "@/styles/scrollspy-toc.css";
+import "@/styles/prism-theme.css";
 
 const DARK_ONLY_THEMES = new Set([
   "cyborg",
@@ -18,8 +19,6 @@ const DARK_ONLY_THEMES = new Set([
   "superhero",
   "vapor",
 ]);
-
-import { fetchChrome } from "@/lib/api";
 
 const openGraphBase = (process.env.OPEN_GRAPH_URL ?? "").trim();
 

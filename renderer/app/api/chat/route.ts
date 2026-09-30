@@ -22,8 +22,9 @@ export async function POST(req: Request) {
       provider: llmService.activeConfig.provider,
       model: llmService.activeConfig.model,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in /api/chat:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "";
+    return NextResponse.json({ error: message || "Internal server error" }, { status: 500 });
   }
 }

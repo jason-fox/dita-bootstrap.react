@@ -3,10 +3,10 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
 import { notFound, redirect } from "next/navigation";
-import AstRenderer from "@/components/AstRenderer";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Scrollspy from "@/components/Scrollspy";
-import Shell from "@/components/Shell";
+import AstRenderer from "@/components/ast/AstRenderer";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import Scrollspy from "@/components/toc/Scrollspy";
+import Shell from "@/components/layout/Shell";
 import {
   fetchChrome,
   fetchDocs,
@@ -15,8 +15,8 @@ import {
   isPropsObject,
   matchDocSet,
   resolveHref,
-  type AstArray,
 } from "@/lib/api";
+import type { AstArray } from "@/types/ast";
 
 function firstHref(entries: AstArray[]): string | undefined {
   for (const [, maybeProps, ...rest] of entries) {

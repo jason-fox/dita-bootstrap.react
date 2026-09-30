@@ -6,11 +6,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
-import Header from "./Header";
-import Menubar from "./Menubar";
-import Toc from "./Toc";
-import AstRenderer from "./AstRenderer";
-import type { AstArray, ChromeConfig } from "../lib/api";
+import Header from "@/components/layout/Header";
+import Menubar from "@/components/layout/Menubar";
+import Toc from "@/components/toc/Toc";
+import AstRenderer from "@/components/ast/AstRenderer";
+import type { AstArray } from "@/types/ast";
+import type { ChromeConfig } from "@/types/docs";
 
 export default function Shell({
   tocEntries = [],

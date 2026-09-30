@@ -1,0 +1,29 @@
+.chat-bubble-user {
+  max-width: 80%;
+  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+  background-color: var(--bs-primary);
+  color: #fff;
+}
+.chat-bubble-assistant {
+  max-width: 85%;
+  border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  color: var(--bs-body-color);
+}
+.modal-95vh {
+  width: 95vw !important;
+  max-width: 95vw !important;
+  height: 95vh !important;
+  margin: 2.5vh auto !important;
+}
+.modal-95vh .modal-content {
+  height: 95vh !important;
+  max-height: 95vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.modal-95vh .modal-body {
+  flex: 1 1 auto !important;
+  overflow-y: hidden !important;
+}

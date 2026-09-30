@@ -1,4 +1,6 @@
+import "server-only";
 import type { McpClientService } from "./mcp";
+import type { DocSetSummary, ToolExecution } from "@/types/mcp";
 
 export interface LlmConfig {
   provider: string;
@@ -12,7 +14,31 @@ export interface ChatMessage {
   content: string;
   name?: string;
   tool_call_id?: string;
-  tool_calls?: any[];
+  tool_calls?: ToolCall[];
+}
+
+export interface ToolCall {
+  id: string;
+  type?: "function";
+  function: { name: string; arguments: string | Record<string, unknown> };
+}
+
+interface OpenAiTool {
+  type: "function";
+  function: { name: string; description?: string; parameters: unknown };
+}
+
+interface AssistantMessage {
+  content?: string | null;
+  tool_calls?: ToolCall[];
+}
+
+interface ChatCompletionResponse {
+  choices?: Array<{ message: AssistantMessage }>;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 export class LlmService {
@@ -78,13 +104,13 @@ export class LlmService {
     userMessage: string,
     history: ChatMessage[],
     mcpClient: McpClientService
-  ): Promise<{ text: string; toolResults: any[] }> {
+  ): Promise<{ text: string; toolResults: ToolExecution[] }> {
     if (this.config.provider !== "ollama" && (!this.config.apiKey || this.config.apiKey.trim() === "")) {
       throw new Error(`API key for provider '${this.config.provider}' is missing or empty. Please set ${this.config.provider.toUpperCase()}_API_KEY in your .env file.`);
     }
 
     const tools = await mcpClient.listTools();
-    const openaiTools = tools.map((t: any) => ({
+    const openaiTools: OpenAiTool[] = tools.map((t) => ({
       type: "function",
       function: {
         name: t.name,
@@ -97,19 +123,19 @@ export class LlmService {
     try {
       const resource = await mcpClient.readResource("docs://summary");
       const firstContent = resource?.contents?.[0];
-      const text = firstContent && "text" in firstContent ? (firstContent as any).text : undefined;
+      const text = firstContent && "text" in firstContent ? firstContent.text : undefined;
       if (text) {
         docCorpusSummary = text;
       } else {
-        const docSetsResult: any = await mcpClient.callTool("list_documentation_sets", {});
-        const jsonText = docSetsResult?.content?.find((c: any) => c.type === "text")?.text;
+        const docSetsResult = await mcpClient.callTool("list_documentation_sets", {});
+        const jsonText = docSetsResult?.content?.find((c) => c.type === "text")?.text;
         if (jsonText) {
-          const docSets = JSON.parse(jsonText);
+          const docSets: DocSetSummary[] = JSON.parse(jsonText);
           if (Array.isArray(docSets) && docSets.length > 0) {
             const maxShown = 3;
             const shownSets = docSets.slice(0, maxShown);
             const itemsText = shownSets
-              .map((ds: any) => `* ${ds.title || ds.id}${ds.description ? `: ${ds.description}` : ""}`)
+              .map((ds) => `* ${ds.title || ds.id}${ds.description ? `: ${ds.description}` : ""}`)
               .join("\n");
             const extraText = docSets.length > maxShown
               ? `\n* ...etc (${docSets.length - maxShown} more documentation sets available. Use list_documentation_sets or search_documentation to discover more.)`
@@ -135,7 +161,7 @@ export class LlmService {
     };
 
     const messages: ChatMessage[] = [systemPrompt, ...history, { role: "user", content: userMessage }];
-    const executedToolResults: any[] = [];
+    const executedToolResults: ToolExecution[] = [];
 
     for (let turn = 0; turn < 10; turn++) {
       const response = await this.callChatCompletions(messages, openaiTools);
@@ -148,26 +174,26 @@ export class LlmService {
       const assistantMsg = choice.message;
 
       if (assistantMsg.tool_calls && assistantMsg.tool_calls.length > 0) {
-        messages.push(assistantMsg);
+        messages.push({ role: "assistant", content: assistantMsg.content ?? "", tool_calls: assistantMsg.tool_calls });
 
         // concurrent tool calls resolve out of request order, so return each result
         // and only push to the shared arrays after Promise.all restores that order.
         const toolOutcomes = await Promise.all(
-          assistantMsg.tool_calls.map(async (toolCall: any) => {
+          assistantMsg.tool_calls.map(async (toolCall) => {
             const functionName = toolCall.function.name;
-            let functionArgs: Record<string, any> = {};
+            let functionArgs: Record<string, unknown> = {};
             try {
               functionArgs = typeof toolCall.function.arguments === "string"
                 ? JSON.parse(toolCall.function.arguments)
                 : toolCall.function.arguments;
-            } catch (e) {
+            } catch {
               functionArgs = {};
             }
 
             try {
               const result = await mcpClient.callTool(functionName, functionArgs);
               const resultContent = Array.isArray(result?.content)
-                ? result.content.map((c: any) => c.text || JSON.stringify(c)).join("\n")
+                ? result.content.map((c) => c.text || JSON.stringify(c)).join("\n")
                 : JSON.stringify(result);
 
               return {
@@ -179,14 +205,14 @@ export class LlmService {
                   content: resultContent,
                 },
               };
-            } catch (toolErr: any) {
+            } catch (toolErr: unknown) {
               return {
                 toolResult: null,
                 message: {
                   role: "tool" as const,
                   tool_call_id: toolCall.id,
                   name: functionName,
-                  content: `Error executing tool: ${toolErr.message}`,
+                  content: `Error executing tool: ${errorMessage(toolErr)}`,
                 },
               };
             }
@@ -199,7 +225,7 @@ export class LlmService {
         messages.push(...toolOutcomes.map((o) => o.message));
       } else {
         let text = assistantMsg.content ? assistantMsg.content.trim() : "";
-        const hasUi = executedToolResults.some((tr: any) => tr.toolName === "render_topic_ui");
+        const hasUi = executedToolResults.some((tr) => tr.toolName === "render_topic_ui");
 
         if (hasUi) {
           // When retrieving a doc page via render_topic_ui, no chatbot text summary is needed.
@@ -216,7 +242,7 @@ export class LlmService {
               });
               const synthResponse = await this.callChatCompletions(messages, []);
               text = synthResponse?.choices?.[0]?.message?.content || "Here is the requested information:";
-            } catch (e) {
+            } catch {
               text = "Here is the requested information:";
             }
           } else {
@@ -235,7 +261,7 @@ export class LlmService {
     const rawFinal = finalResponse?.choices?.[0]?.message?.content;
     const finalText = (rawFinal && rawFinal.trim() !== "")
       ? rawFinal
-      : (executedToolResults.some((tr: any) => tr.toolName === "render_topic_ui")
+      : (executedToolResults.some((tr) => tr.toolName === "render_topic_ui")
           ? "Here is the documentation and interactive preview:"
           : "Gathered tool information successfully.");
 
@@ -245,7 +271,7 @@ export class LlmService {
     };
   }
 
-  private async callChatCompletions(messages: ChatMessage[], tools: any[]): Promise<any> {
+  private async callChatCompletions(messages: ChatMessage[], tools: OpenAiTool[]): Promise<ChatCompletionResponse> {
     const baseUrl = this.config.baseUrl!.endsWith("/")
       ? this.config.baseUrl!
       : `${this.config.baseUrl}/`;
@@ -267,10 +293,10 @@ export class LlmService {
       }
     }
 
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       model: this.config.model,
       messages: messages.map((m) => {
-        const msgNode: any = { role: m.role };
+        const msgNode: Record<string, unknown> = { role: m.role };
         if (m.role === "assistant" && m.tool_calls && m.tool_calls.length > 0) {
           msgNode.tool_calls = m.tool_calls;
           msgNode.content = m.content || null;
@@ -308,8 +334,8 @@ export class LlmService {
       }
 
       return await res.json();
-    } catch (err: any) {
-      if (err.name === "AbortError") {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") {
         throw new Error(`LLM Request timed out after 30 seconds calling ${endpoint}`);
       }
       throw err;

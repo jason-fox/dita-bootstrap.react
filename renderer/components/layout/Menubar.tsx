@@ -8,9 +8,9 @@ import {
   isPropsObject,
   resolveHref,
   resolveStyle,
-  type AstArray,
-  type ChromeConfig,
-} from "../lib/api";
+} from "@/lib/api";
+import type { AstArray } from "@/types/ast";
+import type { ChromeConfig } from "@/types/docs";
 
 function splitEntry(entry: AstArray, docId?: string) {
   const [, maybeProps, ...rest] = entry;

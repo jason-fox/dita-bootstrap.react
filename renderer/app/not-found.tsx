@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Shell from "@/components/Shell";
+import Shell from "@/components/layout/Shell";
 import { fetchChrome } from "@/lib/api";
 
 export default async function NotFound() {

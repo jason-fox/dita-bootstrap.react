@@ -266,6 +266,7 @@ export default function InteractiveTable({
     });
   }, [headers, columnHelper]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table opts out of compiler memoization
   const table = useReactTable<Record<string, React.ReactNode>>({
     data: rows,
     columns,
@@ -293,7 +294,7 @@ export default function InteractiveTable({
     const csvHeader = visibleCols
       .map((col) => {
         const rawHeader = typeof col.columnDef.header === "function"
-          ? (col.columnDef.header as Function)({})
+          ? (col.columnDef.header as (ctx: object) => React.ReactNode)({})
           : col.columnDef.header;
         const headerText = getTextContent(rawHeader);
         return `"${headerText.replace(/"/g, '""')}"`;
@@ -344,7 +345,7 @@ export default function InteractiveTable({
                 <Dropdown.Menu className="p-2" style={{ minWidth: "12rem" }}>
                   {table.getAllLeafColumns().map((col) => {
                     const rawHeader = typeof col.columnDef.header === "function"
-                      ? (col.columnDef.header as Function)({})
+                      ? (col.columnDef.header as (ctx: object) => React.ReactNode)({})
                       : col.columnDef.header;
                     const headerText = getTextContent(rawHeader) || col.id;
                     return (

@@ -1,5 +1,12 @@
+import "server-only";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import type { ReadResourceResult, Tool } from "@modelcontextprotocol/sdk/types.js";
+import type { ToolResult } from "@/types/mcp";
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
 
 export class McpClientService {
   private client: Client;
@@ -46,14 +53,14 @@ export class McpClientService {
       await this.withTimeout(this.client.connect(transport), 3000);
       this.isConnected = true;
       return true;
-    } catch (error: any) {
-      console.warn(`Failed to connect to MCP Server at ${this.serverUrl}: ${error.message}`);
+    } catch (error: unknown) {
+      console.warn(`Failed to connect to MCP Server at ${this.serverUrl}: ${errorMessage(error)}`);
       this.isConnected = false;
       return false;
     }
   }
 
-  async listTools(retry = true): Promise<any[]> {
+  async listTools(retry = true): Promise<Tool[]> {
     if (!this.isConnected) {
       await this.connect();
     }
@@ -62,8 +69,8 @@ export class McpClientService {
     try {
       const response = await this.withTimeout(this.client.listTools(), 3000);
       return response.tools || [];
-    } catch (error: any) {
-      console.error("Error listing MCP tools:", error.message);
+    } catch (error: unknown) {
+      console.error("Error listing MCP tools:", errorMessage(error));
       this.isConnected = false;
       if (retry) {
         await this.connect(true);
@@ -75,7 +82,7 @@ export class McpClientService {
     }
   }
 
-  async callTool(name: string, args: Record<string, any>, retry = true): Promise<any> {
+  async callTool(name: string, args: Record<string, unknown>, retry = true): Promise<ToolResult> {
     if (!this.isConnected) {
       await this.connect();
     }
@@ -91,9 +98,9 @@ export class McpClientService {
         }),
         5000
       );
-      return response;
-    } catch (error: any) {
-      console.error(`Error calling MCP tool '${name}':`, error.message);
+      return response as ToolResult;
+    } catch (error: unknown) {
+      console.error(`Error calling MCP tool '${name}':`, errorMessage(error));
       this.isConnected = false;
       if (retry) {
         await this.connect(true);
@@ -105,7 +112,7 @@ export class McpClientService {
     }
   }
 
-  async readResource(uri: string, retry = true): Promise<any> {
+  async readResource(uri: string, retry = true): Promise<ReadResourceResult | null> {
     if (!this.isConnected) {
       await this.connect();
     }
@@ -114,8 +121,8 @@ export class McpClientService {
     try {
       const response = await this.withTimeout(this.client.readResource({ uri }), 3000);
       return response;
-    } catch (error: any) {
-      console.error(`Error reading MCP resource '${uri}':`, error.message);
+    } catch (error: unknown) {
+      console.error(`Error reading MCP resource '${uri}':`, errorMessage(error));
       this.isConnected = false;
       if (retry) {
         await this.connect(true);

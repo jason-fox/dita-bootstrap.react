@@ -1,5 +1,5 @@
 import { fetchChrome, fetchDocs } from "@/lib/api";
-import HomePageClient from "@/components/HomePageClient";
+import HomePageClient from "@/components/home/HomePageClient";
 
 export const dynamic = "force-dynamic";
 

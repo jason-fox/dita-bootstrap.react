@@ -1,7 +1,5 @@
-"use client";
-
-import AstRenderer from "./AstRenderer";
-import type { AstArray } from "../lib/api";
+import AstRenderer from "@/components/ast/AstRenderer";
+import type { AstArray } from "@/types/ast";
 
 export default function Header({
   headerAst,

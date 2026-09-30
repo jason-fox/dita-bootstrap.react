@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Shell from "@/components/Shell";
-import AstRenderer from "@/components/AstRenderer";
-import { isPropsObject, type AstNode, type DocSetInfo } from "@/lib/api";
+import Shell from "@/components/layout/Shell";
+import AstRenderer from "@/components/ast/AstRenderer";
+import { isPropsObject } from "@/lib/api";
+import type { AstNode } from "@/types/ast";
+import type { ChromeConfig, DocSetInfo } from "@/types/docs";
 
 function populateCardAst(node: AstNode, doc: DocSetInfo): AstNode {
   if (typeof node === "string") {
@@ -69,7 +71,7 @@ function populateCardAst(node: AstNode, doc: DocSetInfo): AstNode {
 
 interface HomePageClientProps {
   docs: DocSetInfo[];
-  chrome: Record<string, any> | null;
+  chrome: ChromeConfig | null;
 }
 
 export default function HomePageClient({ docs, chrome }: HomePageClientProps) {
