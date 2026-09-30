@@ -88,10 +88,14 @@ export default async function ViewPage({ params }: { params: Promise<{ file: str
       {doc.meta.breadcrumbs && <Breadcrumbs items={doc.meta.breadcrumbs} docId={docId} />}
       {doc.meta.title && !hasApiReference && (
         <h1 id="ariaid-title1" tabIndex={-1}>
-          {doc.meta.title}
+          {doc.meta.titleAst ? <AstRenderer nodes={doc.meta.titleAst} docId={docId} /> : doc.meta.title}
         </h1>
       )}
-      {doc.meta.shortdesc && <p className="shortdesc text-body-secondary lead">{doc.meta.shortdesc}</p>}
+      {doc.meta.shortdesc && (
+        <p className="shortdesc text-body-secondary lead">
+          {doc.meta.shortdescAst ? <AstRenderer nodes={doc.meta.shortdescAst} docId={docId} /> : doc.meta.shortdesc}
+        </p>
+      )}
       <AstRenderer nodes={doc.content} docId={docId} topicPath={topicPath} lang={doc.meta.lang || toc?.lang} />
     </article>
   );

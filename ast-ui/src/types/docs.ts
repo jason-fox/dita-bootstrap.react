@@ -19,11 +19,15 @@ export interface BreadcrumbItem {
 }
 
 export interface TopicDoc {
-  // meta.breadcrumbs (see plugins/dita-bootstrap.ast Customization/xsl/breadcrumb.xsl) and
-  // meta.keywords are the non-string fields
+  // meta.breadcrumbs (see plugins/dita-bootstrap.ast Customization/xsl/breadcrumb.xsl),
+  // meta.keywords, meta.titleAst and meta.shortdescAst are the non-string fields
   meta: Record<string, unknown> & {
     title?: string;
+    // inline AST of the title, present only when the title contains markup; title stays the plain-text form
+    titleAst?: AstNode[];
     shortdesc?: string;
+    // inline AST of the shortdesc, present only when it contains markup
+    shortdescAst?: AstNode[];
     lang?: string;
     keywords?: string[];
     breadcrumbs?: BreadcrumbItem[];

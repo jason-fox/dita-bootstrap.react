@@ -14,6 +14,7 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
   const breadcrumbs = doc.meta.breadcrumbs;
   const title = (doc.meta.title as string) || topicPath;
   const shortdesc = (doc.meta.shortdesc as string) || "";
+  const { titleAst, shortdescAst } = doc.meta;
   const hasToc = Boolean(toc?.toc && toc.toc.length > 0);
   const showDesktopToc = hasToc && !previewMode;
   const hasScrollspy = Boolean(doc.scrollspy && doc.scrollspy.length > 0);
@@ -37,8 +38,16 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
           </button>
         )}
       </div>
-      {title && <h1 className="mb-3">{title}</h1>}
-      {shortdesc && <p className="shortdesc text-body-secondary lead mb-4">{shortdesc}</p>}
+      {title && (
+        <h1 className="mb-3">
+          {titleAst ? <AstRenderer nodes={titleAst} docId={docId} onNavigate={onNavigate} /> : title}
+        </h1>
+      )}
+      {shortdesc && (
+        <p className="shortdesc text-body-secondary lead mb-4">
+          {shortdescAst ? <AstRenderer nodes={shortdescAst} docId={docId} onNavigate={onNavigate} /> : shortdesc}
+        </p>
+      )}
       <AstRenderer nodes={doc.content as any} docId={docId} onNavigate={onNavigate} />
     </article>
   );
