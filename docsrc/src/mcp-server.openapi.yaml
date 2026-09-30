@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: MCP Server API
+  description: |
+    Model Context Protocol server for AST-rendered DITA documentation, exposed over the
+    Streamable HTTP transport (`--transport http`). The stdio transport has no HTTP surface.
+
+    All MCP traffic is JSON-RPC 2.0 on a single endpoint, `/mcp`. A client opens a session with an
+    `initialize` request (no session header); the response carries an `Mcp-Session-Id` header that
+    must accompany every later request. Idle sessions are reaped after 30 minutes.
+
+    **Tools**
+
+    | Tool | Arguments | Purpose |
+    |---|---|---|
+    | `list_documentation_sets` | none | List doc sets with titles, descriptions and topic counts |
+    | `get_toc` | `docId` | Hierarchical table of contents for a doc set |
+    | `search_documentation` | `query`, `docId?`, `lang?` | Ranked topic matches; delegates to the RAG service when `RAG_SERVICE_URL` is set, otherwise MiniSearch |
+    | `get_topic_content` | `docId`, `topicPath` | Full topic as Markdown |
+    | `render_topic_ui` | `docId`, `topicPath`, `theme?` | Interactive MCP-UI rendering of a topic |
+
+    **Resources**: `docs://library` (JSON catalog), `docs://summary` (plain-text summary) and
+    `ui://dita-docs/topic-viewer.html` (the viewer app shell).
+  version: 1.0.0
+servers:
+  - url: "{scheme}://{host}:{port}"
+    description: Your deployment; the service speaks plain HTTP, so use https only behind a TLS-terminating proxy
+    variables:
+      scheme:
+        default: http
+        enum:
+          - http
+          - https
+      host:
+        default: your-host.example.com
+        description: Hostname or IP of the machine or proxy running the service
+      port:
+        default: "4001"
+        description: Port set by the PORT env var
+
+paths:
+  /mcp:
+    post:
+      summary: Send an MCP JSON-RPC message
+      tags:
+        - MCP Server - Transport
+      operationId: mcpPost
+      description: |
+        Send `initialize` without a session header to start a session, then include `Mcp-Session-Id`
+        on every request (`tools/list`, `tools/call`, `resources/read`, ...). Depending on the
+        request, the reply is a single JSON body or a `text/event-stream`.
+      parameters:
+        - $ref: "#/components/parameters/McpSessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonRpcRequest"
+            example:
+              jsonrpc: "2.0"
+              id: 1
+              method: tools/call
+              params:
+                name: search_documentation
+                arguments:
+                  query: remove a plug-in
+                  docId: dita-ot-docs
+      responses:
+        "200":
+          description: JSON-RPC response, as JSON or a server-sent event stream
+          headers:
+            Mcp-Session-Id:
+              description: Returned on the `initialize` response only
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+            text/event-stream:
+              schema:
+                type: string
+        "400":
+          description: No valid session ID, and the request was not `initialize`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonRpcError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonRpcError"
+    get:
+      summary: Open the server-to-client event stream
+      tags:
+        - MCP Server - Transport
+      operationId: mcpStream
+      parameters:
+        - $ref: "#/components/parameters/McpSessionIdRequired"
+      responses:
+        "200":
+          description: Server-sent event stream for the session
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        "400":
+          description: Invalid or missing session ID
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: Terminate an MCP session
+      tags:
+        - MCP Server - Transport
+      operationId: mcpTerminate
+      parameters:
+        - $ref: "#/components/parameters/McpSessionIdRequired"
+      responses:
+        "200":
+          description: Session closed
+        "400":
+          description: Invalid or missing session ID
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /viewer:
+    get:
+      summary: Topic viewer app shell
+      tags:
+        - MCP Server - Viewer
+      operationId: getViewer
+      description: HTML shell used by MCP-UI clients to render `render_topic_ui` output, also embeddable in an iframe.
+      responses:
+        "200":
+          description: Viewer HTML
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  parameters:
+    McpSessionId:
+      name: Mcp-Session-Id
+      in: header
+      required: false
+      description: Omit only on the `initialize` request
+      schema:
+        type: string
+        format: uuid
+    McpSessionIdRequired:
+      name: Mcp-Session-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    JsonRpcRequest:
+      type: object
+      required:
+        - jsonrpc
+        - method
+      properties:
+        jsonrpc:
+          type: string
+          enum: ["2.0"]
+        id:
+          oneOf:
+            - type: integer
+            - type: string
+          description: Omitted for notifications
+        method:
+          type: string
+          example: tools/list
+        params:
+          type: object
+    JsonRpcError:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+              example: -32000
+            message:
+              type: string
+              example: "Bad Request: No valid session ID provided"
+        id:
+          nullable: true
+          type: integer
+
+tags:
+  - name: MCP Server - Transport
+    description: Streamable HTTP transport carrying MCP JSON-RPC traffic
+  - name: MCP Server - Viewer
+    description: HTML app shell for rendering topics in MCP-UI clients

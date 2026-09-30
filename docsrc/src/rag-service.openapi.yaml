@@ -1,0 +1,223 @@
+openapi: 3.0.3
+info:
+  title: RAG Service API
+  description: |
+    Optional hybrid search service for AST-rendered DITA content. Chunks each topic along
+    heading boundaries, embeds the chunks with a local model chosen at image build time
+    (`EMBED_MODEL`), and ranks results by fusing embedding similarity with BM25.
+
+    `mcp-server` delegates `search_documentation` to this service when `RAG_SERVICE_URL` is set,
+    and falls back to MiniSearch on any non-OK or empty response.
+
+    **Startup**: the service accepts connections immediately, but `POST /api/search` returns
+    `503` until the first indexing pass completes.
+
+    **Index freshness**: `data-store` calls `POST /api/reindex` after doc set uploads and
+    deletes when its own `RAG_SERVICE_URL` is set. Reindexing is incremental (SHA-256 per topic).
+  version: 1.0.0
+servers:
+  - url: "{scheme}://{host}:{port}"
+    description: Your deployment; the service speaks plain HTTP, so use https only behind a TLS-terminating proxy
+    variables:
+      scheme:
+        default: http
+        enum:
+          - http
+          - https
+      host:
+        default: your-host.example.com
+        description: Hostname or IP of the machine or proxy running the service
+      port:
+        default: "4002"
+        description: Port set by the PORT env var
+
+paths:
+  /health:
+    get:
+      summary: RAG service health check
+      tags:
+        - RAG Service - System
+      operationId: getRagHealth
+      responses:
+        "200":
+          description: Server is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, indexing]
+                    description: "`indexing` until the first pass completes"
+                    example: ok
+                  model:
+                    type: string
+                    description: Active embedding model and weight precision
+                    example: bge-m3:q8
+                  dataDir:
+                    type: string
+                    description: Data directory being indexed
+                    example: /app/data
+                  totalTopics:
+                    type: integer
+                    example: 300
+                  totalChunks:
+                    type: integer
+                    example: 758
+
+  /api/search:
+    post:
+      summary: Hybrid semantic and keyword search
+      tags:
+        - RAG Service - Search
+      operationId: ragSearch
+      description: |
+        Runs an embedding search and a BM25 keyword search over all chunks, merges the two
+        rankings with reciprocal rank fusion, and returns the best chunk per topic.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  minLength: 1
+                  example: protect bulbs from frost
+                docId:
+                  type: string
+                  description: Restrict results to one doc set (and its nested sets)
+                  example: dita-ot-docs
+                lang:
+                  type: string
+                  description: IETF BCP 47 code; only the primary subtag is compared
+                  example: de
+                topK:
+                  type: integer
+                  default: 10
+                  description: Maximum number of topics to return
+      responses:
+        "200":
+          description: Ranked topic hits, best first. Empty when nothing matches.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RagSearchHit"
+        "400":
+          description: Request body failed validation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RagError"
+        "500":
+          description: Embedding or search failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RagError"
+        "503":
+          description: Initial index is still building
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RagError"
+
+  /api/reindex:
+    post:
+      summary: Reindex changed topics
+      tags:
+        - RAG Service - Indexing
+      operationId: ragReindex
+      description: |
+        Scans the data directory, re-embeds topics whose content hash changed, and purges topics
+        that are no longer listed in their doc set's `toc.json`. Calls are serialised, and the
+        response is sent when the pass finishes, which can take minutes for large uploads.
+      responses:
+        "200":
+          description: Reindex complete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  indexed:
+                    type: integer
+                    description: Topics embedded in this pass
+                  skipped:
+                    type: integer
+                    description: Topics unchanged since the last pass
+                  purged:
+                    type: integer
+                    description: Topics removed from the index
+                  totalTopics:
+                    type: integer
+                  totalChunks:
+                    type: integer
+        "500":
+          description: Reindex failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RagError"
+
+components:
+  schemas:
+    RagSearchHit:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Doc set ID and topic path, or the bare topic path for the default set
+          example: dita-ot-docs/topics/plugins-removing
+        docId:
+          type: string
+          example: dita-ot-docs
+        topicPath:
+          type: string
+          example: topics/plugins-removing
+        title:
+          type: string
+        shortdesc:
+          type: string
+        lang:
+          type: string
+          example: en
+        sectionTitle:
+          type: string
+          description: Heading of the best matching chunk; omitted when it equals the topic title
+        anchor:
+          type: string
+          description: Slug of `sectionTitle`
+          example: removing-plug-ins
+        snippet:
+          type: string
+          description: First 250 characters of the best matching chunk
+        score:
+          type: number
+          description: Fused relevance from 0 to 10, comparable only within one response
+          example: 9.3
+    RagError:
+      type: object
+      properties:
+        error:
+          description: Message, or the field-level validation tree for `400`
+          oneOf:
+            - type: string
+            - type: object
+
+tags:
+  - name: RAG Service - System
+    description: RAG service health and readiness
+  - name: RAG Service - Search
+    description: Hybrid embedding and keyword search over topic chunks
+  - name: RAG Service - Indexing
+    description: Keep the RAG index in step with the data store

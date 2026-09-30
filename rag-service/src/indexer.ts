@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { AstParser } from "./ast-parser";
 import { VectorStore } from "./vector-store";
+import type { Embedder } from "./embedder";
 
 interface DocSetInfo {
   id: string;
@@ -11,8 +12,13 @@ interface DocSetInfo {
 export class Indexer {
   constructor(
     private dataDir: string,
-    private vectorStore: VectorStore
-  ) {}
+    private vectorStore: VectorStore,
+    private embedder: Embedder,
+    private cachePath: string
+  ) {
+    this.vectorStore.load(this.cachePath, this.embedder.id);
+    this.vectorStore.rebuildLexicalStats();
+  }
 
   public findDocSets(): DocSetInfo[] {
     const results: DocSetInfo[] = [];
@@ -62,7 +68,7 @@ export class Indexer {
     return hrefs;
   }
 
-  public indexAll(): { indexed: number; purged: number; skipped: number } {
+  public async indexAll(): Promise<{ indexed: number; purged: number; skipped: number }> {
     const docSets = this.findDocSets();
     const activeTopicPaths = new Set<string>();
 
@@ -111,7 +117,14 @@ export class Indexer {
             lang
           );
 
-          this.vectorStore.setTopicChunks(relativeTopicKey, fileHash, chunks);
+          const vectors = await this.embedder.embedPassages(
+            chunks.map((c) => `${c.title} > ${c.sectionTitle}\n${c.content}`)
+          );
+          this.vectorStore.setTopicChunks(
+            relativeTopicKey,
+            fileHash,
+            chunks.map((chunk, i) => ({ chunk, vector: vectors[i] }))
+          );
           indexedCount++;
         }
       } catch (err) {
@@ -122,7 +135,8 @@ export class Indexer {
     const purgedCount = this.vectorStore.syncActiveTopics(activeTopicPaths);
 
     if (indexedCount > 0 || purgedCount > 0) {
-      this.vectorStore.rebuildIdfAndVectors();
+      this.vectorStore.rebuildLexicalStats();
+      this.vectorStore.save(this.cachePath, this.embedder.id);
     }
 
     return { indexed: indexedCount, purged: purgedCount, skipped: skippedCount };

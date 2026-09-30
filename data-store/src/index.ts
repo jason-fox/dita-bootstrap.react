@@ -17,6 +17,8 @@ const DATA_DIR = process.env.DATA_DIR
 const MAX_UPLOAD_SIZE = process.env.MAX_UPLOAD_SIZE || "100mb";
 // optional bearer token guarding the /api/docs/<id> write routes - auth is off when unset
 const AUTH_TOKEN = process.env.AUTH_TOKEN || undefined;
+// optional rag-service base URL, pinged to reindex after doc set writes
+const RAG_SERVICE_URL = process.env.RAG_SERVICE_URL?.replace(/\/$/, "") || undefined;
 
 const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
 const numWorkers = envWorkers
@@ -245,6 +247,14 @@ function buildAllSearchIndices(dataDir: string): void {
   }
 }
 
+// fire-and-forget: a slow or absent rag-service must never fail an upload
+function notifyRagService(): void {
+  if (!RAG_SERVICE_URL) return;
+  fetch(`${RAG_SERVICE_URL}/api/reindex`, { method: "POST", signal: AbortSignal.timeout(10 * 60 * 1000) }).catch((e) =>
+    console.warn(`rag-service reindex at ${RAG_SERVICE_URL} failed:`, e.message || e),
+  );
+}
+
 // RFC 9457 Problem Details response
 function sendProblem(res: express.Response, status: number, title: string, detail: string): void {
   res.status(status).type("application/problem+json").json({ type: "about:blank", title, status, detail });
@@ -452,6 +462,7 @@ if (numWorkers > 1 && cluster.isPrimary) {
       sendProblem(res, 400, "Bad Request", `Failed to extract zip: ${e.message || e}`);
       return;
     }
+    notifyRagService();
     res.status(201).location(`/api/docs/${id}`).json(readDocSetInfo(DATA_DIR, dir));
   });
 
@@ -475,6 +486,7 @@ if (numWorkers > 1 && cluster.isPrimary) {
       sendProblem(res, 400, "Bad Request", `Failed to extract zip: ${e.message || e}`);
       return;
     }
+    notifyRagService();
     res.status(200).json(readDocSetInfo(DATA_DIR, dir));
   });
 
@@ -487,6 +499,7 @@ if (numWorkers > 1 && cluster.isPrimary) {
       return;
     }
     fs.rmSync(dir, { recursive: true, force: true });
+    notifyRagService();
     res.status(204).end();
   });
 

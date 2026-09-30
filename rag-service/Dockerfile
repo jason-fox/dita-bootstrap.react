@@ -3,8 +3,12 @@
 #
 # Build (from react-harness/):
 #   docker build -t ghcr.io/jason-fox/ast-rag-service:latest rag-service
+#   docker build --build-arg EMBED_MODEL=bge-base-en-v1.5 -t ghcr.io/jason-fox/ast-rag-service:en rag-service
+#
+# EMBED_MODEL is baked into the image (see src/models.ts); override at runtime only for a model already fetched.
+# (Debian rather than Alpine: onnxruntime-node needs glibc.)
 
-FROM node:22-alpine AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
@@ -14,8 +18,10 @@ RUN npm ci || npm install
 COPY src ./src
 RUN npm run build
 
-FROM node:22-alpine AS runner
+FROM node:22-slim AS runner
 
+ARG EMBED_MODEL=bge-m3
+ARG EMBED_DTYPE=q8
 ARG BUILD_VERSION=0.0.1
 ARG BUILD_REVISION=unknown
 
@@ -29,6 +35,10 @@ LABEL org.opencontainers.image.revision=${BUILD_REVISION}
 ENV NODE_ENV=production
 ENV PORT=4002
 ENV DATA_DIR=/app/data
+ENV EMBED_MODEL=${EMBED_MODEL}
+ENV EMBED_DTYPE=${EMBED_DTYPE}
+ENV MODEL_DIR=/app/models
+ENV CACHE_DIR=/app/cache
 
 WORKDIR /app
 
@@ -37,7 +47,10 @@ COPY --from=builder /app/dist ./dist
 
 RUN npm ci --omit=dev || npm install --only=production
 
-VOLUME ["/app/data"]
+RUN node dist/prefetch.js
+ENV HF_OFFLINE=true
+
+VOLUME ["/app/data", "/app/cache"]
 EXPOSE 4002
 
 CMD ["node", "dist/index.js"]

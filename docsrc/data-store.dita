@@ -64,6 +64,10 @@ docker run -d -p 4000:4000 \
           <pd>Optional bearer token guarding the <codeph>/api/docs/&lt;id&gt;</codeph> and <codeph>/api/chrome</codeph> write routes. Unset by default, which disables auth entirely.</pd>
         </plentry>
         <plentry>
+          <pt><codeph>RAG_SERVICE_URL</codeph></pt>
+          <pd>Optional <codeph>rag-service</codeph> URL. When set, doc set uploads and deletes trigger a background reindex there; failures are logged and never returned to the client.</pd>
+        </plentry>
+        <plentry>
           <pt><codeph>CHROME_CACHE_TTL_MS</codeph></pt>
           <pd>How long <codeph>GET /api/chrome</codeph> serves <filepath>chrome.json</filepath> from an in-memory cache before re-reading from disk (default: <codeph>5000</codeph>). <codeph>PUT /api/chrome</codeph> invalidates the cache immediately on write.</pd>
         </plentry>

@@ -18,7 +18,7 @@
   <body>
     <section>
       <title>Service Overview</title>
-      <p>The <b>rag-service</b> operates as an optional background service on port <codeph>4002</codeph>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<codeph>#</codeph>, <codeph>##</codeph>), computes normalized TF-IDF vector embeddings, and exposes a high-speed semantic search API endpoint.</p>
+      <p>The <b>rag-service</b> operates as an optional background service on port <codeph>4002</codeph>. It converts DITA AST JSON topic files into clean Markdown chunks along section and heading boundaries (<codeph>#</codeph>, <codeph>##</codeph>), embeds each chunk with a locally hosted model (multilingual <codeph>bge-m3</codeph> by default, or an English-only model selected at image build time), and exposes a hybrid search endpoint that fuses embedding similarity with BM25 keyword ranking.</p>
     </section>
 
     <section>
@@ -83,6 +83,14 @@
         <plentry>
           <pt><codeph>DATA_DIR</codeph></pt>
           <pd>Directory path containing published documentation sets (default: <filepath>/app/data</filepath>).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>EMBED_MODEL</codeph></pt>
+          <pd>Embedding model name (default: <option>bge-m3</option>). Docker images fix this at build time with <codeph>--build-arg EMBED_MODEL=...</codeph>.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>CACHE_DIR</codeph></pt>
+          <pd>Directory where embeddings are persisted between restarts (default: <filepath>/app/cache</filepath> in Docker).</pd>
         </plentry>
       </parml>
     </section>

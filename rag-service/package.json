@@ -7,9 +7,11 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "prefetch-model": "node dist/prefetch.js",
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.3.0",
     "commander": "^13.1.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",

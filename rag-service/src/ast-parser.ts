@@ -5,9 +5,14 @@ export interface MarkdownChunk {
   title: string;
   shortdesc: string;
   sectionTitle: string;
+  anchor?: string;
   content: string;
   lang?: string;
 }
+
+const MAX_CHUNK_CHARS = 1800;
+const MIN_CHUNK_CHARS = 200;
+const CHUNK_OVERLAP_CHARS = 200;
 
 export class AstParser {
   public static astToMarkdown(node: unknown): string {
@@ -107,53 +112,87 @@ export class AstParser {
     shortdesc: string,
     lang?: string
   ): MarkdownChunk[] {
-    const lines = markdown.split("\n");
-    const chunks: MarkdownChunk[] = [];
+    const sections: { sectionTitle: string; text: string }[] = [];
+    let sectionTitle = title;
+    let lines: string[] = [];
 
-    let currentSectionTitle = title;
-    let currentLines: string[] = [];
-    let chunkIndex = 0;
-
-    const flush = () => {
-      const text = currentLines.join("\n").trim();
-      if (text.length > 0) {
-        chunks.push({
-          chunkId: `${docId}:${topicPath}:${chunkIndex++}`,
-          docId,
-          topicPath,
-          title,
-          shortdesc,
-          sectionTitle: currentSectionTitle,
-          content: text,
-          lang,
-        });
-      }
-      currentLines = [];
+    const closeSection = () => {
+      const text = lines.join("\n").trim();
+      if (text) sections.push({ sectionTitle, text });
+      lines = [];
     };
 
-    for (const line of lines) {
-      if (line.startsWith("# ") || line.startsWith("## ") || line.startsWith("### ")) {
-        flush();
-        currentSectionTitle = line.replace(/^#+\s*/, "").trim();
+    for (const line of markdown.split("\n")) {
+      if (/^#{1,3}\s/.test(line)) {
+        closeSection();
+        sectionTitle = line.replace(/^#+\s*/, "").trim();
       } else {
-        currentLines.push(line);
+        lines.push(line);
       }
     }
-    flush();
+    closeSection();
 
-    return chunks.length > 0
-      ? chunks
-      : [
-          {
-            chunkId: `${docId}:${topicPath}:0`,
-            docId,
-            topicPath,
-            title,
-            shortdesc,
-            sectionTitle: title,
-            content: markdown.trim(),
-            lang,
-          },
-        ];
+    const pieces: { sectionTitle: string; text: string }[] = [];
+    for (const section of sections) {
+      for (const text of this.splitOversized(section.text)) {
+        const prev = pieces[pieces.length - 1];
+        const combined = prev ? prev.text.length + section.sectionTitle.length + text.length + 4 : 0;
+        const tiny = text.length < MIN_CHUNK_CHARS || (prev && prev.text.length < MIN_CHUNK_CHARS);
+        if (prev && tiny && combined <= MAX_CHUNK_CHARS) {
+          prev.text += `\n\n${section.sectionTitle}\n${text}`;
+        } else {
+          pieces.push({ sectionTitle: section.sectionTitle, text });
+        }
+      }
+    }
+
+    if (pieces.length === 0) {
+      pieces.push({ sectionTitle: title, text: markdown.trim() });
+    }
+
+    return pieces.map((piece, i) => ({
+      chunkId: `${docId}:${topicPath}:${i}`,
+      docId,
+      topicPath,
+      title,
+      shortdesc,
+      sectionTitle: piece.sectionTitle,
+      anchor: this.slugify(piece.sectionTitle),
+      content: piece.text,
+      lang,
+    }));
+  }
+
+  private static slugify(text: string): string {
+    return text
+      .normalize("NFKC")
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  private static splitOversized(text: string): string[] {
+    if (text.length <= MAX_CHUNK_CHARS) return [text];
+
+    const paragraphs = text.split(/\n{2,}/).flatMap((para) => {
+      const parts: string[] = [];
+      for (let start = 0; start < para.length; start += MAX_CHUNK_CHARS) {
+        parts.push(para.slice(start, start + MAX_CHUNK_CHARS));
+      }
+      return parts;
+    });
+
+    const out: string[] = [];
+    let current = "";
+    for (const para of paragraphs) {
+      if (current && current.length + para.length + 2 > MAX_CHUNK_CHARS) {
+        out.push(current);
+        const tail = current.split(/\n{2,}/).pop() ?? "";
+        current = tail.length <= CHUNK_OVERLAP_CHARS ? tail : "";
+      }
+      current = current ? `${current}\n\n${para}` : para;
+    }
+    if (current.trim()) out.push(current);
+    return out;
   }
 }

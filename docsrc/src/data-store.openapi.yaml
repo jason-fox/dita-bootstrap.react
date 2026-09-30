@@ -10,24 +10,28 @@ info:
 
     **Search Index**: Built automatically on startup and after each doc set upload.
   version: 1.0.0
-  contact:
-    name: Jason Fox
 servers:
-  - url: http://localhost:4000
-    description: Local development (default)
-  - url: http://localhost:{port}
-    description: Custom port via PORT env var
+  - url: "{scheme}://{host}:{port}"
+    description: Your deployment; the service speaks plain HTTP, so use https only behind a TLS-terminating proxy
     variables:
+      scheme:
+        default: http
+        enum:
+          - http
+          - https
+      host:
+        default: your-host.example.com
+        description: Hostname or IP of the machine or proxy running the service
       port:
         default: "4000"
-        description: Server port (default 4000)
+        description: Port set by the PORT env var
 
 paths:
   /health:
     get:
       summary: Health check
       tags:
-        - System
+        - Data Store - System
       operationId: getHealth
       responses:
         "200":
@@ -57,7 +61,7 @@ paths:
     get:
       summary: List all document sets
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: listDocSets
       description: |
         Returns all discovered document sets (directories with `toc.json`).
@@ -76,7 +80,7 @@ paths:
     get:
       summary: List all document sets (legacy alias)
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: listBooks
       deprecated: true
       description: Backward compatibility alias for `/api/docs`
@@ -106,7 +110,7 @@ paths:
     head:
       summary: Check if document set exists
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: checkDocSetExists
       responses:
         "200":
@@ -117,7 +121,7 @@ paths:
     get:
       summary: Get document set metadata
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: getDocSet
       responses:
         "200":
@@ -136,7 +140,7 @@ paths:
     post:
       summary: Create a new document set
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: createDocSet
       description: |
         Uploads a zip archive containing AST-rendered DITA content.
@@ -198,7 +202,7 @@ paths:
     put:
       summary: Update an existing document set
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: updateDocSet
       description: |
         Replaces all content in an existing document set with a new zip archive.
@@ -255,7 +259,7 @@ paths:
     delete:
       summary: Delete a document set
       tags:
-        - Document Sets
+        - Data Store - Document Sets
       operationId: deleteDocSet
       description: Removes the entire document set directory and all its contents.
       security:
@@ -280,7 +284,7 @@ paths:
     get:
       summary: Get chrome (UI chrome) configuration
       tags:
-        - Configuration
+        - Data Store - Configuration
       operationId: getChrome
       description: |
         Retrieves the shared UI chrome configuration from `chrome.json`.
@@ -300,7 +304,7 @@ paths:
     post:
       summary: Update chrome configuration (POST)
       tags:
-        - Configuration
+        - Data Store - Configuration
       operationId: updateChromePost
       description: Replaces the entire `chrome.json` configuration. (Alias for PUT)
       security:
@@ -341,7 +345,7 @@ paths:
     put:
       summary: Update chrome configuration (PUT)
       tags:
-        - Configuration
+        - Data Store - Configuration
       operationId: updateChromePut
       description: Replaces the entire `chrome.json` configuration.
       security:
@@ -383,7 +387,7 @@ paths:
     get:
       summary: Serve topic JSON or static files
       tags:
-        - Content
+        - Data Store - Content
       operationId: getTopicContent
       description: |
         Serves AST-rendered topic JSON files and static assets from the data directory.
@@ -559,11 +563,11 @@ components:
           example: "Doc set 'missing' not found"
 
 tags:
-  - name: System
+  - name: Data Store - System
     description: Server health and diagnostics
-  - name: Document Sets
+  - name: Data Store - Document Sets
     description: Manage collections of AST-rendered DITA topics
-  - name: Configuration
+  - name: Data Store - Configuration
     description: Shared UI chrome configuration
-  - name: Content
+  - name: Data Store - Content
     description: Serve topic JSON and static files

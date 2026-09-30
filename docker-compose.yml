@@ -15,6 +15,8 @@ services:
       - DATA_DIR=/app/data
       # optional bearer token guarding POST/PUT/DELETE /api/docs/<id>; unset = auth disabled
       - AUTH_TOKEN=${AUTH_TOKEN:-}
+      # optional: reindex rag-service after doc set uploads and deletes
+      - RAG_SERVICE_URL=http://rag-service:4002
     volumes:
       - ./data-store/data:/app/data
     restart: unless-stopped
