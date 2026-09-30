@@ -1,14 +1,18 @@
 const path = require("node:path");
 
+const workspaceRoot = path.resolve(__dirname, "..");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  transpilePackages: ["@dita-bootstrap/ast-ui"],
   // don't let `next dev` overwrite this repo's own AGENTS.md/CLAUDE.md
   agentRules: false,
   // pin the workspace root: a stray ~/package-lock.json otherwise makes
   // Turbopack think the monorepo root is the home directory
+  outputFileTracingRoot: workspaceRoot,
   turbopack: {
-    root: path.resolve(__dirname),
+    root: workspaceRoot,
   },
   async redirects() {
     return [

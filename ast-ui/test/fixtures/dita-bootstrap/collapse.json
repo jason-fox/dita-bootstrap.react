@@ -1,0 +1,328 @@
+{
+  "meta": {
+    "title": "Collapse",
+    "lang": "en",
+    "shortdesc": "Toggle the visibility of content across your project with a few classes and Bootstrap’s JavaScript\n    plugin.",
+    "keywords": [
+      "Collapse",
+      "CSS outputclass",
+      "outputclass",
+      "bodydiv",
+      "xref",
+      "props",
+      "otherprops"
+    ],
+    "id": "collapse"
+  },
+  "content": [
+    [
+      "section",
+      [
+        "h2",
+        "How it works"
+      ],
+      [
+        "p",
+        "The collapse JavaScript plugin is used to show and hide content. Buttons or anchors are used as triggers that are mapped to specific elements you toggle. Collapsing an element will animate the height from its current value to 0. Given how CSS handles animations, you cannot use padding on a .collapse element. Instead, use the class as an independent wrapping element."
+      ]
+    ],
+    [
+      "section",
+      [
+        "h2",
+        "Example"
+      ],
+      [
+        "p",
+        "Below is a collapsed example that is displayed when the button is clicked. Add ",
+        [
+          "code",
+          {
+            "className": "keyword markupname xmlatt"
+          },
+          "@",
+          "props=\"collapse-toggle\""
+        ],
+        " to an ",
+        [
+          "code",
+          {
+            "className": "keyword markupname xmlelement"
+          },
+          "<",
+          "xref",
+          ">"
+        ],
+        " element to associate a button to a collapse"
+      ]
+    ],
+    [
+      "div",
+      {
+        "className": "p-3 border"
+      },
+      [
+        "p",
+        " ",
+        [
+          "ToggleButton",
+          {
+            "target": "collapse1",
+            "variant": "primary",
+            "className": "btn-primary"
+          },
+          "Toggle Collapse"
+        ],
+        " "
+      ],
+      [
+        "div",
+        {
+          "id": "collapse__collapse1",
+          "className": "collapse"
+        },
+        [
+          "Card",
+          {
+            "className": "w-50 card-body"
+          },
+          [
+            "CardBody",
+            [
+              "p",
+              "Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger."
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "TabContainer",
+      {
+        "defaultActiveKey": "tab-0"
+      },
+      [
+        "Nav",
+        {
+          "variant": "pills",
+          "className": "tabbed-dialog mt-3"
+        },
+        [
+          "NavItem",
+          [
+            "NavLink",
+            {
+              "eventKey": "tab-0"
+            },
+            [
+              "code",
+              {
+                "className": "keyword markupname xmlatt"
+              },
+              "@",
+              "outputclass"
+            ]
+          ]
+        ],
+        [
+          "NavItem",
+          [
+            "NavLink",
+            {
+              "eventKey": "tab-1"
+            },
+            "Specialization"
+          ]
+        ]
+      ],
+      [
+        "TabContent",
+        [
+          "TabPane",
+          {
+            "eventKey": "tab-0"
+          },
+          [
+            "pre",
+            {
+              "className": "alert alert-secondary"
+            },
+            [
+              "code",
+              "<p>\n  <xref outputclass=\"btn-primary\" props=\"collapse-toggle\" href=\"#collapse1\">\n    Toggle Collapse\n  </xref>\n</p>\n<bodydiv outputclass=\"collapse\" id=\"collapse1\">\n  <div outputclass=\"card card-body\">\n      <p>Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.</p>\n  </div>\n</bodydiv>"
+            ]
+          ]
+        ],
+        [
+          "TabPane",
+          {
+            "eventKey": "tab-1"
+          },
+          [
+            "pre",
+            {
+              "className": "alert alert-secondary"
+            },
+            [
+              "code",
+              "<p>\n  <button props=\"collapse-toggle\" href=\"#collapse1\">\n    Toggle Collapse\n  </button>\n</p>\n<collapse id=\"collapse1\">\n  <card outputclass=\"card-body\">\n      <p>Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.</p>\n  </card>\n</collapse>"
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      [
+        "h2",
+        "Horizontal"
+      ],
+      [
+        "p",
+        "The collapse plugin also supports horizontal collapsing. Add ",
+        [
+          "code",
+          {
+            "className": "keyword markupname xmlatt"
+          },
+          "@",
+          "outputclass=\"collapse-horizontal\""
+        ],
+        " to transition the width instead of height and set an ",
+        [
+          "code",
+          {
+            "className": "keyword markupname xmlatt"
+          },
+          "@",
+          "otherprops=\"style(width: ...)"
+        ],
+        " on the immediate child ",
+        [
+          "code",
+          {
+            "className": "keyword markupname xmlelement"
+          },
+          "<",
+          "div",
+          ">"
+        ],
+        " element."
+      ]
+    ],
+    [
+      "div",
+      {
+        "className": "p-3 border"
+      },
+      [
+        "p",
+        " ",
+        [
+          "ToggleButton",
+          {
+            "target": "collapse2",
+            "variant": "primary",
+            "className": "btn-primary"
+          },
+          "Toggle Width Collapse"
+        ],
+        " "
+      ],
+      [
+        "div",
+        {
+          "id": "collapse__collapse2",
+          "className": "collapse-horizontal collapse"
+        },
+        " ",
+        [
+          "div",
+          {
+            "className": "card card-body"
+          },
+          [
+            "p",
+            "Some placeholder content for the collapse component. This is some placeholder content for a horizontal collapse. It’s hidden by default and shown when triggered."
+          ]
+        ],
+        " "
+      ]
+    ],
+    [
+      "TabContainer",
+      {
+        "defaultActiveKey": "tab-0"
+      },
+      [
+        "Nav",
+        {
+          "variant": "pills",
+          "className": "tabbed-dialog mt-3"
+        },
+        [
+          "NavItem",
+          [
+            "NavLink",
+            {
+              "eventKey": "tab-0"
+            },
+            [
+              "code",
+              {
+                "className": "keyword markupname xmlatt"
+              },
+              "@",
+              "outputclass"
+            ]
+          ]
+        ],
+        [
+          "NavItem",
+          [
+            "NavLink",
+            {
+              "eventKey": "tab-1"
+            },
+            "Specialization"
+          ]
+        ]
+      ],
+      [
+        "TabContent",
+        [
+          "TabPane",
+          {
+            "eventKey": "tab-0"
+          },
+          [
+            "pre",
+            {
+              "className": "alert alert-secondary"
+            },
+            [
+              "code",
+              "<p>\n  <xref outputclass=\"btn-primary\" props=\"collapse-toggle\" href=\"#collapse2\">Toggle Width Collapse</xref>\n</p>\n<bodydiv outputclass=\"collapse-horizontal\" id=\"collapse2\" otherprops=\"style(min-height: 120px;)\">\n  <div outputclass=\"card card-body\" otherprops=\"style(width: 300px;)\">\n    <p>This is some placeholder content for a horizontal collapse. It’s hidden by default and shown when triggered.</p>\n  </div>\n</bodydiv>"
+            ]
+          ]
+        ],
+        [
+          "TabPane",
+          {
+            "eventKey": "tab-1"
+          },
+          [
+            "pre",
+            {
+              "className": "alert alert-secondary"
+            },
+            [
+              "code",
+              "<p>\n  <button props=\"collapse-toggle\" href=\"#collapse2\">Toggle Width Collapse</button>\n</p>\n<collapse outputclass=\"collapse-horizontal\" id=\"collapse2\" otherprops=\"style(min-height: 120px;)\">\n  <bodydiv outputclass=\"card card-body\" otherprops=\"style(width: 300px;)\">\n    <p>This is some placeholder content for a horizontal collapse. It’s hidden by default and shown when triggered.</p>\n  </bodydiv>\n</collapse>"
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+}

@@ -1,3 +1,9 @@
+# AST Data Store
+# Express API serving DITA AST JSON topic files and MiniSearch search indices.
+#
+# Build (from react-harness/):
+#   docker build -t ghcr.io/jason-fox/ast-data-store:latest data-store
+
 FROM node:22-alpine AS builder
 
 WORKDIR /app

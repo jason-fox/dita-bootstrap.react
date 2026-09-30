@@ -1,6 +1,6 @@
 import Card from "react-bootstrap/Card";
 import TopicIframe from "./TopicIframe";
-import type { TopicViewerPayload } from "@/types/mcp";
+import type { TopicViewerPayload } from "@dita-bootstrap/ast-ui";
 
 export default function TopicPreviewCard({
   payload,

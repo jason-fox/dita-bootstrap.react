@@ -9,9 +9,7 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import Header from "@/components/layout/Header";
 import Menubar from "@/components/layout/Menubar";
 import Toc from "@/components/toc/Toc";
-import AstRenderer from "@/components/ast/AstRenderer";
-import type { AstArray } from "@/types/ast";
-import type { ChromeConfig } from "@/types/docs";
+import { AstRenderer, type AstArray, type ChromeConfig } from "@dita-bootstrap/ast-ui";
 
 export default function Shell({
   tocEntries = [],

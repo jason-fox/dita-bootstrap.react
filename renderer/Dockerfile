@@ -1,12 +1,22 @@
+# AST Renderer
+# Next.js web portal rendering DITA AST topics into React Bootstrap components.
+# Builds the npm workspaces, so the build context is the repo root, not renderer/.
+#
+# Build (from react-harness/):
+#   docker build -f renderer/Dockerfile -t ghcr.io/jason-fox/ast-renderer:latest .
+
 FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY package.json package-lock.json ./
+COPY ast-ui/package.json ./ast-ui/
+COPY renderer/package.json ./renderer/
+RUN npm ci -w renderer
 
-COPY . .
-RUN npm run build
+COPY ast-ui ./ast-ui
+COPY renderer ./renderer
+RUN npm run build -w renderer
 
 FROM node:22-alpine AS runner
 
@@ -25,13 +35,13 @@ ENV PORT=3000
 
 WORKDIR /app
 
-# Copy standalone Next.js server bundle and static assets
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+# Standalone output is nested under the app directory because the tracing root is the workspace root
+COPY --from=builder /app/renderer/public ./renderer/public
+COPY --from=builder /app/renderer/.next/standalone ./
+COPY --from=builder /app/renderer/.next/static ./renderer/.next/static
 
 EXPOSE 3000
 
 USER node
 
-CMD ["node", "server.js"]
+CMD ["node", "renderer/server.js"]

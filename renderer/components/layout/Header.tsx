@@ -1,5 +1,4 @@
-import AstRenderer from "@/components/ast/AstRenderer";
-import type { AstArray } from "@/types/ast";
+import { AstRenderer, type AstArray } from "@dita-bootstrap/ast-ui";
 
 export default function Header({
   headerAst,

@@ -1,20 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["../renderer/*"],
-      "@modelcontextprotocol/ext-apps/server": ["./node_modules/@modelcontextprotocol/ext-apps/dist/src/server/index.d.ts"],
-      "@modelcontextprotocol/ext-apps/react": ["./node_modules/@modelcontextprotocol/ext-apps/dist/src/react/index.d.ts"]
-    }
+    "noEmit": true
   },
-  "include": ["src/**/*"]
+  "include": ["src", "test"]
 }

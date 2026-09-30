@@ -2,10 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Shell from "@/components/layout/Shell";
-import AstRenderer from "@/components/ast/AstRenderer";
-import { isPropsObject } from "@/lib/api";
-import type { AstNode } from "@/types/ast";
-import type { ChromeConfig, DocSetInfo } from "@/types/docs";
+import { AstRenderer, isPropsObject, type AstNode, type ChromeConfig, type DocSetInfo } from "@dita-bootstrap/ast-ui";
 
 function populateCardAst(node: AstNode, doc: DocSetInfo): AstNode {
   if (typeof node === "string") {

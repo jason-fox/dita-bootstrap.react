@@ -1,3 +1,9 @@
+# AST RAG Service
+# Optional standalone RAG vector search service for AST DITA documentation.
+#
+# Build (from react-harness/):
+#   docker build -t ghcr.io/jason-fox/ast-rag-service:latest rag-service
+
 FROM node:22-alpine AS builder
 
 WORKDIR /app

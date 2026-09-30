@@ -2,64 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type CSSProperties } from "react";
-import {
-  isPropsObject,
-  resolveHref,
-  resolveStyle,
-} from "@/lib/api";
-import type { AstArray } from "@/types/ast";
-import type { ChromeConfig } from "@/types/docs";
+import { useState } from "react";
+import { Chevron, parseTocEntry, resolveHref, stripHash, tocEntryContains, type AstArray, type ChromeConfig } from "@dita-bootstrap/ast-ui";
 
 function splitEntry(entry: AstArray, docId?: string) {
-  const [, maybeProps, ...rest] = entry;
-  const hasProps = isPropsObject(maybeProps);
-  const { title, href, icon, iconStyle } = (hasProps ? maybeProps : {}) as {
-    title?: string;
-    href?: string;
-    icon?: string;
-    iconStyle?: string;
-  };
-  const children = (
-    hasProps ? rest : [maybeProps, ...rest].filter((v) => v !== undefined)
-  ) as AstArray[];
-  return {
-    title,
-    href: href ? (resolveHref(href, docId) as string) : undefined,
-    icon,
-    iconStyle: resolveStyle(iconStyle) as CSSProperties | undefined,
-    children,
-  };
+  const { href, ...rest } = parseTocEntry(entry);
+  return { ...rest, href: href ? (resolveHref(href, docId) as string) : undefined };
 }
 
 function containsPath(entry: AstArray, pathname: string, docId?: string): boolean {
-  const { href, children } = splitEntry(entry, docId);
-  const cleanHref = href ? href.split("#")[0] : undefined;
-  const cleanPathname = pathname ? pathname.split("#")[0] : undefined;
-  const isMatch = Boolean(cleanHref && cleanHref === cleanPathname);
-  return isMatch || children.some((child) => containsPath(child, pathname, docId));
-}
-
-// Matches plugins/dita-bootstrap Customization/xsl/nav.xsl's collapsible-toc chevron;
-// collapsible-toc.css rotates it via .bd-links .btn[aria-expanded='true'] svg
-function Chevron() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-    >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M5 14l6-6-6-6"
-      />
-    </svg>
-  );
+  const target = stripHash(pathname);
+  return tocEntryContains(entry, ({ href }) => {
+    const resolved = stripHash(href ? (resolveHref(href, docId) as string) : undefined);
+    return Boolean(resolved && resolved === target);
+  });
 }
 
 function TocEntryItem({

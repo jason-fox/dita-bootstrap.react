@@ -59,8 +59,8 @@ services:
   renderer:
     image: ghcr.io/jason-fox/ast-renderer:${TAG:-latest}
     build:
-      context: ./renderer
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: renderer/Dockerfile
     container_name: renderer
     ports:
       - "3000:3000"

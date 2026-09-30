@@ -1,8 +1,13 @@
 **/node_modules
 **/.next
 **/dist
+**/test
+**/.env*
+**/.DS_Store
 .git
+.github
 .gitignore
 README.md
-.env*
-.DS_Store
+data-store/data/*
+!data-store/data/chrome.json
+docsrc

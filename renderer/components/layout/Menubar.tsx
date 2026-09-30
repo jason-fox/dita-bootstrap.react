@@ -4,13 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import Container from "react-bootstrap/Container";
-import {
-  isPropsObject,
-  resolveHref,
-  resolveStyle,
-} from "@/lib/api";
-import type { AstArray } from "@/types/ast";
-import type { ChromeConfig } from "@/types/docs";
+import { isPropsObject, resolveHref, resolveStyle, type AstArray, type ChromeConfig } from "@dita-bootstrap/ast-ui";
 
 function splitEntry(entry: AstArray, docId?: string) {
   const [, maybeProps, ...rest] = entry;

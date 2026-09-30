@@ -3,20 +3,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
 import { notFound, redirect } from "next/navigation";
-import AstRenderer from "@/components/ast/AstRenderer";
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import Scrollspy from "@/components/toc/Scrollspy";
+import { AstRenderer, Breadcrumbs, Scrollspy, isPropsObject, resolveHref, type AstArray } from "@dita-bootstrap/ast-ui";
+import { fetchChrome, fetchDocs, fetchPage, fetchToc, matchDocSet } from "@/lib/api";
 import Shell from "@/components/layout/Shell";
-import {
-  fetchChrome,
-  fetchDocs,
-  fetchPage,
-  fetchToc,
-  isPropsObject,
-  matchDocSet,
-  resolveHref,
-} from "@/lib/api";
-import type { AstArray } from "@/types/ast";
 
 function firstHref(entries: AstArray[]): string | undefined {
   for (const [, maybeProps, ...rest] of entries) {

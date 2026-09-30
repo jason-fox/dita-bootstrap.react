@@ -50,7 +50,7 @@ jobs:
             image_name: ast-renderer
             title: AST Renderer
             description: Next.js web portal rendering DITA AST topics into React Bootstrap components
-            context: ./renderer
+            context: .
             dockerfile: ./renderer/Dockerfile
           - name: mcp-client
             image_name: ast-mcp-client

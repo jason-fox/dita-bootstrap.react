@@ -47,7 +47,7 @@ interface SearchDoc {
   lang?: string;
 }
 
-// must match the MiniSearch.loadJSON() options in renderer/lib/search.ts -
+// must match the MiniSearch.loadJSON() options in ast-ui/src/lib/search.ts -
 // the serialized index only carries term data, not this config
 const SEARCH_INDEX_OPTIONS = {
   fields: ["title", "shortdesc", "keywords", "text"],

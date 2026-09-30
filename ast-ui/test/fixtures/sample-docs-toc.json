@@ -1,0 +1,250 @@
+{
+  "toc": [
+    [
+      "TocEntry",
+      {
+        "title": "DITA Bootstrap Harness"
+      },
+      [
+        "TocEntry",
+        {
+          "title": "Getting Started",
+          "href": "index.json"
+        }
+      ]
+    ],
+    [
+      "TocEntry",
+      {
+        "title": "Components"
+      },
+      [
+        "TocEntry",
+        {
+          "title": "Data Store",
+          "href": "data-store.json"
+        }
+      ],
+      [
+        "TocEntry",
+        {
+          "title": "Web Renderer & AI Chat Portal",
+          "href": "renderer.json"
+        }
+      ],
+      [
+        "TocEntry",
+        {
+          "title": "MCP Server",
+          "href": "mcp-server.json"
+        }
+      ],
+      [
+        "TocEntry",
+        {
+          "title": "RAG Vector Search Service",
+          "href": "rag-service.json"
+        }
+      ],
+      [
+        "TocEntry",
+        {
+          "title": "MCP Client (Standalone)",
+          "href": "mcp-client.json"
+        }
+      ]
+    ],
+    [
+      "TocEntry",
+      {
+        "title": "Document Publication"
+      },
+      [
+        "TocEntry",
+        {
+          "title": "Generating AST",
+          "href": "generating-ast.json"
+        }
+      ],
+      [
+        "TocEntry",
+        {
+          "title": "Generating Chrome",
+          "href": "generating-chrome.json"
+        }
+      ],
+      [
+        "TocEntry",
+        {
+          "title": "Search Bar & AI Chat Bot User Guide",
+          "href": "search-and-chatbot.json"
+        }
+      ]
+    ]
+  ],
+  "title": "DITA Bootstrap Harness & AST Documentation",
+  "navToc": "collapsible",
+  "scrollspyToc": "none",
+  "lang": "en",
+  "accessibility": {
+    "main": "Skip to main content",
+    "nav": "Skip to docs navigation"
+  },
+  "header": [
+    "Navbar",
+    {
+      "data-bs-theme": "dark",
+      "expand": "lg",
+      "sticky": "top",
+      "bg": "primary",
+      "variant": "dark"
+    },
+    [
+      "Container",
+      {
+        "fluid": "xxl",
+        "className": "px-4"
+      },
+      [
+        "NavbarToggle",
+        {
+          "aria-controls": "bdSidebar",
+          "aria-label": "Toggle docs navigation",
+          "className": "p-2 me-2"
+        },
+        [
+          "Icon",
+          {
+            "name": "list"
+          }
+        ]
+      ],
+      [
+        "NavbarBrand",
+        {
+          "className": "d-flex align-items-center fw-semibold",
+          "href": "/"
+        },
+        [
+          "Favicon"
+        ],
+        [
+          "span",
+          "DITA Bootstrap Harness & AST Documentation"
+        ]
+      ],
+      [
+        "NavbarToggle",
+        {
+          "aria-controls": "navbarContent",
+          "aria-label": "Toggle navigation"
+        }
+      ],
+      [
+        "NavbarCollapse",
+        {
+          "id": "navbarContent"
+        },
+        [
+          "Nav",
+          {
+            "className": "ms-auto align-items-lg-center"
+          },
+          [
+            "Form",
+            {
+              "className": "position-relative mx-lg-2 search-box",
+              "role": "search",
+              "data-bs-theme": "light"
+            },
+            [
+              "InputGroup",
+              [
+                "InputGroupText",
+                {
+                  "className": "bg-primary-subtle"
+                },
+                [
+                  "Icon",
+                  {
+                    "name": "search"
+                  }
+                ]
+              ],
+              [
+                "FormControl",
+                {
+                  "placeholder": "Search…",
+                  "aria-label": "Search",
+                  "dir": "auto",
+                  "type": "search",
+                  "value": ""
+                }
+              ]
+            ]
+          ],
+          [
+            "NavDropdown",
+            {
+              "id": "bd-theme",
+              "className": "nav-item",
+              "role": "theme-toggle",
+              "data-bs-theme": "light"
+            },
+            [
+              "NavDropdownItem",
+              {
+                "data-bs-theme-value": "light"
+              },
+              [
+                "Icon",
+                {
+                  "name": "brightness-high-fill",
+                  "className": "me-2"
+                }
+              ],
+              [
+                "span",
+                "Light"
+              ]
+            ],
+            [
+              "NavDropdownItem",
+              {
+                "data-bs-theme-value": "dark"
+              },
+              [
+                "Icon",
+                {
+                  "name": "moon-stars-fill",
+                  "className": "me-2"
+                }
+              ],
+              [
+                "span",
+                "Dark"
+              ]
+            ],
+            [
+              "NavDropdownItem",
+              {
+                "data-bs-theme-value": "auto"
+              },
+              [
+                "Icon",
+                {
+                  "name": "circle-half",
+                  "className": "me-2"
+                }
+              ],
+              [
+                "span",
+                "Auto"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+}

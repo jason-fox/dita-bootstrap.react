@@ -26,6 +26,7 @@ This repository provides an integrated suite of services to consume and interact
 - **`rag-service/`**: *(Optional)* Standalone RAG vector search service listening on port `4002`. Transforms AST topics into clean Markdown chunks along `#` and `##` section boundaries, computes SHA-256 content hashes for incremental sync, verifies active `toc.json` manifests to purge deleted topics, and provides a semantic vector search API endpoint (`/api/search`).
 - **`renderer/`**: Next.js + react-bootstrap web application. Presents a card grid library landing page, renders AST topics into real `react-bootstrap` components with collapsible TOC sidebars, and includes an integrated AI Assistant Chat (`/chat`).
 - **`mcp-server/`**: Model Context Protocol (MCP) Server exposing DITA OASIS metadata, clean Markdown text context (`get_topic_content`), search, and rich **MCP-UI** React component rendering (`render_topic_ui`) for AI interfaces. Transparently delegates search to `rag-service` when configured via `RAG_SERVICE_URL`, with automatic fallback to MiniSearch.
+- **`ast-ui/`**: `@dita-bootstrap/ast-ui`, the AST-to-`react-bootstrap` rendering shared by `renderer` and the `mcp-server` topic viewer (source-only npm workspace package).
 - **`mcp-client/`**: Standalone reference web chatbot client for the MCP Server.
 
 ## Install & Publishing
@@ -151,24 +152,24 @@ You can reference the following existing XML include files as functional example
 ### 1. Local Development Startup
 
 ```console
+# 0. Install renderer, mcp-server and the shared @dita-bootstrap/ast-ui package (npm workspaces, from react-harness/)
+npm install
+
 # 1. Start data-store (port 4000)
 cd data-store
 npm install
 npm run dev
+cd ..
 
 # 2. Start renderer (port 3000)
-cd ../renderer
-npm install
-npm run dev
+npm run dev -w renderer
 
 # 3. Start mcp-server (stdio or Streamable HTTP port 4001)
-cd ../mcp-server
-npm install
-npm run build
-npm start -- --transport stdio
+npm run build -w mcp-server
+npm start -w mcp-server -- --transport stdio
 
 # 4. Optional: Start rag-service (port 4002)
-cd ../rag-service
+cd rag-service
 npm install
 npm run dev
 ```
@@ -193,7 +194,7 @@ Add `mcp-server` to your AI assistant configuration (Claude Desktop, Cursor, Ant
     "dita-docs": {
       "command": "node",
       "args": [
-        "/path/to/react-harness/mcp-server/dist/mcp-server/src/index.js",
+        "/path/to/react-harness/mcp-server/dist/index.js",
         "--transport", "stdio",
         "--data-dir", "/path/to/react-harness/data-store/data"
       ]

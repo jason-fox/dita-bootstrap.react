@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import type { TopicViewerPayload } from "@/types/mcp";
+import type { TopicViewerPayload } from "@dita-bootstrap/ast-ui";
 
 export default function TopicIframe({
   payload,

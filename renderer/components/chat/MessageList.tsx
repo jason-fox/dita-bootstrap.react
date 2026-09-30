@@ -4,12 +4,10 @@ import { useEffect, useRef } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
-import AstRenderer from "@/components/ast/AstRenderer";
+import { AstRenderer, type AstArray, type TopicViewerPayload } from "@dita-bootstrap/ast-ui";
 import { renderMarkdown } from "@/lib/markdown";
-import type { AstArray } from "@/types/ast";
 import TopicPreviewCard from "./TopicPreviewCard";
 import type { ActiveModalTopic, ChatMessage } from "./types";
-import type { TopicViewerPayload } from "@/types/mcp";
 
 export default function MessageList({
   messages,

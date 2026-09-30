@@ -5,7 +5,7 @@ import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
 import Shell from "@/components/layout/Shell";
 import { useChat } from "@/hooks/useChat";
-import type { ChromeConfig } from "@/types/docs";
+import type { ChromeConfig } from "@dita-bootstrap/ast-ui";
 import ChatInput from "./ChatInput";
 import MessageList from "./MessageList";
 import TopicIframe from "./TopicIframe";

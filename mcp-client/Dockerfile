@@ -1,3 +1,9 @@
+# AST MCP Client
+# LLM-agnostic chatbot client for the DITA AST MCP Server.
+#
+# Build (from react-harness/):
+#   docker build -t ghcr.io/jason-fox/ast-mcp-client:latest mcp-client
+
 FROM node:22-alpine AS builder
 
 WORKDIR /app

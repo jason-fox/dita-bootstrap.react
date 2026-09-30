@@ -1,4 +1,5 @@
-import type { DocSetSummary, ToolExecution, TopicViewerPayload } from "@/types/mcp";
+import type { TopicViewerPayload } from "@dita-bootstrap/ast-ui";
+import type { DocSetSummary, ToolExecution } from "@/types/mcp";
 
 export interface ChatMessage {
   role: "user" | "assistant";

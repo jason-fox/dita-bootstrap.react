@@ -20,9 +20,9 @@ The Model Context Protocol (MCP) enables LLMs to interface directly with externa
 ## Install
 
 ```console
-cd mcp-server
+# from react-harness/ (npm workspace root)
 npm install
-npm run build
+npm run build -w mcp-server
 ```
 
 ## Usage

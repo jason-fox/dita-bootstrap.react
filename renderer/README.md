@@ -20,7 +20,7 @@ Next.js + react-bootstrap web application that fetches `[type, props?, ...childr
 ## Install
 
 ```console
-cd renderer
+# from react-harness/ (npm workspace root)
 npm install
 ```
 
@@ -29,14 +29,14 @@ npm install
 ### Development Mode
 
 ```console
-npm run dev
+npm run dev -w renderer
 ```
 
 ### Production Build & Startup
 
 ```console
-npm run build
-npm run start
+npm run build -w renderer
+npm run start -w renderer
 ```
 
 Requires `data-store` running (default `http://localhost:4000`).
