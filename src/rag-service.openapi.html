@@ -1,0 +1,245 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="copyright" content="(C) Copyright 2026"><meta name="generator" content="DITA-OT"><meta property="og:type" content="website"><meta property="og:url" content="https://dita-bootstrap.github.io/src/rag-service.openapi.html"><meta property="og:title" content="React Harness Documentation - RAG Service API"><meta property="og:description" content=""><meta property="og:image" content="https://dita-bootstrap.github.io/open-graph.svg"><meta name="twitter:title" content="React Harness Documentation - RAG Service API"><meta name="twitter:description" content=""><meta property="twitter:url" content="https://dita-bootstrap.github.io/src/rag-service.openapi.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://dita-bootstrap.github.io/open-graph.svg"><title>RAG Service API</title><script src="../js/lunr-client.js"></script><script src="https://unpkg.com/lunr/lunr.js"></script><link rel="shortcut icon" href="../favicon/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="../css/commonltr.css">
+<link rel="stylesheet" type="text/css" href="../css/common-extended.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous"></head><body class="d-flex flex-column min-vh-100" id="rag-service-api"><div class="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary"><div class="container-xl"><a class="d-inline-flex m-1 btn btn-outline-primary btn-sm" href="#ariaid-title1">Skip to main content</a><a href="#bs-sidebar-nav" class="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm">Skip to docs navigation</a></div></div><header role="banner" class="sticky-top"><nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Modify -xxl to change container size -->
+  <div class="container-xxl">
+    <!-- This shows the menu on mobile -->
+    <div class="d-none d-sm-block d-md-none">
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdSidebar" aria-controls="bdSidebar" aria-label="Toggle docs navigation">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <a class="navbar-brand" href="https://dita-bootstrap.github.io/dita-bootstrap.react">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
+      <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
+      <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
+    </svg>
+      DITA Bootstrap React
+    </a>
+    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-three-dots"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item d-flex align-items-center">
+          <span class="nav-link pe-2">
+            <i class="bi bi-search"></i>
+          </span>
+          <form class="search-box position-relative me-auto">
+            <input type="search" class="form-control" placeholder="Search…" aria-label="Search for…" dir="auto">
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav></header><div class="bs-container container-xxl bd-gutter mt-3 my-md-4" id="content"><div class="overflow-y-auto bs-sidebar"><div class="offcanvas-lg offcanvas-start" tabindex="-1" id="bdSidebar" aria-labelledby="bdSidebarOffcanvasLabel" aria-modal="true" role="dialog"><div class="offcanvas-header border-bottom"><h5 class="offcanvas-title" id="bdSidebarOffcanvasLabel">React Harness Documentation</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdSidebar"></button></div><div class="offcanvas-body flex-column h-100"><nav class="d-flex flex-align-start flex-column h-100 overflow-y-auto" role="navigation" id="bs-sidebar-nav"><div class="overflow-y-auto"><div class="flex-column bd-links"><ul class="list-unstyled mb-0 py-3 pt-md-1"><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d16741e15"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d16741e15">Introduction</span></div><div id="menu-collapse-d16741e15" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../index.html">DITA Harness User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d16741e26"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d16741e26">Components</span></div><div id="menu-collapse-d16741e26" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../mcp-server.html">MCP Server Service (mcp-server)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../mcp-client.html">Standalone Reference MCP Web Client (mcp-client)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../data-store.html">Data Store Service (data-store)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../rag-service.html">RAG Vector Search Service (rag-service)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../renderer.html">Web Renderer &amp; AI Chat Portal Service (renderer)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../search-and-chatbot.html">Search Bar &amp; AI Chat Bot User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d16741e87"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d16741e87">Rendering</span></div><div id="menu-collapse-d16741e87" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../generating-ast.html">Generating AST</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../generating-chrome.html">Generating Chrome</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0 active" data-bs-target="#menu-collapse-d16741e114" aria-expanded="true" aria-current="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2 active" data-bs-target="#menu-collapse-d16741e114" aria-expanded="true" aria-current="true">API Specifications</span></div><div id="menu-collapse-d16741e114" class="ps-2 collapse show"><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../src/data-store.openapi.html">Data Store API</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../src/mcp-server.openapi.html">MCP Server API</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1  active" href="../src/rag-service.openapi.html">RAG Service API</a></div></li></ul></div></li></ul></div></div></nav></div></div></div><main role="main" class="bs-main me-3"><article role="article" class="bs-content" aria-labelledby="ariaid-title1">
+<h1 class="title" id="ariaid-title1">RAG Service API</h1>
+<div class="body">
+
+</div>
+<article class="topic nested1" aria-labelledby="ariaid-title2" id="overview">
+<h2 class="title" id="ariaid-title2">Overview</h2>
+<div class="body">
+<p class="p">Optional hybrid search service for AST-rendered DITA content. Chunks each topic along
+heading boundaries, embeds the chunks with a local model chosen at image build time
+(<code class="ph codeph">EMBED_MODEL</code>), and ranks results by fusing embedding similarity with BM25.</p>
+<p class="p"><code class="ph codeph">mcp-server</code> delegates <code class="ph codeph">search_documentation</code> to this service when <code class="ph codeph">RAG_SERVICE_URL</code> is set,
+and falls back to MiniSearch on any non-OK or empty response.</p>
+<p class="p"><strong class="ph b">Startup</strong>: the service accepts connections immediately, but <code class="ph codeph">POST /api/search</code> returns
+<code class="ph codeph">503</code> until the first indexing pass completes.</p>
+<p class="p"><strong class="ph b">Index freshness</strong>: <code class="ph codeph">data-store</code> calls <code class="ph codeph">POST /api/reindex</code> after doc set uploads and
+deletes when its own <code class="ph codeph">RAG_SERVICE_URL</code> is set. Reindexing is incremental (SHA-256 per topic).</p>
+<section class="section" id="overview__version-information"><h3 class="title h5">Version information</h3>
+
+<p class="p"><em class="ph i">Version</em>: 1.0.0</p>
+</section>
+<section class="section" id="overview__uri-scheme"><h3 class="title h5">URI scheme</h3>
+
+<p class="p"><em class="ph i">Host</em>: {scheme}://{host}:{port} </p>
+</section>
+</div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title3" id="rag-service-system">
+<h2 class="title" id="ariaid-title3">RAG Service - System</h2>
+<div class="body">
+<p class="p">RAG service health and readiness</p>
+</div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-get" id="getraghealth"><h2 class="accordion-header" id="heading_getraghealth"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_getraghealth" aria-controls="collapse_getraghealth"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">GET</span>/health</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">RAG service health check</span></button></h2><div class="accordion-collapse collapse" id="collapse_getraghealth" aria-labelledby="heading_getraghealth"><div class="accordion-body px-4"><section class="section" id="getraghealth__responses"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getraghealth__responses__entry__1">HTTP Code</th><th class="entry" id="getraghealth__responses__entry__2">Description</th><th class="entry" id="getraghealth__responses__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="getraghealth__responses__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="getraghealth__responses__entry__2">Server is running</td>
+<td class="entry" headers="getraghealth__responses__entry__3">object</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="getraghealth__produces"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section></div></div></div></div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title5" id="rag-service-search">
+<h2 class="title" id="ariaid-title5">RAG Service - Search</h2>
+<div class="body">
+<p class="p">Hybrid embedding and keyword search over topic chunks</p>
+</div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-post" id="ragsearch"><h2 class="accordion-header" id="heading_ragsearch"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_ragsearch" aria-controls="collapse_ragsearch"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">POST</span>/api/search</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">Hybrid semantic and keyword search</span></button></h2><div class="accordion-collapse collapse" id="collapse_ragsearch" aria-labelledby="heading_ragsearch"><div class="accordion-body px-4"><p class="p">Runs an embedding search and a BM25 keyword search over all chunks, merges the two
+rankings with reciprocal rank fusion, and returns the best chunk per topic.</p><section class="section" id="ragsearch__parameters"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="ragsearch__parameters__entry__1">Type</th><th class="entry" id="ragsearch__parameters__entry__2">Name</th><th class="entry" id="ragsearch__parameters__entry__3">Description</th><th class="entry" id="ragsearch__parameters__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="ragsearch__parameters__entry__1">Body</td>
+<td class="entry" headers="ragsearch__parameters__entry__2"><p class="lines"><strong class="ph b">body</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="ragsearch__parameters__entry__3"></td>
+<td class="entry" headers="ragsearch__parameters__entry__4">object</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="ragsearch__responses-1"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="ragsearch__responses-1__entry__1">HTTP Code</th><th class="entry" id="ragsearch__responses-1__entry__2">Description</th><th class="entry" id="ragsearch__responses-1__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="ragsearch__responses-1__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="ragsearch__responses-1__entry__2">Ranked topic hits, best first. Empty when nothing matches.</td>
+<td class="entry" headers="ragsearch__responses-1__entry__3">Array of <a class="xref" href="#ragsearchhit">RagSearchHit</a></td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearch__responses-1__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="ragsearch__responses-1__entry__2">Request body failed validation</td>
+<td class="entry" headers="ragsearch__responses-1__entry__3"><a class="xref" href="#ragerror">RagError</a></td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearch__responses-1__entry__1"><strong class="ph b">500</strong></td>
+<td class="entry" headers="ragsearch__responses-1__entry__2">Embedding or search failure</td>
+<td class="entry" headers="ragsearch__responses-1__entry__3"><a class="xref" href="#ragerror">RagError</a></td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearch__responses-1__entry__1"><strong class="ph b">503</strong></td>
+<td class="entry" headers="ragsearch__responses-1__entry__2">Initial index is still building</td>
+<td class="entry" headers="ragsearch__responses-1__entry__3"><a class="xref" href="#ragerror">RagError</a></td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="ragsearch__produces-1"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section></div></div></div></div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title7" id="rag-service-indexing">
+<h2 class="title" id="ariaid-title7">RAG Service - Indexing</h2>
+<div class="body">
+<p class="p">Keep the RAG index in step with the data store</p>
+</div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-post" id="ragreindex"><h2 class="accordion-header" id="heading_ragreindex"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_ragreindex" aria-controls="collapse_ragreindex"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">POST</span>/api/reindex</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">Reindex changed topics</span></button></h2><div class="accordion-collapse collapse" id="collapse_ragreindex" aria-labelledby="heading_ragreindex"><div class="accordion-body px-4"><p class="p">Scans the data directory, re-embeds topics whose content hash changed, and purges topics
+that are no longer listed in their doc set's <code class="ph codeph">toc.json</code>. Calls are serialised, and the
+response is sent when the pass finishes, which can take minutes for large uploads.</p><section class="section" id="ragreindex__responses-2"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="ragreindex__responses-2__entry__1">HTTP Code</th><th class="entry" id="ragreindex__responses-2__entry__2">Description</th><th class="entry" id="ragreindex__responses-2__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="ragreindex__responses-2__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="ragreindex__responses-2__entry__2">Reindex complete</td>
+<td class="entry" headers="ragreindex__responses-2__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="ragreindex__responses-2__entry__1"><strong class="ph b">500</strong></td>
+<td class="entry" headers="ragreindex__responses-2__entry__2">Reindex failed</td>
+<td class="entry" headers="ragreindex__responses-2__entry__3"><a class="xref" href="#ragerror">RagError</a></td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="ragreindex__produces-2"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+</ul>
+</section></div></div></div></div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title9" id="definitions">
+<h2 class="title" id="ariaid-title9">Definitions</h2>
+<div class="body"></div>
+<div class="accordion mb-2"><div class="topic accordion-item definition" id="ragsearchhit"><h2 class="accordion-header" id="heading_ragsearchhit"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_ragsearchhit" aria-controls="collapse_ragsearchhit">RagSearchHit</button></h2><div class="accordion-collapse collapse" id="collapse_ragsearchhit" aria-labelledby="heading_ragsearchhit"><div class="accordion-body px-4"><div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="ragsearchhit__entry__1">Name</th><th class="entry" id="ragsearchhit__entry__2">Description</th><th class="entry" id="ragsearchhit__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">id</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"><p class="lines">Doc set ID and topic path, or the bare topic path for the default set<br><strong class="ph b">Example</strong>: <code class="ph codeph">dita-ot-docs/topics/plugins-removing</code></p></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">docId</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"><p class="lines"><br><strong class="ph b">Example</strong>: <code class="ph codeph">dita-ot-docs</code></p></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">topicPath</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"><p class="lines"><br><strong class="ph b">Example</strong>: <code class="ph codeph">topics/plugins-removing</code></p></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">title</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">shortdesc</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">lang</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"><p class="lines"><br><strong class="ph b">Example</strong>: <code class="ph codeph">en</code></p></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">sectionTitle</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2">Heading of the best matching chunk; omitted when it equals the topic title</td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">anchor</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"><p class="lines">Slug of <code class="ph codeph">sectionTitle</code><br><strong class="ph b">Example</strong>: <code class="ph codeph">removing-plug-ins</code></p></td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">snippet</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2">First 250 characters of the best matching chunk</td>
+<td class="entry" headers="ragsearchhit__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="ragsearchhit__entry__1"><p class="lines"><strong class="ph b">score</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragsearchhit__entry__2"><p class="lines">Fused relevance from 0 to 10, comparable only within one response<br><strong class="ph b">Example</strong>: <code class="ph codeph">9.3</code></p></td>
+<td class="entry" headers="ragsearchhit__entry__3">number</td>
+</tr>
+</tbody></table></div></div></div></div></div>
+<div class="accordion mb-2"><div class="topic accordion-item definition" id="ragerror"><h2 class="accordion-header" id="heading_ragerror"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_ragerror" aria-controls="collapse_ragerror">RagError</button></h2><div class="accordion-collapse collapse" id="collapse_ragerror" aria-labelledby="heading_ragerror"><div class="accordion-body px-4"><div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="ragerror__entry__1">Name</th><th class="entry" id="ragerror__entry__2">Description</th><th class="entry" id="ragerror__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="ragerror__entry__1"><p class="lines"><strong class="ph b">error</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="ragerror__entry__2">Message, or the field-level validation tree for <code class="ph codeph">400</code></td>
+<td class="entry" headers="ragerror__entry__3">object</td>
+</tr>
+</tbody></table></div></div></div></div></div>
+</article>
+</article></main></div><script language="javascript" src="../js/popovers.js"></script><script language="javascript" src="../js/dark-mode-toggler.js"></script><footer role="contentinfo" class="mt-auto border-top bg-primary-subtle"><!-- Footer --><div class="container">
+    <div class="row">
+      <div class="col">
+        <!-- Social Media -->
+        <p class="text-center p-3">
+          <!-- Linkedin -->
+          <a class="btn btn-primary btn-floating m-1 text-white" style="background-color: #0082ca" href="https://www.linkedin.com/in/jason-fox-8a79563/" role="button"><i class="bi bi-linkedin"></i></a>
+          <!-- Github -->
+          <a class="btn btn-primary btn-floating m-1 text-white" style="background-color: #333333" href="https://github.com/jason-fox/" role="button"><i class="bi bi-github"></i></a>
+        </p>
+      </div>
+      <div>
+        <!-- Copyright -->
+        <p class="text-center text-muted p-3">
+          <small>
+            © 2026 <b>Jason Fox</b>
+          </small>
+        </p>
+      </div>
+    </div>
+  </div><!-- Footer --></footer></body></html>

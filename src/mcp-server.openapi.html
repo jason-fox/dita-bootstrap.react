@@ -1,0 +1,269 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="copyright" content="(C) Copyright 2026"><meta name="generator" content="DITA-OT"><meta property="og:type" content="website"><meta property="og:url" content="https://dita-bootstrap.github.io/src/mcp-server.openapi.html"><meta property="og:title" content="React Harness Documentation - MCP Server API"><meta property="og:description" content=""><meta property="og:image" content="https://dita-bootstrap.github.io/open-graph.svg"><meta name="twitter:title" content="React Harness Documentation - MCP Server API"><meta name="twitter:description" content=""><meta property="twitter:url" content="https://dita-bootstrap.github.io/src/mcp-server.openapi.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://dita-bootstrap.github.io/open-graph.svg"><title>MCP Server API</title><script src="../js/lunr-client.js"></script><script src="https://unpkg.com/lunr/lunr.js"></script><link rel="shortcut icon" href="../favicon/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="../css/commonltr.css">
+<link rel="stylesheet" type="text/css" href="../css/common-extended.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous"></head><body class="d-flex flex-column min-vh-100" id="mcp-server-api"><div class="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary"><div class="container-xl"><a class="d-inline-flex m-1 btn btn-outline-primary btn-sm" href="#ariaid-title1">Skip to main content</a><a href="#bs-sidebar-nav" class="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm">Skip to docs navigation</a></div></div><header role="banner" class="sticky-top"><nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Modify -xxl to change container size -->
+  <div class="container-xxl">
+    <!-- This shows the menu on mobile -->
+    <div class="d-none d-sm-block d-md-none">
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdSidebar" aria-controls="bdSidebar" aria-label="Toggle docs navigation">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <a class="navbar-brand" href="https://dita-bootstrap.github.io/dita-bootstrap.react">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
+      <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
+      <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
+    </svg>
+      DITA Bootstrap React
+    </a>
+    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-three-dots"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item d-flex align-items-center">
+          <span class="nav-link pe-2">
+            <i class="bi bi-search"></i>
+          </span>
+          <form class="search-box position-relative me-auto">
+            <input type="search" class="form-control" placeholder="Search…" aria-label="Search for…" dir="auto">
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav></header><div class="bs-container container-xxl bd-gutter mt-3 my-md-4" id="content"><div class="overflow-y-auto bs-sidebar"><div class="offcanvas-lg offcanvas-start" tabindex="-1" id="bdSidebar" aria-labelledby="bdSidebarOffcanvasLabel" aria-modal="true" role="dialog"><div class="offcanvas-header border-bottom"><h5 class="offcanvas-title" id="bdSidebarOffcanvasLabel">React Harness Documentation</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdSidebar"></button></div><div class="offcanvas-body flex-column h-100"><nav class="d-flex flex-align-start flex-column h-100 overflow-y-auto" role="navigation" id="bs-sidebar-nav"><div class="overflow-y-auto"><div class="flex-column bd-links"><ul class="list-unstyled mb-0 py-3 pt-md-1"><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d21095e15"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d21095e15">Introduction</span></div><div id="menu-collapse-d21095e15" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../index.html">DITA Harness User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d21095e26"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d21095e26">Components</span></div><div id="menu-collapse-d21095e26" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../mcp-server.html">MCP Server Service (mcp-server)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../mcp-client.html">Standalone Reference MCP Web Client (mcp-client)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../data-store.html">Data Store Service (data-store)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../rag-service.html">RAG Vector Search Service (rag-service)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../renderer.html">Web Renderer &amp; AI Chat Portal Service (renderer)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../search-and-chatbot.html">Search Bar &amp; AI Chat Bot User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d21095e87"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d21095e87">Rendering</span></div><div id="menu-collapse-d21095e87" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../generating-ast.html">Generating AST</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../generating-chrome.html">Generating Chrome</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0 active" data-bs-target="#menu-collapse-d21095e114" aria-expanded="true" aria-current="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2 active" data-bs-target="#menu-collapse-d21095e114" aria-expanded="true" aria-current="true">API Specifications</span></div><div id="menu-collapse-d21095e114" class="ps-2 collapse show"><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../src/data-store.openapi.html">Data Store API</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1  active" href="../src/mcp-server.openapi.html">MCP Server API</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="../src/rag-service.openapi.html">RAG Service API</a></div></li></ul></div></li></ul></div></div></nav></div></div></div><main role="main" class="bs-main me-3"><article role="article" class="bs-content" aria-labelledby="ariaid-title1">
+<h1 class="title" id="ariaid-title1">MCP Server API</h1>
+<div class="body">
+
+</div>
+<article class="topic nested1" aria-labelledby="ariaid-title2" id="overview">
+<h2 class="title" id="ariaid-title2">Overview</h2>
+<div class="body">
+<p class="p">Model Context Protocol server for AST-rendered DITA documentation, exposed over the
+Streamable HTTP transport (<code class="ph codeph">--transport http</code>). The stdio transport has no HTTP surface.</p>
+<p class="p">All MCP traffic is JSON-RPC 2.0 on a single endpoint, <code class="ph codeph">/mcp</code>. A client opens a session with an
+<code class="ph codeph">initialize</code> request (no session header); the response carries an <code class="ph codeph">Mcp-Session-Id</code> header that
+must accompany every later request. Idle sessions are reaped after 30 minutes.</p>
+<p class="p"><strong class="ph b">Tools</strong></p>
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead">
+<tr><th class="entry" id="overview__entry__1">Tool</th><th class="entry" id="overview__entry__2">Arguments</th><th class="entry" id="overview__entry__3">Purpose</th></tr>
+</thead><tbody class="tbody">
+<tr><td class="entry" headers="overview__entry__1"><code class="ph codeph">list_documentation_sets</code></td><td class="entry" headers="overview__entry__2">none</td><td class="entry" headers="overview__entry__3">List doc sets with titles, descriptions and topic counts</td></tr>
+<tr><td class="entry" headers="overview__entry__1"><code class="ph codeph">get_toc</code></td><td class="entry" headers="overview__entry__2"><code class="ph codeph">docId</code></td><td class="entry" headers="overview__entry__3">Hierarchical table of contents for a doc set</td></tr>
+<tr><td class="entry" headers="overview__entry__1"><code class="ph codeph">search_documentation</code></td><td class="entry" headers="overview__entry__2"><code class="ph codeph">query</code>, <code class="ph codeph">docId?</code>, <code class="ph codeph">lang?</code></td><td class="entry" headers="overview__entry__3">Ranked topic matches; delegates to the RAG service when <code class="ph codeph">RAG_SERVICE_URL</code> is set, otherwise MiniSearch</td></tr>
+<tr><td class="entry" headers="overview__entry__1"><code class="ph codeph">get_topic_content</code></td><td class="entry" headers="overview__entry__2"><code class="ph codeph">docId</code>, <code class="ph codeph">topicPath</code></td><td class="entry" headers="overview__entry__3">Full topic as Markdown</td></tr>
+<tr><td class="entry" headers="overview__entry__1"><code class="ph codeph">render_topic_ui</code></td><td class="entry" headers="overview__entry__2"><code class="ph codeph">docId</code>, <code class="ph codeph">topicPath</code>, <code class="ph codeph">theme?</code></td><td class="entry" headers="overview__entry__3">Interactive MCP-UI rendering of a topic</td></tr>
+</tbody></table></div>
+<p class="p"><strong class="ph b">Resources</strong>: <code class="ph codeph">docs://library</code> (JSON catalog), <code class="ph codeph">docs://summary</code> (plain-text summary) and
+<code class="ph codeph">ui://dita-docs/topic-viewer.html</code> (the viewer app shell).</p>
+<section class="section" id="overview__version-information"><h3 class="title h5">Version information</h3>
+
+<p class="p"><em class="ph i">Version</em>: 1.0.0</p>
+</section>
+<section class="section" id="overview__uri-scheme"><h3 class="title h5">URI scheme</h3>
+
+<p class="p"><em class="ph i">Host</em>: {scheme}://{host}:{port} </p>
+</section>
+</div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title3" id="mcp-server-transport">
+<h2 class="title" id="ariaid-title3">MCP Server - Transport</h2>
+<div class="body">
+<p class="p">Streamable HTTP transport carrying MCP JSON-RPC traffic</p>
+</div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-get" id="mcpstream"><h2 class="accordion-header" id="heading_mcpstream"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_mcpstream" aria-controls="collapse_mcpstream"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">GET</span>/mcp</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">Open the server-to-client event stream</span></button></h2><div class="accordion-collapse collapse" id="collapse_mcpstream" aria-labelledby="heading_mcpstream"><div class="accordion-body px-4"><section class="section" id="mcpstream__parameters"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="mcpstream__parameters__entry__1">Type</th><th class="entry" id="mcpstream__parameters__entry__2">Name</th><th class="entry" id="mcpstream__parameters__entry__3">Description</th><th class="entry" id="mcpstream__parameters__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="mcpstream__parameters__entry__1">Header</td>
+<td class="entry" headers="mcpstream__parameters__entry__2"><p class="lines"><strong class="ph b">Mcp-Session-Id</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="mcpstream__parameters__entry__3"></td>
+<td class="entry" headers="mcpstream__parameters__entry__4">string (uuid)</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="mcpstream__responses"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="mcpstream__responses__entry__1">HTTP Code</th><th class="entry" id="mcpstream__responses__entry__2">Description</th><th class="entry" id="mcpstream__responses__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="mcpstream__responses__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="mcpstream__responses__entry__2">Server-sent event stream for the session</td>
+<td class="entry" headers="mcpstream__responses__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="mcpstream__responses__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="mcpstream__responses__entry__2">Invalid or missing session ID</td>
+<td class="entry" headers="mcpstream__responses__entry__3">string</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="mcpstream__produces"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">text/event-stream</code></li>
+<li class="li"><code class="ph codeph">text/plain</code></li>
+</ul>
+</section></div></div></div></div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-post" id="mcppost"><h2 class="accordion-header" id="heading_mcppost"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_mcppost" aria-controls="collapse_mcppost"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">POST</span>/mcp</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">Send an MCP JSON-RPC message</span></button></h2><div class="accordion-collapse collapse" id="collapse_mcppost" aria-labelledby="heading_mcppost"><div class="accordion-body px-4"><p class="p">Send <code class="ph codeph">initialize</code> without a session header to start a session, then include <code class="ph codeph">Mcp-Session-Id</code>
+on every request (<code class="ph codeph">tools/list</code>, <code class="ph codeph">tools/call</code>, <code class="ph codeph">resources/read</code>, ...). Depending on the
+request, the reply is a single JSON body or a <code class="ph codeph">text/event-stream</code>.</p><section class="section" id="mcppost__parameters-1"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="mcppost__parameters-1__entry__1">Type</th><th class="entry" id="mcppost__parameters-1__entry__2">Name</th><th class="entry" id="mcppost__parameters-1__entry__3">Description</th><th class="entry" id="mcppost__parameters-1__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="mcppost__parameters-1__entry__1">Header</td>
+<td class="entry" headers="mcppost__parameters-1__entry__2"><p class="lines"><strong class="ph b">Mcp-Session-Id</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="mcppost__parameters-1__entry__3">Omit only on the <code class="ph codeph">initialize</code> request</td>
+<td class="entry" headers="mcppost__parameters-1__entry__4">string (uuid)</td>
+</tr>
+<tr>
+<td class="entry" headers="mcppost__parameters-1__entry__1">Body</td>
+<td class="entry" headers="mcppost__parameters-1__entry__2"><p class="lines"><strong class="ph b">body</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="mcppost__parameters-1__entry__3"></td>
+<td class="entry" headers="mcppost__parameters-1__entry__4"><a class="xref" href="#jsonrpcrequest">JsonRpcRequest</a></td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="mcppost__responses-1"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="mcppost__responses-1__entry__1">HTTP Code</th><th class="entry" id="mcppost__responses-1__entry__2">Description</th><th class="entry" id="mcppost__responses-1__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="mcppost__responses-1__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="mcppost__responses-1__entry__2"><p class="lines">JSON-RPC response, as JSON or a server-sent event stream<br><strong class="ph b">Headers</strong>: <code class="ph codeph">Mcp-Session-Id</code> (string)</p></td>
+<td class="entry" headers="mcppost__responses-1__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="mcppost__responses-1__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="mcppost__responses-1__entry__2">No valid session ID, and the request was not <code class="ph codeph">initialize</code></td>
+<td class="entry" headers="mcppost__responses-1__entry__3"><a class="xref" href="#jsonrpcerror">JsonRpcError</a></td>
+</tr>
+<tr>
+<td class="entry" headers="mcppost__responses-1__entry__1"><strong class="ph b">500</strong></td>
+<td class="entry" headers="mcppost__responses-1__entry__2">Internal server error</td>
+<td class="entry" headers="mcppost__responses-1__entry__3"><a class="xref" href="#jsonrpcerror">JsonRpcError</a></td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="mcppost__produces-1"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">application/json</code></li>
+<li class="li"><code class="ph codeph">text/event-stream</code></li>
+</ul>
+</section></div></div></div></div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-delete" id="mcpterminate"><h2 class="accordion-header" id="heading_mcpterminate"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_mcpterminate" aria-controls="collapse_mcpterminate"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">DELETE</span>/mcp</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">Terminate an MCP session</span></button></h2><div class="accordion-collapse collapse" id="collapse_mcpterminate" aria-labelledby="heading_mcpterminate"><div class="accordion-body px-4"><section class="section" id="mcpterminate__parameters-2"><h4 class="title h4">Parameters</h4>
+
+<div><table class="table"><colgroup><col><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="mcpterminate__parameters-2__entry__1">Type</th><th class="entry" id="mcpterminate__parameters-2__entry__2">Name</th><th class="entry" id="mcpterminate__parameters-2__entry__3">Description</th><th class="entry" id="mcpterminate__parameters-2__entry__4">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="mcpterminate__parameters-2__entry__1">Header</td>
+<td class="entry" headers="mcpterminate__parameters-2__entry__2"><p class="lines"><strong class="ph b">Mcp-Session-Id</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="mcpterminate__parameters-2__entry__3"></td>
+<td class="entry" headers="mcpterminate__parameters-2__entry__4">string (uuid)</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="mcpterminate__responses-2"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="mcpterminate__responses-2__entry__1">HTTP Code</th><th class="entry" id="mcpterminate__responses-2__entry__2">Description</th><th class="entry" id="mcpterminate__responses-2__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="mcpterminate__responses-2__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="mcpterminate__responses-2__entry__2">Session closed</td>
+<td class="entry" headers="mcpterminate__responses-2__entry__3">No Content</td>
+</tr>
+<tr>
+<td class="entry" headers="mcpterminate__responses-2__entry__1"><strong class="ph b">400</strong></td>
+<td class="entry" headers="mcpterminate__responses-2__entry__2">Invalid or missing session ID</td>
+<td class="entry" headers="mcpterminate__responses-2__entry__3">string</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="mcpterminate__produces-2"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">text/plain</code></li>
+</ul>
+</section></div></div></div></div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title7" id="mcp-server-viewer">
+<h2 class="title" id="ariaid-title7">MCP Server - Viewer</h2>
+<div class="body">
+<p class="p">HTML app shell for rendering topics in MCP-UI clients</p>
+</div>
+<div class="accordion mb-2"><div class="topic accordion-item swagger-get" id="getviewer"><h2 class="accordion-header" id="heading_getviewer"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_getviewer" aria-controls="collapse_getviewer"><code xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema"><span class="swagger-verb">GET</span>/viewer</code><span xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:xs="http://www.w3.org/2001/XMLSchema" class="swagger-summary small">Topic viewer app shell</span></button></h2><div class="accordion-collapse collapse" id="collapse_getviewer" aria-labelledby="heading_getviewer"><div class="accordion-body px-4"><p class="p">HTML shell used by MCP-UI clients to render <code class="ph codeph">render_topic_ui</code> output, also embeddable in an iframe.</p><section class="section" id="getviewer__responses-3"><h4 class="title h4">Responses</h4>
+
+<div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="getviewer__responses-3__entry__1">HTTP Code</th><th class="entry" id="getviewer__responses-3__entry__2">Description</th><th class="entry" id="getviewer__responses-3__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="getviewer__responses-3__entry__1"><strong class="ph b">200</strong></td>
+<td class="entry" headers="getviewer__responses-3__entry__2">Viewer HTML</td>
+<td class="entry" headers="getviewer__responses-3__entry__3">string</td>
+</tr>
+</tbody></table></div>
+</section><section class="section" id="getviewer__produces-3"><h4 class="title h4">Produces</h4>
+
+<ul class="ul">
+<li class="li"><code class="ph codeph">text/html</code></li>
+</ul>
+</section></div></div></div></div>
+</article>
+<article class="topic nested1" aria-labelledby="ariaid-title9" id="definitions">
+<h2 class="title" id="ariaid-title9">Definitions</h2>
+<div class="body"></div>
+<div class="accordion mb-2"><div class="topic accordion-item definition" id="jsonrpcrequest"><h2 class="accordion-header" id="heading_jsonrpcrequest"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_jsonrpcrequest" aria-controls="collapse_jsonrpcrequest">JsonRpcRequest</button></h2><div class="accordion-collapse collapse" id="collapse_jsonrpcrequest" aria-labelledby="heading_jsonrpcrequest"><div class="accordion-body px-4"><div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="jsonrpcrequest__entry__1">Name</th><th class="entry" id="jsonrpcrequest__entry__2">Description</th><th class="entry" id="jsonrpcrequest__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="jsonrpcrequest__entry__1"><p class="lines"><strong class="ph b">jsonrpc</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="jsonrpcrequest__entry__2"></td>
+<td class="entry" headers="jsonrpcrequest__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="jsonrpcrequest__entry__1"><p class="lines"><strong class="ph b">id</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="jsonrpcrequest__entry__2">Omitted for notifications</td>
+<td class="entry" headers="jsonrpcrequest__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="jsonrpcrequest__entry__1"><p class="lines"><strong class="ph b">method</strong><br><em class="ph i">required</em></p></td>
+<td class="entry" headers="jsonrpcrequest__entry__2"><p class="lines"><br><strong class="ph b">Example</strong>: <code class="ph codeph">tools/list</code></p></td>
+<td class="entry" headers="jsonrpcrequest__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="jsonrpcrequest__entry__1"><p class="lines"><strong class="ph b">params</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="jsonrpcrequest__entry__2"></td>
+<td class="entry" headers="jsonrpcrequest__entry__3">object</td>
+</tr>
+</tbody></table></div></div></div></div></div>
+<div class="accordion mb-2"><div class="topic accordion-item definition" id="jsonrpcerror"><h2 class="accordion-header" id="heading_jsonrpcerror"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapse_jsonrpcerror" aria-controls="collapse_jsonrpcerror">JsonRpcError</button></h2><div class="accordion-collapse collapse" id="collapse_jsonrpcerror" aria-labelledby="heading_jsonrpcerror"><div class="accordion-body px-4"><div><table class="table"><colgroup><col><col><col></colgroup><thead class="thead"><tr><th class="entry" id="jsonrpcerror__entry__1">Name</th><th class="entry" id="jsonrpcerror__entry__2">Description</th><th class="entry" id="jsonrpcerror__entry__3">Schema</th></tr></thead><tbody class="tbody">
+<tr>
+<td class="entry" headers="jsonrpcerror__entry__1"><p class="lines"><strong class="ph b">jsonrpc</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="jsonrpcerror__entry__2"><p class="lines"><br><strong class="ph b">Example</strong>: <code class="ph codeph">2.0</code></p></td>
+<td class="entry" headers="jsonrpcerror__entry__3">string</td>
+</tr>
+<tr>
+<td class="entry" headers="jsonrpcerror__entry__1"><p class="lines"><strong class="ph b">error</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="jsonrpcerror__entry__2"></td>
+<td class="entry" headers="jsonrpcerror__entry__3">object</td>
+</tr>
+<tr>
+<td class="entry" headers="jsonrpcerror__entry__1"><p class="lines"><strong class="ph b">id</strong><br><em class="ph i">optional</em></p></td>
+<td class="entry" headers="jsonrpcerror__entry__2"></td>
+<td class="entry" headers="jsonrpcerror__entry__3">integer</td>
+</tr>
+</tbody></table></div></div></div></div></div>
+</article>
+</article></main></div><script language="javascript" src="../js/popovers.js"></script><script language="javascript" src="../js/dark-mode-toggler.js"></script><footer role="contentinfo" class="mt-auto border-top bg-primary-subtle"><!-- Footer --><div class="container">
+    <div class="row">
+      <div class="col">
+        <!-- Social Media -->
+        <p class="text-center p-3">
+          <!-- Linkedin -->
+          <a class="btn btn-primary btn-floating m-1 text-white" style="background-color: #0082ca" href="https://www.linkedin.com/in/jason-fox-8a79563/" role="button"><i class="bi bi-linkedin"></i></a>
+          <!-- Github -->
+          <a class="btn btn-primary btn-floating m-1 text-white" style="background-color: #333333" href="https://github.com/jason-fox/" role="button"><i class="bi bi-github"></i></a>
+        </p>
+      </div>
+      <div>
+        <!-- Copyright -->
+        <p class="text-center text-muted p-3">
+          <small>
+            © 2026 <b>Jason Fox</b>
+          </small>
+        </p>
+      </div>
+    </div>
+  </div><!-- Footer --></footer></body></html>
