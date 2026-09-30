@@ -59,7 +59,9 @@ export function PopoverTriggerFromAst({
       placement={(placement as never) ?? "right"}
       overlay={overlay}
     >
-      <a {...props}>{children}</a>
+      <a {...props} onClick={(e: React.MouseEvent) => e.preventDefault()}>
+        {children}
+      </a>
     </OverlayTrigger>
   );
 }

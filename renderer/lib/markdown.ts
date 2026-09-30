@@ -132,6 +132,48 @@ function processLists(text: string): string {
   return resultLines.join("\n");
 }
 
+const TABLE_ROW = /^\s*\|.*\|\s*$/;
+const TABLE_DIVIDER = /^\s*\|(\s*:?-+:?\s*\|)+\s*$/;
+
+function splitCells(row: string): string[] {
+  return row.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+}
+
+function processTables(text: string): string {
+  const lines = text.split("\n");
+  const out: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    if (!TABLE_ROW.test(lines[i]) || !TABLE_DIVIDER.test(lines[i + 1] ?? "")) {
+      out.push(lines[i]);
+      continue;
+    }
+
+    const aligns = splitCells(lines[i + 1]).map((c) =>
+      c.startsWith(":") && c.endsWith(":") ? "text-center" : c.endsWith(":") ? "text-end" : ""
+    );
+    const cell = (tag: string, c: string, idx: number) =>
+      `<${tag} class="${aligns[idx] ?? ""}">${c}</${tag}>`;
+
+    const head = splitCells(lines[i]).map((c, idx) => cell("th", c, idx)).join("");
+    let j = i + 2;
+    const body: string[] = [];
+    while (j < lines.length && TABLE_ROW.test(lines[j])) {
+      body.push(`<tr>${splitCells(lines[j]).map((c, idx) => cell("td", c, idx)).join("")}</tr>`);
+      j++;
+    }
+
+    out.push(
+      "",
+      `<div class="table-responsive my-2"><table class="table table-sm table-bordered table-striped align-middle mb-0"><thead><tr>${head}</tr></thead><tbody>${body.join("")}</tbody></table></div>`,
+      ""
+    );
+    i = j - 1;
+  }
+
+  return out.join("\n");
+}
+
 export function renderMarkdown(markdown: string): string {
   if (!markdown) return "";
 
@@ -188,6 +230,8 @@ export function renderMarkdown(markdown: string): string {
   // 7. Process links ([title](url))
   processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-underline">$1</a>');
 
+  processed = processTables(processed);
+
   // 8. Process list items (ordered & unordered with multiline support)
   processed = processLists(processed);
 
@@ -200,6 +244,7 @@ export function renderMarkdown(markdown: string): string {
         p.startsWith("<ul") ||
         p.startsWith("<ol") ||
         p.startsWith("<hr") ||
+        p.startsWith("<div") ||
         p.startsWith("%%CODEBLOCK")
       ) {
         return p;
