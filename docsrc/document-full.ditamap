@@ -12,12 +12,12 @@
     <topicref href="index.dita"/>
   </chapter>
   <chapter navtitle="Components">
-    <topicref href="mcp-server.dita"/>
-    <topicref href="mcp-client.dita"/>
-    <topicref href="data-store.dita"/>
-    <topicref href="rag-service.dita"/>
-    <topicref href="renderer.dita"/>
-    <topicref href="search-and-chatbot.dita"/>
+    <topicref navtitle="Documentation &amp; AI Chat Portal" href="renderer.dita" locktitle="yes"/>
+    <topicref navtitle="Data Store" href="data-store.dita" locktitle="yes"/>
+    <topicref navtitle="RAG Vector Search" href="rag-service.dita" locktitle="yes"/>
+    <topicref navtitle="MCP Server" href="mcp-server.dita" locktitle="yes"/>
+    <topicref navtitle="MCP Client" href="mcp-client.dita" locktitle="yes"/>
+    <topicref navtitle="Searching Documentation" href="search-and-chatbot.dita"/>
   </chapter>
   <chapter navtitle="Rendering">
     <topicref href="generating-ast.dita"/>

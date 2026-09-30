@@ -17,11 +17,11 @@
     <topicmeta>
       <navtitle>Components</navtitle>
     </topicmeta>
+    <topicref navtitle="Documentation &amp; AI Chat Portal" href="renderer.dita" locktitle="yes"/>
     <topicref navtitle="Data Store" href="data-store.dita" locktitle="yes"/>
-    <topicref navtitle="Web Renderer &amp; AI Chat Portal" href="renderer.dita" locktitle="yes"/>
+    <topicref navtitle="RAG Vector Search" href="rag-service.dita" locktitle="yes"/>
     <topicref navtitle="MCP Server" href="mcp-server.dita" locktitle="yes"/>
-    <topicref navtitle="RAG Vector Search Service" href="rag-service.dita" locktitle="yes"/>
-    <topicref navtitle="MCP Client (Standalone)" href="mcp-client.dita" locktitle="yes"/>
+    <topicref navtitle="MCP Client" href="mcp-client.dita" locktitle="yes"/>
   </chapter>
   <chapter>
     <topicmeta>
@@ -30,7 +30,7 @@
     <topicref navtitle="Generating AST" href="generating-ast.dita" locktitle="yes"/>
     <topicref navtitle="Generating Chrome" href="generating-chrome.dita" locktitle="yes"/>
     <topicref navtitle="Generating Scalar" href="generating-scalar.dita" locktitle="yes"/>
-    <topicref navtitle="Search Bar &amp; AI Chat Bot User Guide" href="search-and-chatbot.dita" locktitle="yes"/>
+    <topicref navtitle="Searching Documentation" href="search-and-chatbot.dita" locktitle="yes"/>
   </chapter>
   <backmatter deliveryTarget="pdf">
     <booklists>
