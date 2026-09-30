@@ -89,7 +89,7 @@ function TocEntryItem({
           className={`btn d-inline-flex align-items-center p-0 border-0${isCurrentSection ? " active" : ""}`}
           aria-expanded={expanded}
           aria-current={isCurrentSection ? "true" : undefined}
-          aria-label={`${expanded ? texts?.collapse ?? "Collapse" : texts?.expand ?? "Expand"} ${title}`}
+          aria-label={`${expanded ? (texts?.collapse ?? "Collapse") : (texts?.expand ?? "Expand")} ${title}`}
           onClick={() => setUserExpanded(!expanded)}
         >
           <Chevron />

@@ -23,9 +23,13 @@
           format="html"
           scope="external"
         >Scalar</xref> API reference. The node carries only the location of the spec:</p>
-      <codeblock
-        outputclass="language-json"
-      >["ScalarApiReference", { "specUrl": "swagger/data-store.openapi.yaml", "format": "application/yaml" }]</codeblock>
+      <codeblock outputclass="language-json">[
+  "ScalarApiReference", 
+  { 
+    "specUrl": "swagger/data-store.openapi.yaml", 
+    "format": "application/yaml" 
+  }
+]</codeblock>
       <p><codeph>specUrl</codeph> is relative to the topic's own directory in the data store. Settings are not
         stored in the topic; every API reference on the site reads the same <filepath>scalar.json</filepath>.</p>
     </section>
@@ -90,9 +94,13 @@
           <pt><codeph>localization</codeph></pt>
           <pd>Override individual interface strings under <codeph>translations</codeph>. For example, to shorten
             the download link label:
-            <codeblock
-              outputclass="language-json"
-            >{ "localization": { "translations": { "download": { "openapi": "Download" } } } }</codeblock>
+            <codeblock outputclass="language-json">{ "localization": 
+  { "translations": 
+    { "download": 
+      { "openapi": "Download" } 
+    } 
+  } 
+}</codeblock>
             Overrides merge over every built-in language, so the same text appears for all locales.</pd>
         </plentry>
       </parml>
@@ -110,15 +118,6 @@
           Scalar in German. Scalar includes English, Russian, Spanish, French, German, Chinese (Simplified),
           Arabic and Portuguese.</li>
       </ul>
-    </section>
-
-    <section>
-      <title>Matching the Site Styling</title>
-      <p>The renderer maps Scalar's <codeph>--scalar-*</codeph> CSS variables to Bootstrap's <codeph
-        >--bs-*</codeph> variables (colours, border radius, fonts, buttons, shadows), so the API reference follows
-        the site theme. It also removes Scalar's padding around sections and resets the heading sizes in the Test
-        Request dialog. These rules live in <filepath>ApiReferenceNode.tsx</filepath> in the <codeph
-        >ast-ui</codeph> package, not in <filepath>scalar.json</filepath>.</p>
     </section>
   </body>
 </topic>

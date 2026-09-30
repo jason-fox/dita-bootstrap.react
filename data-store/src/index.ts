@@ -22,8 +22,8 @@ const envWorkers = process.env.WEB_CONCURRENCY || process.env.WORKERS;
 const numWorkers = envWorkers
   ? Math.max(1, Number.parseInt(envWorkers, 10))
   : process.env.CLUSTER_MODE === "true"
-  ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
-  : 1;
+    ? Math.max(1, os.availableParallelism ? os.availableParallelism() : os.cpus().length)
+    : 1;
 
 interface DocSetInfo {
   id: string;

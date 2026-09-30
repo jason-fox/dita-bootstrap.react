@@ -37,8 +37,9 @@ export default function ChatView({ chrome }: { chrome: ChromeConfig }) {
             </Alert.Heading>
             <p className="mb-0 small">
               {chat.health?.llmError ||
-                `No API key configured for provider '${chat.health
-                  ?.provider}'. Set ${chat.health?.provider?.toUpperCase()}_API_KEY in your environment to enable AI Chat.`}
+                `No API key configured for provider '${
+                  chat.health?.provider
+                }'. Set ${chat.health?.provider?.toUpperCase()}_API_KEY in your environment to enable AI Chat.`}
             </p>
           </Alert>
         )}

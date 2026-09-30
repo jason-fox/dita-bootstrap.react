@@ -231,8 +231,8 @@ export class LlmService {
       rawFinal && rawFinal.trim() !== ""
         ? rawFinal
         : executedToolResults.some((tr: any) => tr.toolName === "render_topic_ui")
-        ? "Here is the documentation and interactive preview:"
-        : "Gathered tool information successfully.";
+          ? "Here is the documentation and interactive preview:"
+          : "Gathered tool information successfully.";
 
     return {
       text: finalText,
