@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="generating-scalar">
+  <title>Generating Scalar</title>
+  <shortdesc>Changing how an interactive API reference looks and behaves by editing <filepath
+    >scalar.json</filepath> in the data store.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Scalar</indexterm>
+        <indexterm><filepath>scalar.json</filepath></indexterm>
+        <indexterm>API reference</indexterm>
+        <indexterm>OpenAPI</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <section>
+      <title>How API References Are Rendered</title>
+      <p>A topic generated from an OpenAPI file contains a single <codeph>ScalarApiReference</codeph> node. The
+        renderer turns that node into an interactive <xref
+          href="https://scalar.com"
+          format="html"
+          scope="external"
+        >Scalar</xref> API reference. The node carries only the location of the spec:</p>
+      <codeblock
+        outputclass="language-json"
+      >["ScalarApiReference", { "specUrl": "swagger/data-store.openapi.yaml", "format": "application/yaml" }]</codeblock>
+      <p><codeph>specUrl</codeph> is relative to the topic's own directory in the data store. Settings are not
+        stored in the topic; every API reference on the site reads the same <filepath>scalar.json</filepath>.</p>
+    </section>
+
+    <section>
+      <title>Editing the Settings</title>
+      <p>Edit <filepath>scalar.json</filepath> in the root of the data store directory (next to <filepath
+        >chrome.json</filepath>). It is a flat JSON object of <xref
+          href="https://scalar.com/products/api-references/configuration"
+          format="html"
+          scope="external"
+        >Scalar configuration options</xref>:</p>
+      <codeblock outputclass="language-json">{
+  "layout": "modern",
+  "hideClientButton": true,
+  "hideSearch": true,
+  "defaultOpenAllTags": true,
+  "hiddenClients": ["go", "java", "php", "ruby"]
+}</codeblock>
+      <p>The data store serves the file as a static asset at <filepath>/data/scalar.json</filepath> and the
+        browser reads it each time an API reference loads. Reload the page to see a change; there is no rebuild.
+        If the file is missing, the renderer falls back to <codeph>hideClientButton: true</codeph> and <codeph
+        >withDefaultFonts: false</codeph>.</p>
+      <note type="important">There is no transtype or REST endpoint for <filepath>scalar.json</filepath>. If you
+        refresh the data store with <cmdname>rsync</cmdname> <parmname>--delete</parmname>, the file is removed
+        unless it is part of the source directory or excluded with <parmname>--exclude</parmname>=scalar.json.</note>
+    </section>
+
+    <section>
+      <title>Commonly Changed Options</title>
+      <parml>
+        <plentry>
+          <pt><codeph>layout</codeph></pt>
+          <pd><option>modern</option> (two columns, operations expanded) or <option>classic</option> (operations
+            as collapsed cards).</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>showSidebar</codeph>, <codeph>hideSearch</codeph></pt>
+          <pd>Show or hide Scalar's own sidebar and search. The harness already provides a table of contents, so
+            both are normally off. The sidebar cannot start collapsed; it is either shown or hidden.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>showToolbar</codeph>, <codeph>showDeveloperTools</codeph></pt>
+          <pd><option>always</option>, <option>localhost</option> or <option>never</option>.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>defaultOpenAllTags</codeph>, <codeph>defaultOpenFirstTag</codeph></pt>
+          <pd>Control which tag groups start expanded.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>hiddenClients</codeph></pt>
+          <pd>Language targets to remove from the Client Libraries list. Entries may be a target such as <option
+            >node</option>, a client such as <option>fetch</option>, or a full id such as <option
+            >node/fetch</option>.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>documentDownloadType</codeph></pt>
+          <pd><option>both</option>, <option>yaml</option>, <option>json</option>, <option>direct</option> or
+            <option>none</option>.</pd>
+        </plentry>
+        <plentry>
+          <pt><codeph>localization</codeph></pt>
+          <pd>Override individual interface strings under <codeph>translations</codeph>. For example, to shorten
+            the download link label:
+            <codeblock
+              outputclass="language-json"
+            >{ "localization": { "translations": { "download": { "openapi": "Download" } } } }</codeblock>
+            Overrides merge over every built-in language, so the same text appears for all locales.</pd>
+        </plentry>
+      </parml>
+    </section>
+
+    <section>
+      <title>Settings the Renderer Controls</title>
+      <p>A few settings are applied by the renderer after <filepath>scalar.json</filepath> is read, so values in
+        the file have no effect:</p>
+      <ul>
+        <li><codeph>url</codeph> — always resolved from the node's <codeph>specUrl</codeph>.</li>
+        <li><codeph>forceDarkModeState</codeph> — follows the harness light/dark switch. Scalar's own toggle is
+          not shown, and the API reference reloads when the theme changes.</li>
+        <li><codeph>localization.locale</codeph> — taken from the topic language, so a German topic renders
+          Scalar in German. Scalar includes English, Russian, Spanish, French, German, Chinese (Simplified),
+          Arabic and Portuguese.</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Matching the Site Styling</title>
+      <p>The renderer maps Scalar's <codeph>--scalar-*</codeph> CSS variables to Bootstrap's <codeph
+        >--bs-*</codeph> variables (colours, border radius, fonts, buttons, shadows), so the API reference follows
+        the site theme. It also removes Scalar's padding around sections and resets the heading sizes in the Test
+        Request dialog. These rules live in <filepath>ApiReferenceNode.tsx</filepath> in the <codeph
+        >ast-ui</codeph> package, not in <filepath>scalar.json</filepath>.</p>
+    </section>
+  </body>
+</topic>

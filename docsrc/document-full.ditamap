@@ -22,6 +22,7 @@
   <chapter navtitle="Rendering">
     <topicref href="generating-ast.dita"/>
     <topicref href="generating-chrome.dita"/>
+    <topicref href="generating-scalar.dita"/>
   </chapter>
   <appendix navtitle="API Specifications">
     <topicref
