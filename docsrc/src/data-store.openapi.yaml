@@ -118,6 +118,11 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/doc-set-not-found
+                title: Not Found
+                status: 404
+                detail: "Doc set 'missing' not found"
 
     post:
       summary: Create a new document set
@@ -156,30 +161,55 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/invalid-doc-set-id
+                title: Bad Request
+                status: 400
+                detail: "Invalid doc set id '../escape'"
         "401":
           description: Missing or invalid Authorization header
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unauthorized
+                title: Unauthorized
+                status: 401
+                detail: "Missing or invalid Authorization: Bearer <token> header"
         "409":
           description: Document set already exists
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/doc-set-exists
+                title: Conflict
+                status: 409
+                detail: "Doc set 'my-docs' already exists"
         "413":
           description: Upload exceeds MAX_UPLOAD_SIZE
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/payload-too-large
+                title: Payload Too Large
+                status: 413
+                detail: "Request body exceeds the 100mb limit"
         "415":
           description: Missing or invalid Content-Type
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unsupported-media-type
+                title: Unsupported Media Type
+                status: 415
+                detail: "Content-Type must be application/zip"
 
     put:
       summary: Update an existing document set
@@ -213,30 +243,55 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/invalid-doc-set-id
+                title: Bad Request
+                status: 400
+                detail: "Invalid doc set id '../escape'"
         "401":
           description: Missing or invalid Authorization header
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unauthorized
+                title: Unauthorized
+                status: 401
+                detail: "Missing or invalid Authorization: Bearer <token> header"
         "404":
           description: Document set not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/doc-set-not-found
+                title: Not Found
+                status: 404
+                detail: "Doc set 'missing' not found"
         "413":
           description: Upload exceeds MAX_UPLOAD_SIZE
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/payload-too-large
+                title: Payload Too Large
+                status: 413
+                detail: "Request body exceeds the 100mb limit"
         "415":
           description: Missing or invalid Content-Type
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unsupported-media-type
+                title: Unsupported Media Type
+                status: 415
+                detail: "Content-Type must be application/zip"
 
     delete:
       summary: Delete a document set
@@ -255,12 +310,22 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unauthorized
+                title: Unauthorized
+                status: 401
+                detail: "Missing or invalid Authorization: Bearer <token> header"
         "404":
           description: Document set not found
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/doc-set-not-found
+                title: Not Found
+                status: 404
+                detail: "Doc set 'missing' not found"
 
   /api/chrome:
     get:
@@ -311,18 +376,33 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/chrome-write-failed
+                title: Bad Request
+                status: 400
+                detail: "Failed to write chrome.json: Unexpected end of JSON input"
         "401":
           description: Missing or invalid Authorization header
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unauthorized
+                title: Unauthorized
+                status: 401
+                detail: "Missing or invalid Authorization: Bearer <token> header"
         "415":
           description: Content-Type must be application/json
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unsupported-media-type
+                title: Unsupported Media Type
+                status: 415
+                detail: "Content-Type must be application/json"
 
     put:
       summary: Update chrome configuration (PUT)
@@ -352,18 +432,33 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/chrome-write-failed
+                title: Bad Request
+                status: 400
+                detail: "Failed to write chrome.json: Unexpected end of JSON input"
         "401":
           description: Missing or invalid Authorization header
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unauthorized
+                title: Unauthorized
+                status: 401
+                detail: "Missing or invalid Authorization: Bearer <token> header"
         "415":
           description: Content-Type must be application/json
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+              example:
+                type: https://dita-bootstrap.org/errors/unsupported-media-type
+                title: Unsupported Media Type
+                status: 415
+                detail: "Content-Type must be application/json"
 
   /data/{topicPath}:
     get:
@@ -530,7 +625,22 @@ components:
       properties:
         type:
           type: string
-          example: "about:blank"
+          format: uri
+          description: URI identifying the problem type
+          enum:
+            - https://dita-bootstrap.org/errors/unauthorized
+            - https://dita-bootstrap.org/errors/chrome-read-failed
+            - https://dita-bootstrap.org/errors/chrome-write-failed
+            - https://dita-bootstrap.org/errors/unsupported-media-type
+            - https://dita-bootstrap.org/errors/doc-set-not-found
+            - https://dita-bootstrap.org/errors/doc-set-exists
+            - https://dita-bootstrap.org/errors/invalid-doc-set-id
+            - https://dita-bootstrap.org/errors/empty-payload
+            - https://dita-bootstrap.org/errors/invalid-zip
+            - https://dita-bootstrap.org/errors/extract-failed
+            - https://dita-bootstrap.org/errors/payload-too-large
+            - https://dita-bootstrap.org/errors/invalid-json
+          example: https://dita-bootstrap.org/errors/doc-set-not-found
         title:
           type: string
           description: Short human-readable error title

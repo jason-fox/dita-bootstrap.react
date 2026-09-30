@@ -240,8 +240,13 @@ function notifyRagService(): void {
 }
 
 // RFC 9457 Problem Details response
-function sendProblem(res: express.Response, status: number, title: string, detail: string): void {
-  res.status(status).type("application/problem+json").json({ type: "about:blank", title, status, detail });
+const PROBLEM_TYPE_BASE = "https://dita-bootstrap.org/errors";
+
+function sendProblem(res: express.Response, status: number, slug: string, title: string, detail: string): void {
+  res
+    .status(status)
+    .type("application/problem+json")
+    .json({ type: `${PROBLEM_TYPE_BASE}/${slug}`, title, status, detail });
 }
 
 // resolves an /api/docs/*id wildcard param to an absolute dir under dataDir, rejecting
@@ -279,7 +284,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
     scheme === "Bearer" && tokenBuf.length === expectedBuf.length && crypto.timingSafeEqual(tokenBuf, expectedBuf);
   if (!valid) {
     res.set("WWW-Authenticate", "Bearer");
-    sendProblem(res, 401, "Unauthorized", "Missing or invalid Authorization: Bearer <token> header");
+    sendProblem(res, 401, "unauthorized", "Unauthorized", "Missing or invalid Authorization: Bearer <token> header");
     return;
   }
   next();
@@ -344,20 +349,32 @@ if (numWorkers > 1 && cluster.isPrimary) {
     try {
       res.json(readChromeData(DATA_DIR));
     } catch (e: any) {
-      sendProblem(res, 500, "Internal Server Error", `Failed to read chrome.json: ${e.message || e}`);
+      sendProblem(
+        res,
+        500,
+        "chrome-read-failed",
+        "Internal Server Error",
+        `Failed to read chrome.json: ${e.message || e}`,
+      );
     }
   });
 
   const handleChromeUpdate = (req: express.Request, res: express.Response) => {
     if (!req.is("application/json")) {
-      sendProblem(res, 415, "Unsupported Media Type", "Content-Type must be application/json");
+      sendProblem(
+        res,
+        415,
+        "unsupported-media-type",
+        "Unsupported Media Type",
+        "Content-Type must be application/json",
+      );
       return;
     }
     try {
       fs.writeFileSync(path.join(DATA_DIR, "chrome.json"), JSON.stringify(req.body, null, 2));
       invalidateChromeCache();
     } catch (e: any) {
-      sendProblem(res, 400, "Bad Request", `Failed to write chrome.json: ${e.message || e}`);
+      sendProblem(res, 400, "chrome-write-failed", "Bad Request", `Failed to write chrome.json: ${e.message || e}`);
       return;
     }
     res.status(202).json(req.body);
@@ -386,7 +403,7 @@ if (numWorkers > 1 && cluster.isPrimary) {
     const dir = resolveDocSetDir(DATA_DIR, idParts);
     const info = dir && readDocSetInfo(DATA_DIR, dir);
     if (!info) {
-      sendProblem(res, 404, "Not Found", `Doc set '${id}' not found`);
+      sendProblem(res, 404, "doc-set-not-found", "Not Found", `Doc set '${id}' not found`);
       return;
     }
     res.json(info);
@@ -398,15 +415,15 @@ if (numWorkers > 1 && cluster.isPrimary) {
   // Returns the validated buffer, or sends the problem response itself and returns undefined.
   function validateZipUpload(req: express.Request, res: express.Response): Buffer | undefined {
     if (!req.is("application/zip")) {
-      sendProblem(res, 415, "Unsupported Media Type", "Content-Type must be application/zip");
+      sendProblem(res, 415, "unsupported-media-type", "Unsupported Media Type", "Content-Type must be application/zip");
       return undefined;
     }
     if (!Buffer.isBuffer(req.body) || req.body.length === 0) {
-      sendProblem(res, 400, "Bad Request", "Request body must be a non-empty zip payload");
+      sendProblem(res, 400, "empty-payload", "Bad Request", "Request body must be a non-empty zip payload");
       return undefined;
     }
     if (!isZipBuffer(req.body)) {
-      sendProblem(res, 415, "Unsupported Media Type", "Request body is not a valid zip archive");
+      sendProblem(res, 415, "invalid-zip", "Unsupported Media Type", "Request body is not a valid zip archive");
       return undefined;
     }
     return req.body;
@@ -425,19 +442,19 @@ if (numWorkers > 1 && cluster.isPrimary) {
     const id = idParts.join("/");
     const dir = resolveDocSetDir(DATA_DIR, idParts);
     if (!dir) {
-      sendProblem(res, 400, "Bad Request", `Invalid doc set id '${id}'`);
+      sendProblem(res, 400, "invalid-doc-set-id", "Bad Request", `Invalid doc set id '${id}'`);
       return;
     }
     const buf = validateZipUpload(req, res);
     if (!buf) return;
     if (fs.existsSync(path.join(dir, "toc.json"))) {
-      sendProblem(res, 409, "Conflict", `Doc set '${id}' already exists`);
+      sendProblem(res, 409, "doc-set-exists", "Conflict", `Doc set '${id}' already exists`);
       return;
     }
     try {
       extractZipUpload(buf, dir);
     } catch (e: any) {
-      sendProblem(res, 400, "Bad Request", `Failed to extract zip: ${e.message || e}`);
+      sendProblem(res, 400, "extract-failed", "Bad Request", `Failed to extract zip: ${e.message || e}`);
       return;
     }
     notifyRagService();
@@ -449,19 +466,19 @@ if (numWorkers > 1 && cluster.isPrimary) {
     const id = idParts.join("/");
     const dir = resolveDocSetDir(DATA_DIR, idParts);
     if (!dir) {
-      sendProblem(res, 400, "Bad Request", `Invalid doc set id '${id}'`);
+      sendProblem(res, 400, "invalid-doc-set-id", "Bad Request", `Invalid doc set id '${id}'`);
       return;
     }
     const buf = validateZipUpload(req, res);
     if (!buf) return;
     if (!fs.existsSync(path.join(dir, "toc.json"))) {
-      sendProblem(res, 404, "Not Found", `Doc set '${id}' not found`);
+      sendProblem(res, 404, "doc-set-not-found", "Not Found", `Doc set '${id}' not found`);
       return;
     }
     try {
       extractZipUpload(buf, dir);
     } catch (e: any) {
-      sendProblem(res, 400, "Bad Request", `Failed to extract zip: ${e.message || e}`);
+      sendProblem(res, 400, "extract-failed", "Bad Request", `Failed to extract zip: ${e.message || e}`);
       return;
     }
     notifyRagService();
@@ -473,7 +490,7 @@ if (numWorkers > 1 && cluster.isPrimary) {
     const id = idParts.join("/");
     const dir = resolveDocSetDir(DATA_DIR, idParts);
     if (!dir || !fs.existsSync(path.join(dir, "toc.json"))) {
-      sendProblem(res, 404, "Not Found", `Doc set '${id}' not found`);
+      sendProblem(res, 404, "doc-set-not-found", "Not Found", `Doc set '${id}' not found`);
       return;
     }
     fs.rmSync(dir, { recursive: true, force: true });
@@ -493,11 +510,17 @@ if (numWorkers > 1 && cluster.isPrimary) {
   // translate them into Problem Details responses instead of Express's default HTML error page
   app.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (err?.type === "entity.too.large") {
-      sendProblem(res, 413, "Payload Too Large", `Request body exceeds the ${MAX_UPLOAD_SIZE} limit`);
+      sendProblem(
+        res,
+        413,
+        "payload-too-large",
+        "Payload Too Large",
+        `Request body exceeds the ${MAX_UPLOAD_SIZE} limit`,
+      );
       return;
     }
     if (err?.type === "entity.parse.failed") {
-      sendProblem(res, 415, "Unsupported Media Type", "Request body is not valid JSON");
+      sendProblem(res, 415, "invalid-json", "Unsupported Media Type", "Request body is not valid JSON");
       return;
     }
     next(err);
