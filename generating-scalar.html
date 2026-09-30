@@ -1,0 +1,152 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="copyright" content="(C) Copyright 2026"><meta name="generator" content="DITA-OT"><meta name="description" content="Changing how an interactive API reference looks and behaves by editing scalar.json in the data store."><meta property="og:type" content="website"><meta property="og:url" content="https://dita-bootstrap.github.io/generating-scalar.html"><meta property="og:title" content="React Harness Documentation - Generating Scalar"><meta property="og:description" content="Changing how an interactive API reference looks and behaves by editing scalar.json in the data store."><meta property="og:image" content="https://dita-bootstrap.github.io/open-graph.svg"><meta name="twitter:title" content="React Harness Documentation - Generating Scalar"><meta name="twitter:description" content="Changing how an interactive API reference looks and behaves by editing scalar.json in the data store."><meta property="twitter:url" content="https://dita-bootstrap.github.io/generating-scalar.html"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://dita-bootstrap.github.io/open-graph.svg"><title>Generating Scalar</title><script src="./js/lunr-client.js"></script><script src="https://unpkg.com/lunr/lunr.js"></script><link rel="shortcut icon" href="./favicon/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="css/commonltr.css">
+<link rel="stylesheet" type="text/css" href="./css/common-extended.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous"></head><body id="generating-scalar" class="d-flex flex-column min-vh-100"><div class="visually-hidden-focusable overflow-hidden p-2 bg-body-tertiary"><div class="container-xl"><a class="d-inline-flex m-1 btn btn-outline-primary btn-sm" href="#ariaid-title1">Skip to main content</a><a href="#bs-sidebar-nav" class="d-none d-md-inline-flex m-1 btn btn-outline-primary btn-sm">Skip to docs navigation</a></div></div><header role="banner" class="sticky-top"><nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Modify -xxl to change container size -->
+  <div class="container-xxl">
+    <!-- This shows the menu on mobile -->
+    <div class="d-none d-sm-block d-md-none">
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdSidebar" aria-controls="bdSidebar" aria-label="Toggle docs navigation">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <a class="navbar-brand" href="https://dita-bootstrap.github.io/dita-bootstrap.react">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
+      <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
+      <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
+    </svg>
+      DITA Bootstrap React
+    </a>
+    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-three-dots"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item d-flex align-items-center">
+          <span class="nav-link pe-2">
+            <i class="bi bi-search"></i>
+          </span>
+          <form class="search-box position-relative me-auto">
+            <input type="search" class="form-control" placeholder="Search…" aria-label="Search for…" dir="auto">
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav></header><div class="bs-container container-xxl bd-gutter mt-3 my-md-4" id="content"><div class="overflow-y-auto bs-sidebar"><div class="offcanvas-lg offcanvas-start" tabindex="-1" id="bdSidebar" aria-labelledby="bdSidebarOffcanvasLabel" aria-modal="true" role="dialog"><div class="offcanvas-header border-bottom"><h5 class="offcanvas-title" id="bdSidebarOffcanvasLabel">React Harness Documentation</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdSidebar"></button></div><div class="offcanvas-body flex-column h-100"><nav class="d-flex flex-align-start flex-column h-100 overflow-y-auto" role="navigation" id="bs-sidebar-nav"><div class="overflow-y-auto"><div class="flex-column bd-links"><ul class="list-unstyled mb-0 py-3 pt-md-1"><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d17944e15"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d17944e15">Introduction</span></div><div id="menu-collapse-d17944e15" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="index.html">DITA Harness User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d17944e26"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d17944e26">Components</span></div><div id="menu-collapse-d17944e26" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="mcp-server.html">MCP Server Service (mcp-server)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="mcp-client.html">Standalone Reference MCP Web Client (mcp-client)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="data-store.html">Data Store Service (data-store)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="rag-service.html">RAG Vector Search Service (rag-service)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="renderer.html">Web Renderer &amp; AI Chat Portal Service (renderer)</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="search-and-chatbot.html">Search Bar &amp; AI Chat Bot User Guide</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0 active" data-bs-target="#menu-collapse-d17944e87" aria-expanded="true" aria-current="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2 active" data-bs-target="#menu-collapse-d17944e87" aria-expanded="true" aria-current="true">Rendering</span></div><div id="menu-collapse-d17944e87" class="ps-2 collapse show"><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="generating-ast.html">Generating AST</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="generating-chrome.html">Generating Chrome</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1  active" href="generating-scalar.html">Generating Scalar</a></div></li></ul></div></li><li><div class="d-flex flex-row ps-0"><button data-bs-toggle="collapse" class="btn d-inline-flex align-items-center p-0 border-0" data-bs-target="#menu-collapse-d17944e127"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14l6-6-6-6"/></svg></button><span data-bs-toggle="collapse" class="d-inline-flex align-items-center flex-shrink-1 ps-2" data-bs-target="#menu-collapse-d17944e127">API Specifications</span></div><div id="menu-collapse-d17944e127" class="ps-2 collapse "><ul class="list-unstyled fw-normal ps-4"><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="src/data-store.openapi.html">Data Store API</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="src/mcp-server.openapi.html">MCP Server API</a></div></li><li><div class="d-flex flex-row ps-0"><a class="d-inline-flex align-items-center flex-shrink-1 " href="src/rag-service.openapi.html">RAG Service API</a></div></li></ul></div></li></ul></div></div></nav></div></div></div><main role="main" class="bs-main me-3"><article role="article" class="bs-content" aria-labelledby="ariaid-title1">
+  <h1 class="title" id="ariaid-title1">Generating Scalar</h1>
+  
+  
+  <div class="body"><p class="shortdesc text-body-secondary lead">Changing how an interactive API reference looks and behaves by editing <span class="ph filepath">scalar.json</span> in the data store.</p>
+    <section class="section"><h2 class="title h4">How API References Are Rendered</h2>
+      
+      <p class="p">A topic generated from an OpenAPI file contains a single <code class="ph codeph">ScalarApiReference</code> node. The
+        renderer turns that node into an interactive <a class="xref" href="https://scalar.com" target="_blank" rel="external noopener">Scalar</a> API reference. The node carries only the location of the spec:</p>
+      <pre class="pre codeblock alert alert-secondary language-json"><code><span class="ph token punctuation">[</span><span class="ph token string">"ScalarApiReference"</span><span class="ph token punctuation">,</span> <span class="ph token punctuation">{</span> <span class="ph token property">"specUrl"</span><span class="ph token operator">:</span> <span class="ph token string">"swagger/data-store.openapi.yaml"</span><span class="ph token punctuation">,</span> <span class="ph token property">"format"</span><span class="ph token operator">:</span> <span class="ph token string">"application/yaml"</span> <span class="ph token punctuation">}</span><span class="ph token punctuation">]</span></code></pre>
+      <p class="p"><code class="ph codeph">specUrl</code> is relative to the topic's own directory in the data store. Settings are not
+        stored in the topic; every API reference on the site reads the same <span class="ph filepath">scalar.json</span>.</p>
+    </section>
+
+    <section class="section"><h2 class="title h4">Editing the Settings</h2>
+      
+      <p class="p">Edit <span class="ph filepath">scalar.json</span> in the root of the data store directory (next to <span class="ph filepath">chrome.json</span>). It is a flat JSON object of <a class="xref" href="https://scalar.com/products/api-references/configuration" target="_blank" rel="external noopener">Scalar configuration options</a>:</p>
+      <pre class="pre codeblock alert alert-secondary language-json"><code><span class="ph token punctuation">{</span>
+  <span class="ph token property">"layout"</span><span class="ph token operator">:</span> <span class="ph token string">"modern"</span><span class="ph token punctuation">,</span>
+  <span class="ph token property">"hideClientButton"</span><span class="ph token operator">:</span> <span class="ph token boolean">true</span><span class="ph token punctuation">,</span>
+  <span class="ph token property">"hideSearch"</span><span class="ph token operator">:</span> <span class="ph token boolean">true</span><span class="ph token punctuation">,</span>
+  <span class="ph token property">"defaultOpenAllTags"</span><span class="ph token operator">:</span> <span class="ph token boolean">true</span><span class="ph token punctuation">,</span>
+  <span class="ph token property">"hiddenClients"</span><span class="ph token operator">:</span> <span class="ph token punctuation">[</span><span class="ph token string">"go"</span><span class="ph token punctuation">,</span> <span class="ph token string">"java"</span><span class="ph token punctuation">,</span> <span class="ph token string">"php"</span><span class="ph token punctuation">,</span> <span class="ph token string">"ruby"</span><span class="ph token punctuation">]</span>
+<span class="ph token punctuation">}</span></code></pre>
+      <p class="p">The data store serves the file as a static asset at <span class="ph filepath">/data/scalar.json</span> and the
+        browser reads it each time an API reference loads. Reload the page to see a change; there is no rebuild.
+        If the file is missing, the renderer falls back to <code class="ph codeph">hideClientButton: true</code> and <code class="ph codeph">withDefaultFonts: false</code>.</p>
+      <div role="alert" class="note alert alert-warning"><span class="note__title"><i class="pe-2 bi bi-exclamation-circle-fill "></i>Important:</span> There is no transtype or REST endpoint for <span class="ph filepath">scalar.json</span>. If you
+        refresh the data store with <span class="keyword cmdname">rsync</span> <span class="keyword parmname">--delete</span>, the file is removed
+        unless it is part of the source directory or excluded with <span class="keyword parmname">--exclude</span>=scalar.json.</div>
+    </section>
+
+    <section class="section"><h2 class="title h4">Commonly Changed Options</h2>
+      
+      <dl class="dl parml row">
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">layout</code></dt>
+          <dd class="dd pd col-lg-9"><span class="keyword option">modern</span> (two columns, operations expanded) or <span class="keyword option">classic</span> (operations
+            as collapsed cards).</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">showSidebar</code>, <code class="ph codeph text-wrap">hideSearch</code></dt>
+          <dd class="dd pd col-lg-9">Show or hide Scalar's own sidebar and search. The harness already provides a table of contents, so
+            both are normally off. The sidebar cannot start collapsed; it is either shown or hidden.</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">showToolbar</code>, <code class="ph codeph text-wrap">showDeveloperTools</code></dt>
+          <dd class="dd pd col-lg-9"><span class="keyword option">always</span>, <span class="keyword option">localhost</span> or <span class="keyword option">never</span>.</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">defaultOpenAllTags</code>, <code class="ph codeph text-wrap">defaultOpenFirstTag</code></dt>
+          <dd class="dd pd col-lg-9">Control which tag groups start expanded.</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">hiddenClients</code></dt>
+          <dd class="dd pd col-lg-9">Language targets to remove from the Client Libraries list. Entries may be a target such as <span class="keyword option">node</span>, a client such as <span class="keyword option">fetch</span>, or a full id such as <span class="keyword option">node/fetch</span>.</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">documentDownloadType</code></dt>
+          <dd class="dd pd col-lg-9"><span class="keyword option">both</span>, <span class="keyword option">yaml</span>, <span class="keyword option">json</span>, <span class="keyword option">direct</span> or
+            <span class="keyword option">none</span>.</dd>
+        
+        
+          <dt class="dt pt col-lg-3 text-truncate dlterm"><code class="ph codeph text-wrap">localization</code></dt>
+          <dd class="dd pd col-lg-9">Override individual interface strings under <code class="ph codeph">translations</code>. For example, to shorten
+            the download link label:
+            <pre class="pre codeblock alert alert-secondary language-json"><code><span class="ph token punctuation">{</span> <span class="ph token property">"localization"</span><span class="ph token operator">:</span> <span class="ph token punctuation">{</span> <span class="ph token property">"translations"</span><span class="ph token operator">:</span> <span class="ph token punctuation">{</span> <span class="ph token property">"download"</span><span class="ph token operator">:</span> <span class="ph token punctuation">{</span> <span class="ph token property">"openapi"</span><span class="ph token operator">:</span> <span class="ph token string">"Download"</span> <span class="ph token punctuation">}</span> <span class="ph token punctuation">}</span> <span class="ph token punctuation">}</span> <span class="ph token punctuation">}</span></code></pre>
+            Overrides merge over every built-in language, so the same text appears for all locales.</dd>
+        
+      </dl>
+    </section>
+
+    <section class="section"><h2 class="title h4">Settings the Renderer Controls</h2>
+      
+      <p class="p">A few settings are applied by the renderer after <span class="ph filepath">scalar.json</span> is read, so values in
+        the file have no effect:</p>
+      <ul class="ul">
+        <li class="li"><code class="ph codeph">url</code> — always resolved from the node's <code class="ph codeph">specUrl</code>.</li>
+        <li class="li"><code class="ph codeph">forceDarkModeState</code> — follows the harness light/dark switch. Scalar's own toggle is
+          not shown, and the API reference reloads when the theme changes.</li>
+        <li class="li"><code class="ph codeph">localization.locale</code> — taken from the topic language, so a German topic renders
+          Scalar in German. Scalar includes English, Russian, Spanish, French, German, Chinese (Simplified),
+          Arabic and Portuguese.</li>
+      </ul>
+    </section>
+
+    <section class="section"><h2 class="title h4">Matching the Site Styling</h2>
+      
+      <p class="p">The renderer maps Scalar's <code class="ph codeph">--scalar-*</code> CSS variables to Bootstrap's <code class="ph codeph">--bs-*</code> variables (colours, border radius, fonts, buttons, shadows), so the API reference follows
+        the site theme. It also removes Scalar's padding around sections and resets the heading sizes in the Test
+        Request dialog. These rules live in <span class="ph filepath">ApiReferenceNode.tsx</span> in the <code class="ph codeph">ast-ui</code> package, not in <span class="ph filepath">scalar.json</span>.</p>
+    </section>
+  </div>
+</article></main></div><script language="javascript" src="./js/popovers.js"></script><script language="javascript" src="./js/dark-mode-toggler.js"></script><footer role="contentinfo" class="mt-auto border-top bg-primary-subtle"><!-- Footer --><div class="container">
+    <div class="row">
+      <div class="col">
+        <!-- Social Media -->
+        <p class="text-center p-3">
+          <!-- Linkedin -->
+          <a class="btn btn-primary btn-floating m-1 text-white" style="background-color: #0082ca" href="https://www.linkedin.com/in/jason-fox-8a79563/" role="button"><i class="bi bi-linkedin"></i></a>
+          <!-- Github -->
+          <a class="btn btn-primary btn-floating m-1 text-white" style="background-color: #333333" href="https://github.com/jason-fox/" role="button"><i class="bi bi-github"></i></a>
+        </p>
+      </div>
+      <div>
+        <!-- Copyright -->
+        <p class="text-center text-muted p-3">
+          <small>
+            © 2026 <b>Jason Fox</b>
+          </small>
+        </p>
+      </div>
+    </div>
+  </div><!-- Footer --></footer></body></html>
