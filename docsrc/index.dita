@@ -29,10 +29,14 @@
 
     <section>
       <title>Quick Start with Docker Compose</title>
-      <p
-      >Launch the complete React Harness documentation system (data-store, renderer, mcp-server, and optional rag-service) using Docker Compose:</p>
+      <p>Launch the React Harness documentation system (data-store, renderer and mcp-server) using Docker Compose:</p>
       
       <codeblock outputclass="language-bash"><cmdname>docker</cmdname> compose up -d</codeblock>
+
+      <p>For large document sets, add the RAG vector search service by including the second compose file:</p>
+
+      <codeblock outputclass="language-bash"><cmdname
+        >docker</cmdname> compose -f docker-compose.yml -f docker-compose.rag.yml up -d</codeblock>
 
       <p>Once launched, access the system services in your browser:</p>
       <ul>
@@ -40,12 +44,12 @@
             >&lt;renderer&gt;</b></codeph> — View and browse loaded documentation sets.</li>
         <li><b>AI Assistant Chat:</b> <codeph>http://<b
             >&lt;renderer&gt;</b>/chat</codeph> — Chat with the AI documentation assistant.</li>
-        <li><b>RAG Vector Search Service:</b> <codeph>http://<b
-            >&lt;rag-service&gt;</b>/health</codeph> — Check semantic vector search status.</li>
+        <li><b>Data Store:</b> <codeph>http://<b
+            >&lt;data-store&gt;</b>/api/docs</codeph> — List the loaded document sets and manage them through the REST API.</li>
       </ul>
       <p>Where <b>&lt;renderer&gt;</b> and <b
-        >&lt;rag-service&gt;</b> are the hosts and ports the services are running on, defaulting to <codeph
-        >localhost:3000</codeph> and <codeph>localhost:4002</codeph>.</p>
+        >&lt;data-store&gt;</b> are the hosts and ports the services are running on, defaulting to <codeph
+        >localhost:3000</codeph> and <codeph>localhost:4000</codeph>.</p>
     </section>
 
 

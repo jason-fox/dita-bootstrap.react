@@ -87,7 +87,7 @@
       <p>Deploy using Docker Compose or a standalone Docker container:</p>
 
       <codeblock outputclass="language-bash"># Launch using Docker Compose:
-<cmdname>docker</cmdname> compose up -d rag-service
+<cmdname>docker</cmdname> compose -f docker-compose.yml -f docker-compose.rag.yml up -d
 
 # Or run as a standalone Docker container:
 <cmdname>docker</cmdname> run -d -p 4002:4002 \

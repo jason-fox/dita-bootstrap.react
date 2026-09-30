@@ -180,10 +180,16 @@ Open `http://localhost:3000` for the Next.js web application and integrated AI A
 
 ### 2. Docker Compose Startup
 
-Launch all documentation services (data-store, renderer, mcp-server, rag-service) locally:
+Launch the documentation services (data-store, renderer, mcp-server) locally:
 
 ```console
 docker compose up -d
+```
+
+For large document sets, add the RAG vector search service (port `4002`) with the second compose file:
+
+```console
+docker compose -f docker-compose.yml -f docker-compose.rag.yml up -d
 ```
 
 ### 3. MCP Server Configuration

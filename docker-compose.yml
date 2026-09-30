@@ -15,8 +15,6 @@ services:
       - DATA_DIR=/app/data
       # optional bearer token guarding POST/PUT/DELETE /api/docs/<id>; unset = auth disabled
       - AUTH_TOKEN=${AUTH_TOKEN:-}
-      # optional: reindex rag-service after doc set uploads and deletes
-      - RAG_SERVICE_URL=http://rag-service:4002
     volumes:
       - ./data-store/data:/app/data
     restart: unless-stopped
@@ -33,7 +31,6 @@ services:
     environment:
       - PORT=4001
       - DATA_DIR=/app/data
-      - RAG_SERVICE_URL=http://rag-service:4002
       - BOOTSTRAP_THEME=default
       - NAVBAR_THEME=dark
       - NAVBAR_TEXT=dark
@@ -41,23 +38,7 @@ services:
       - ./data-store/data:/app/data
     restart: unless-stopped
 
-  # 3. Optional Standalone RAG Service (Semantic Vector Search)
-  rag-service:
-    image: ghcr.io/jason-fox/ast-rag-service:${TAG:-latest}
-    build:
-      context: ./rag-service
-      dockerfile: Dockerfile
-    container_name: rag-service
-    ports:
-      - '4002:4002'
-    environment:
-      - PORT=4002
-      - DATA_DIR=/app/data
-    volumes:
-      - ./data-store/data:/app/data
-    restart: unless-stopped
-
-  # 4. Next.js Documentation Renderer & AI Assistant Portal
+  # 3. Next.js Documentation Renderer & AI Assistant Portal
   renderer:
     image: ghcr.io/jason-fox/ast-renderer:${TAG:-latest}
     build:
