@@ -14,11 +14,41 @@
       </button>
     </div>
     <a class="navbar-brand" href="https://dita-bootstrap.github.io/dita-bootstrap.react">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
-      <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
-      <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
-    </svg>
-      DITA Bootstrap React
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+        <style>
+          .shelf-bg { fill: #2a1b4e; }
+          .shelf-border { fill: none; stroke: #b794f4; stroke-width: 2; }
+          .shelf-line { stroke: #b794f4; stroke-width: 2; stroke-linecap: round; }
+          .book-1 { fill: #6f42c1; } 
+          .book-2 { fill: #0d6efd; } 
+          .book-3 { fill: #31d2f2; }
+          .book-spine-detail { fill: rgba(255,255,255,0.3);}
+        </style>
+
+        <!-- Background / Frame Base -->
+        <rect class="shelf-bg" x="1" y="1" width="30" height="30" rx="7"/>
+        <rect class="shelf-border" x="1" y="1" width="30" height="30" rx="7"/>
+
+        <!-- Books Group (Positioned on the shelf) -->
+        <g transform="translate(6, 6)">
+          <!-- Book 1 (Purple) -->
+          <rect class="book-1" x="1" y="3" width="5" height="15" rx="1"/>
+          <rect class="book-spine-detail" x="2" y="5" width="3" height="2"/>
+
+          <!-- Book 2 (Blue) -->
+          <rect class="book-2" x="7" y="1" width="6" height="17" rx="1"/>
+          <rect class="book-spine-detail" x="8" y="4" width="4" height="2"/>
+          <rect class="book-spine-detail" x="8" y="8" width="4" height="1"/>
+
+          <!-- Book 3 (Cyan) -->
+          <rect class="book-3" x="14" y="4" width="5" height="14" rx="1"/>
+          <rect class="book-spine-detail" x="15" y="6" width="3" height="2"/>
+        </g>
+
+        <!-- The Shelf Line -->
+        <line class="shelf-line" x1="4" y1="26" x2="28" y2="26"/>
+      </svg>
+      <span class="d-inline pt-2 align-middle">DITA Bootstrap React</span>
     </a>
     <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i class="bi bi-three-dots"></i>
