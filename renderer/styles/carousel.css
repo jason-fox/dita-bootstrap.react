@@ -1,0 +1,18 @@
+.carousel-indicators [data-bs-target] {
+    width: 30px;
+    height: 4px;
+    border-radius: 0;
+    background-color: #fff;
+    opacity: 0.5;
+    transition: opacity 0.6s ease;
+}
+
+.carousel-indicators .active {
+    opacity: 1;
+}
+
+.carousel-indicators [data-bs-target] {
+    background-color: var(--bs-primary) !important;
+    border: 0;
+    box-shadow: none;
+}

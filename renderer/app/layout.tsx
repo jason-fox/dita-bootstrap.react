@@ -6,6 +6,7 @@ import "@/styles/bootswatch-colors.css";
 import "@/styles/bootswatch-static.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "@/styles/common-bootstrap.css";
+import "@/styles/carousel.css";
 import "@/styles/collapsible-toc.css";
 import "@/styles/side-toc.css";
 import "@/styles/scrollspy-toc.css";
