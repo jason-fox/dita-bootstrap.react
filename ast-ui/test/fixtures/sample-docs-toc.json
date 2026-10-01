@@ -3,7 +3,7 @@
     [
       "TocEntry",
       {
-        "title": "DITA Bootstrap Harness"
+        "title": "DITA React Library"
       },
       [
         "TocEntry",
@@ -82,7 +82,7 @@
       ]
     ]
   ],
-  "title": "DITA Bootstrap Harness & AST Documentation",
+  "title": "DITA React Library",
   "navToc": "collapsible",
   "scrollspyToc": "none",
   "lang": "en",
@@ -130,7 +130,7 @@
         ],
         [
           "span",
-          "DITA Bootstrap Harness & AST Documentation"
+          "DITA React Library"
         ]
       ],
       [

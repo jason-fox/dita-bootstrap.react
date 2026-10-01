@@ -68,7 +68,7 @@
         </plentry>
         <plentry>
           <pt><codeph>showSidebar</codeph>, <codeph>hideSearch</codeph></pt>
-          <pd>Show or hide Scalar's own sidebar and search. The harness already provides a table of contents, so
+          <pd>Show or hide Scalar's own sidebar and search. The application already provides a table of contents, so
             both are normally off. The sidebar cannot start collapsed; it is either shown or hidden.</pd>
         </plentry>
         <plentry>
@@ -112,7 +112,7 @@
         the file have no effect:</p>
       <ul>
         <li><codeph>url</codeph> — always resolved from the node's <codeph>specUrl</codeph>.</li>
-        <li><codeph>forceDarkModeState</codeph> — follows the harness light/dark switch. Scalar's own toggle is
+        <li><codeph>forceDarkModeState</codeph> — follows the application's light/dark switch. Scalar's own toggle is
           not shown, and the API reference reloads when the theme changes.</li>
         <li><codeph>localization.locale</codeph> — taken from the topic language, so a German topic renders
           Scalar in German. Scalar includes English, Russian, Spanish, French, German, Chinese (Simplified),

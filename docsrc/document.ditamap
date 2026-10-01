@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
 <bookmap>
-  <title>DITA Bootstrap Harness &amp; AST Documentation</title>
+  <title>DITA React Library</title>
   <frontmatter deliveryTarget="pdf">
     <booklists>
       <toc/>
@@ -9,7 +9,7 @@
   </frontmatter>
   <chapter>
     <topicmeta>
-      <navtitle>DITA Bootstrap Harness</navtitle>
+      <navtitle>Introduction</navtitle>
     </topicmeta>
     <topicref navtitle="Getting Started" href="index.dita" locktitle="yes"/>
   </chapter>

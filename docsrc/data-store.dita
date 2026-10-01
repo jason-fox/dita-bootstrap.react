@@ -149,7 +149,7 @@ docker run -d -p 4000:4000 \
       <title>Authorization</title>
       <p><codeph>POST</codeph>/<codeph>PUT</codeph>/<codeph>DELETE /api/docs/&lt;id&gt;</codeph> and <codeph
         >PUT /api/chrome</codeph> are guarded by an optional bearer token, set via <codeph
-        >AUTH_TOKEN</codeph>. Auth is off by default so the harness stays zero-config for local dev — if <codeph
+        >AUTH_TOKEN</codeph>. Auth is off by default so the application remains zero-config for local dev — if <codeph
         >AUTH_TOKEN</codeph> is unset, every request to these routes is allowed. If it's set, requests must send <codeph
         >Authorization: Bearer &lt;AUTH_TOKEN&gt;</codeph> or get <codeph>401</codeph> (with a <codeph
         >WWW-Authenticate: Bearer</codeph> header). <codeph>GET</codeph>/<codeph>HEAD</codeph>/<codeph

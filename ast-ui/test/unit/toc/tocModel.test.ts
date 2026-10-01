@@ -9,7 +9,7 @@ const components = entries[0];
 describe("parseTocEntry", () => {
   it("reads title, href and nested children from a toc entry", () => {
     const parsed = parseTocEntry(components);
-    expect(parsed.title).toBe("DITA Bootstrap Harness");
+    expect(parsed.title).toBe("DITA React Library");
     expect(parsed.href).toBeUndefined();
     expect(parsed.children).toHaveLength(1);
     expect(parseTocEntry(parsed.children[0])).toMatchObject({

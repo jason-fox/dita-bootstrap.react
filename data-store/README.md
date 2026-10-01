@@ -15,7 +15,7 @@ Express static file server and API serving `dita-bootstrap.ast` transtype output
 
 ## Background
 
-`data-store` serves as the primary file repository backend for the harness workspace. It scans `DATA_DIR` for generated DITA AST documentation sets (folders containing `toc.json`), generates per-set MiniSearch indices, and exposes static files and API routes consumed by `renderer`, `mcp-server`, and `rag-service`.
+`data-store` serves as the primary file repository backend for the library workspace. It scans `DATA_DIR` for generated DITA AST documentation sets (folders containing `toc.json`), generates per-set MiniSearch indices, and exposes static files and API routes consumed by `renderer`, `mcp-server`, and `rag-service`.
 
 ## Install
 

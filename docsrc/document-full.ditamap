@@ -3,7 +3,7 @@
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
 <bookmap>
   <booktitle>
-    <mainbooktitle>React Harness Documentation</mainbooktitle>
+    <mainbooktitle>DITA React Library</mainbooktitle>
   </booktitle>
   <bookmeta>
     <shortdesc>Complete guide to the DITA Bootstrap React rendering harness.</shortdesc>

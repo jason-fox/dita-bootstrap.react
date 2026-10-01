@@ -1,8 +1,8 @@
-# DITA Bootstrap AST Harness & MCP Server
+# DITA React Library - AST Viewer & MCP Server
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-A harness and Model Context Protocol (MCP) server for viewing, querying, and interacting with `dita-bootstrap.ast` transtype output.
+A web and Model Context Protocol (MCP) server for viewing, querying, and interacting with `dita-bootstrap.ast` transtype output.
 
 This workspace supports discovering, rendering, and querying multiple Abstract Syntax Tree (AST) documentation sets (books, guides, or document collections) produced by the `org.dita-bootstrap.ast` DITA-OT plugin.
 
