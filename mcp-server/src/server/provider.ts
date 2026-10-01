@@ -36,7 +36,7 @@ const SEARCH_INDEX_OPTIONS = {
 };
 
 interface CachedIndex {
-  miniSearch: MiniSearch<any>;
+  miniSearch: MiniSearch<SearchHit>;
   mtime: number;
 }
 

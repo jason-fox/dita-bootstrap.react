@@ -48,7 +48,7 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
           {shortdescAst ? <AstRenderer nodes={shortdescAst} docId={docId} onNavigate={onNavigate} /> : shortdesc}
         </p>
       )}
-      <AstRenderer nodes={doc.content as any} docId={docId} onNavigate={onNavigate} />
+      <AstRenderer nodes={doc.content} docId={docId} onNavigate={onNavigate} />
     </article>
   );
 
@@ -77,9 +77,9 @@ export default function TopicPage({ docId, topicPath, doc, toc, theme, previewMo
         <div className={mainColClass}>{articleMarkup}</div>
 
         {/* Right Sidebar Scrollspy */}
-        {hasScrollspy && (
+        {hasScrollspy && doc.scrollspy && (
           <div className="col-lg-3 d-none d-lg-block py-3 border-start">
-            <Scrollspy entries={doc.scrollspy as any} />
+            <Scrollspy entries={doc.scrollspy} />
           </div>
         )}
       </div>

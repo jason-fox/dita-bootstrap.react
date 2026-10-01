@@ -4,10 +4,12 @@ import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import type { CallToolResult } from "@modelcontextprotocol/client";
 import TopicPage, { type TopicPageProps } from "./TopicPage";
 
-function extractPayload(result: any): TopicPageProps | null {
+type RawResult = Partial<TopicPageProps> & { content?: { type: string; text?: string }[] };
+
+function extractPayload(result: RawResult | null | undefined): TopicPageProps | null {
   if (!result) return null;
   if (result.doc && result.topicPath) return result as TopicPageProps;
-  const text = result?.content?.find((c: any) => c.type === "text")?.text;
+  const text = result?.content?.find((c) => c.type === "text")?.text;
   if (!text) return null;
   try {
     return JSON.parse(text) as TopicPageProps;
@@ -22,7 +24,7 @@ function applyPayload(payload: TopicPageProps) {
   const title = docTitle && docTitle !== pageTitle ? `${docTitle} | ${pageTitle}` : pageTitle;
   document.title = title;
   document.documentElement.dataset.bsTheme = payload.theme ?? "light";
-  const lang = (payload.doc.meta?.lang as string) || (payload.toc as any)?.lang;
+  const lang = (payload.doc.meta?.lang as string) || payload.toc?.lang;
   if (lang) {
     document.documentElement.lang = lang;
   }
@@ -130,7 +132,7 @@ function AppShell() {
         topicPath,
         doc,
         toc,
-        theme: (theme as any) || "light",
+        theme: theme === "dark" ? "dark" : "light",
         previewMode: snapshot?.previewMode,
       };
       applyPayload(payload);

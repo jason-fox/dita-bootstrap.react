@@ -88,10 +88,10 @@ function createMcpServer(): McpServer {
             },
           ],
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           isError: true,
-          content: [{ type: "text", text: error.message }],
+          content: [{ type: "text", text: error instanceof Error ? error.message : String(error) }],
         };
       }
     },
@@ -155,10 +155,10 @@ function createMcpServer(): McpServer {
             },
           ],
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           isError: true,
-          content: [{ type: "text", text: error.message }],
+          content: [{ type: "text", text: error instanceof Error ? error.message : String(error) }],
         };
       }
     },
@@ -192,10 +192,10 @@ function createMcpServer(): McpServer {
         return {
           content: [{ type: "text", text: JSON.stringify(payload) }],
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           isError: true,
-          content: [{ type: "text", text: error.message }],
+          content: [{ type: "text", text: error instanceof Error ? error.message : String(error) }],
         };
       }
     },
@@ -485,7 +485,7 @@ async function main() {
     });
 
     if (isCluster && cluster.isWorker) {
-      process.on("message", (msg: any, socket: net.Socket) => {
+      process.on("message", (msg: { type?: string; rawData?: string } | null, socket: net.Socket) => {
         if (msg?.type === "sticky-connection" && socket) {
           if (msg.rawData) {
             socket.unshift(Buffer.from(msg.rawData, "base64"));
