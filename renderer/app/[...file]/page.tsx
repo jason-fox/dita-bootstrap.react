@@ -96,7 +96,13 @@ export default async function ViewPage({ params }: { params: Promise<{ file: str
           {doc.meta.shortdescAst ? <AstRenderer nodes={doc.meta.shortdescAst} docId={docId} /> : doc.meta.shortdesc}
         </p>
       )}
-      <AstRenderer nodes={doc.content} docId={docId} topicPath={topicPath} lang={doc.meta.lang || toc?.lang} />
+      <AstRenderer
+        nodes={doc.content}
+        docId={docId}
+        topicPath={topicPath}
+        lang={doc.meta.lang || toc?.lang}
+        codeLanguages={toc?.codeLanguages}
+      />
     </article>
   );
 

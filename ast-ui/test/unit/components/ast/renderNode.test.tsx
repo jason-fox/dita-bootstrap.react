@@ -28,6 +28,24 @@ describe("renderNode", () => {
     expect(container.querySelector("code.language-bash .token")).not.toBeNull();
   });
 
+  it("highlights plain text around nested DITA markup without overriding it", () => {
+    const { container } = renderAst([
+      "pre",
+      { className: "language-bash" },
+      [
+        "code",
+        ["span", { className: "keyword cmdname" }, "dita"],
+        " ",
+        ["span", { className: "keyword parmname" }, "--input"],
+        "=path/to/your.ditamap",
+      ],
+    ]);
+    expect(container.querySelector("code .keyword.cmdname")?.textContent).toBe("dita");
+    expect(container.querySelector("code .keyword.parmname")?.className).toBe("keyword parmname");
+    expect(container.querySelector("code .token.operator")?.textContent).toBe("=");
+    expect(container.querySelector("code")?.textContent).toBe("dita --input=path/to/your.ditamap");
+  });
+
   it("routes onNavigate for internal links instead of following them", () => {
     const calls: Array<[string, string]> = [];
     const { container } = renderAst(["a", { href: "topics/intro.json" }, "Intro"], {

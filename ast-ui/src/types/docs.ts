@@ -52,6 +52,8 @@ export interface TocDoc {
   header?: AstArray;
   footer?: AstArray;
   accessibility?: { main?: string; nav?: string };
+  // Prism language names used by the doc set's codeblocks (see fox.jason.prismjs), loaded on demand
+  codeLanguages?: string[];
 }
 
 export interface ChromeConfig {

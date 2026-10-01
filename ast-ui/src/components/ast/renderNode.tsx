@@ -2,7 +2,7 @@ import React, { type Key } from "react";
 import dynamic from "next/dynamic";
 import { isPropsObject, resolveHref, resolveSrc, resolveStyle } from "../../lib/helpers";
 import type { AstArray, AstNode } from "../../types/ast";
-import { isHighlightableCodeBlock, renderCodeBlock } from "./nodes/CodeBlock";
+import { isHighlightableCodeBlock, renderCodeBlock, renderMixedCodeBlock } from "./nodes/CodeBlock";
 import { SearchFormFromAst } from "./nodes/SearchForm";
 import { ThemeToggleButtonFromAst, ThemeToggleDropdownFromAst } from "./nodes/ThemeToggle";
 import { CollapseFromAst } from "./nodes/ToggleNodes";
@@ -146,6 +146,8 @@ export function renderNode(node: AstNode, key: Key, ctx: RenderContext): React.R
     if (isHighlightableCodeBlock(codeNode)) {
       return renderCodeBlock(resolvedProps, codeNode, key);
     }
+    const mixed = renderMixedCodeBlock(resolvedProps, codeNode, key, render);
+    if (mixed) return mixed;
   }
 
   if (
