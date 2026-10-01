@@ -2,4 +2,9 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
-export default defineConfig([...nextVitals, ...nextTs, globalIgnores(["node_modules/**"])]);
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  { rules: { "@typescript-eslint/consistent-type-definitions": ["error", "interface"] } },
+  globalIgnores(["node_modules/**"]),
+]);

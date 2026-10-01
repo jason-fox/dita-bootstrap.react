@@ -1,7 +1,10 @@
 import Prism from "prismjs";
 import components from "prismjs/components.json";
 
-type PrismComponent = { require?: string | string[]; alias?: string | string[] };
+interface PrismComponent {
+  require?: string | string[];
+  alias?: string | string[];
+}
 const languages = components.languages as unknown as Record<string, PrismComponent>;
 
 const aliases = new Map<string, string>();

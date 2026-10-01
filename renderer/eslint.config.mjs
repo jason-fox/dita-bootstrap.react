@@ -5,6 +5,7 @@ import nextTs from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
+  { rules: { "@typescript-eslint/consistent-type-definitions": ["error", "interface"] } },
   {
     files: ["**/*.js"],
     rules: { "@typescript-eslint/no-require-imports": "off" },
