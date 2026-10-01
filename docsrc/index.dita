@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="index">
-  <title>DITA Harness User Guide</title>
+  <title>DITA React Library User Guide</title>
   <shortdesc
   >User guide for viewing, rendering, querying, and chatting with DITA documentation rendered by a React web application with a RAG Vector Search service, and AI Assistant.</shortdesc>
   <prolog>
@@ -20,16 +20,16 @@
   </prolog>
   <body>
     <section>
-      <title>Welcome to the DITA Harness</title>
+      <title>Welcome to the DITA React Library</title>
       <p>The <b
-        >DITA Harness</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, querying content via semantic vector search (RAG Service), and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
+        >DITA React Library</b> provides an interactive web application for browsing DITA documentation, viewing rich Bootstrap components, querying content via semantic vector search (RAG Service), and chatting with an AI Assistant. Content is published from DITA source files and automatically rendered in modern web browser views.</p>
     </section>
 
 
 
     <section>
       <title>Quick Start with Docker Compose</title>
-      <p>Launch the React Harness documentation system (data-store, renderer and mcp-server) using Docker Compose:</p>
+      <p>Launch the React Library documentation system (data-store, renderer and mcp-server) using Docker Compose:</p>
       
       <codeblock outputclass="language-bash"><cmdname>docker</cmdname> compose up -d</codeblock>
 

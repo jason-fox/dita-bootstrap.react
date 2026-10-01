@@ -6,7 +6,8 @@
     <mainbooktitle>DITA React Library</mainbooktitle>
   </booktitle>
   <bookmeta>
-    <shortdesc>Complete guide to the DITA Bootstrap React rendering harness.</shortdesc>
+    <shortdesc>A Web and Model Context Protocol (MCP) server for viewing, querying, and interacting with <codeph
+      >dita-bootstrap.ast</codeph> transtype output.</shortdesc>
   </bookmeta>
   <chapter navtitle="Introduction">
     <topicref href="index.dita"/>
