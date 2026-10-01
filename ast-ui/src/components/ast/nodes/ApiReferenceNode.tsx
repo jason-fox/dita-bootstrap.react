@@ -39,7 +39,7 @@ const CSS = `
   --scalar-radius-xl: var(--bs-border-radius-xl);
   --scalar-button-1: var(--bs-primary);
   --scalar-button-1-color: var(--bs-white);
-  --scalar-button-1-hover: var(--bs-primary-text-emphasis);
+  --scalar-button-1-hover: color-mix(in srgb, var(--bs-primary), black 15%);
   --scalar-focus-color: var(--bs-focus-ring-color);
   --scalar-link-color-hover: var(--bs-link-hover-color);
   --scalar-color-alert: var(--bs-warning-text-emphasis);
