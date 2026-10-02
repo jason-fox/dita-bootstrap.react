@@ -1,4 +1,4 @@
-# Multi-stage All-in-One Demo Container for DITA React Library
+# Multi-stage All-in-One Demo Container for DITA Bookshelf
 # Packs data-store, mcp-server and renderers into a single container.
 #
 # Build (from react-harness/):

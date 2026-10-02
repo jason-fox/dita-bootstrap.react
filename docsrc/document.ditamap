@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
 <bookmap>
-  <title>DITA React Library</title>
+  <title>DITA Bookshelf</title>
   <frontmatter deliveryTarget="pdf">
     <booklists>
       <toc/>

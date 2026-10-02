@@ -3,7 +3,7 @@
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
 <bookmap>
   <booktitle>
-    <mainbooktitle>DITA React Library</mainbooktitle>
+    <mainbooktitle>DITA Bookshelf</mainbooktitle>
   </booktitle>
   <bookmeta>
     <shortdesc>A Web and Model Context Protocol (MCP) server for viewing, querying, and interacting with <codeph

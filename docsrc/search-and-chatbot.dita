@@ -37,8 +37,7 @@
       <p>You can access the AI Assistant using two containerized deployment options:</p>
 
       <p><b>Option 1: Integrated Portal Assistant (<filepath>/chat</filepath>)</b></p>
-      <p>Launch the DITA React Library stack using Docker Compose with your AI credentials in <filepath
-        >.env</filepath>:</p>
+      <p>Launch the DITA Bookshelf stack using Docker Compose with your AI credentials in <filepath>.env</filepath>:</p>
       <codeblock outputclass="language-bash"># Set your AI credentials in .env
 CHAT_BOT_PROVIDER=gemini
 GEMINI_API_KEY=your_api_key

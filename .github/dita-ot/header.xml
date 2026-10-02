@@ -60,7 +60,7 @@
         <!-- The Shelf Line -->
         <line class="shelf-line" x1="4" y1="26" x2="28" y2="26"/>
       </svg>
-      <span class="d-inline pt-2 align-middle">DITA React Library</span>
+      <span class="d-inline pt-2 align-middle">DITA Bookshelf</span>
     </a>
     <button
       class="navbar-toggler p-2"

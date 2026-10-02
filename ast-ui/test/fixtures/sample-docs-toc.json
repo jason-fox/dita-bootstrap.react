@@ -3,7 +3,7 @@
     [
       "TocEntry",
       {
-        "title": "DITA React Library"
+        "title": "DITA Bookshelf"
       },
       [
         "TocEntry",
@@ -82,7 +82,7 @@
       ]
     ]
   ],
-  "title": "DITA React Library",
+  "title": "DITA Bookshelf",
   "navToc": "collapsible",
   "scrollspyToc": "none",
   "lang": "en",
@@ -130,7 +130,7 @@
         ],
         [
           "span",
-          "DITA React Library"
+          "DITA Bookshelf"
         ]
       ],
       [
